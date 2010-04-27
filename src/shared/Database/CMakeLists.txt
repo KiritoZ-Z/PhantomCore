@@ -1,0 +1,39 @@
+SET(phantomdatabase_STAT_SRCS
+    DBCFileLoader.cpp
+    DBCFileLoader.h
+    DBCStore.h
+    Database.cpp
+    Database.h
+    DatabaseEnv.h   
+    DatabaseImpl.h
+    DatabaseMysql.cpp
+    DatabasePostgre.cpp
+    DatabaseMysql.h
+    DatabasePostgre.h
+    Field.cpp
+    Field.h
+    MySQLDelayThread.h
+    PGSQLDelayThread.h
+    QueryResult.h
+    QueryResultMysql.cpp
+    QueryResultMysql.h
+    QueryResultPostgre.cpp
+    QueryResultPostgre.h
+    SQLStorage.cpp
+    SQLStorage.h
+    SqlDelayThread.cpp
+    SqlDelayThread.h
+    SqlOperations.cpp
+    SqlOperations.h
+)
+
+include_directories(
+  ${ACE_INCLUDE_DIR}
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/src/shared
+  ${CMAKE_SOURCE_DIR}/src/shared/Database
+  ${CMAKE_SOURCE_DIR}/src/framework
+  ${MYSQL_INCLUDE_DIR}
+)
+
+add_library(phantomdatabase STATIC ${phantomdatabase_STAT_SRCS})
