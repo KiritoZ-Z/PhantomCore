@@ -1,7 +1,9 @@
 add_subdirectory(g3dlite)
-if (NOT MACOSX)
+if(WIN32)
 add_subdirectory(jmalloc)
-endif(NOT MACOSX)
+elseif(LINUX)
+add_subdirectory(jmalloc)
+endif()
 add_subdirectory(sockets)
 add_subdirectory(zlib)
 
