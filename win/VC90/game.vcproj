@@ -1563,14 +1563,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\OutdoorPvPWG.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\OutdoorPvPWG.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\OutdoorPvPHP.cpp"
 				>
 			</File>
@@ -1612,6 +1604,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\OutdoorPvPTF.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\OutdoorPvPWG.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\OutdoorPvPWG.h"
 				>
 			</File>
 			<File
@@ -3788,6 +3788,50 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Trial of the crusader"
+					>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\alliance_champions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\Anubarak.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_lord_jaraxxus.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_northrend_beasts.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\horde_champions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\instance_trial_of_the_crussader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\ScriptLoader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\trial_of_the_crussader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\trial_of_the_crussader.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\Twin_Valkyr.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

@@ -1338,9 +1338,6 @@ void Spell::EffectDummy(uint32 i)
                      else                                    // Knocked Up   - backfire 5%
                          m_caster->CastSpell(m_caster, 46014, true, m_CastItem);
                      return;
-                    else                                    // Knocked Up   - backfire 5%
-                        m_caster->CastSpell(m_caster, 46014, true, m_CastItem);
-                    return;
                 case 50243:                                 // Teach Language
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
