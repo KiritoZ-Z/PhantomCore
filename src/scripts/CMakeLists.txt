@@ -473,6 +473,7 @@ northrend/draktharon_keep/instance_drak_tharon_keep.cpp
    northrend/sholazar_basin.cpp
    northrend/storm_peaks.cpp
    northrend/zuldrak.cpp
+   northrend/wintergrasp.cpp
    northrend/crystalsong_forest.cpp
    outland/auchindoun/auchenai_crypts/boss_exarch_maladaar.cpp
    outland/auchindoun/auchenai_crypts/boss_shirrak_the_dead_watcher.cpp

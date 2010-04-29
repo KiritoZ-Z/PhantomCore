@@ -200,6 +200,8 @@ SET(game_STAT_SRCS
    OutdoorPvPTF.h
    OutdoorPvPZM.cpp
    OutdoorPvPZM.h
+   OutdoorPvPWG.cpp
+   OutdoorPvPWG.h
    Path.h
    PetAI.cpp
    PetAI.h

@@ -29,6 +29,7 @@
 #include "BattleGroundMgr.h"
 #include "CreatureAI.h"
 #include "MapManager.h"
+#include "OutdoorPvPWG.h"
 
 bool IsAreaEffectTarget[TOTAL_SPELL_TARGETS];
 SpellEffectTargetTypes EffectTargetType[TOTAL_SPELL_EFFECTS];
@@ -3125,6 +3126,28 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
     if (auraSpell)                               // not have expected aura
         if (!player || auraSpell > 0 && !player->HasAura(auraSpell) || auraSpell < 0 && player->HasAura(-auraSpell))
             return false;
+    // Extra conditions
+    switch(spellId)
+    {
+        case 58600: // No fly Zone - Dalaran (Krasus Landing exception)
+            if (!player || player->GetAreaId() == 4564 || !player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)
+                || player->HasAura(44795))
+                return false;
+            break;
+        case 58730: // No fly Zone - Wintergrasp
+            if (!player || !player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)
+               || player->HasAura(45472) || player->HasAura(44795))
+                return false;
+            break;
+       case 58045: // Essence of Wintergrasp - Wintergrasp
+        case 57940: // Essence of Wintergrasp - Northrend
+            if (!player || player->GetTeamId() != sWorld.getWorldState(WORLDSTATE_WINTERGRASP_CONTROLING_FACTION))
+                return false;
+            break;
+   }
+
+    return true; 
+
 
     // Extra conditions -- leaving the possibility add extra conditions...
     switch(spellId)

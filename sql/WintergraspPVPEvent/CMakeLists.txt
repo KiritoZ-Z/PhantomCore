@@ -1,0 +1,6 @@
+INSTALL(FILES
+world_command.sql
+world_gameobject.sql
+world_gameobject_template.sql
+world_trinity_string.sql
+DESTINATION share/trinity/sql/WintergraspPVPEvent)

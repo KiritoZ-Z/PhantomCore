@@ -425,16 +425,6 @@ void GameObject::Update(uint32 diff)
                 case GAMEOBJECT_TYPE_BUTTON:
                     if (GetGOInfo()->GetAutoCloseTime() && (m_cooldownTime < time(NULL)))
                         ResetDoorOrButton();
-                    break;
-                case GAMEOBJECT_TYPE_GOOBER:
-                    if (m_cooldownTime < time(NULL))
-                    {
-                        RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
-
-                        SetLootState(GO_JUST_DEACTIVATED);
-                        m_cooldownTime = 0;
-                    }
-                    break;
                 case GAMEOBJECT_TYPE_CHEST:
                     if (m_groupLootTimer)
                     {
@@ -466,16 +456,15 @@ void GameObject::Update(uint32 diff)
                     std::set<uint32>::const_iterator end = m_unique_users.end();
                     for (; it != end; ++it)
                     {
-                        if (Unit* owner = Unit::GetUnit(*this, uint64(*it)))
-                            owner->CastSpell(owner, spellId, false);
+						Unit* owner = Unit::GetUnit(*this, uint64(*it));
+                        // For now we do not support go cast
+                        //if (owner) owner->CastSpell(owner, spellId, false, 0, 0, GetGUID());
+                        if (owner) owner->CastSpell(owner, spellId, false);
                     }
 
                     m_unique_users.clear();
                     m_usetimes = 0;
                 }
-
-                SetGoState(GO_STATE_READY);
-
                 //any return here in case battleground traps
             }
 
@@ -1133,43 +1122,15 @@ void GameObject::Use(Unit* user)
                     player->SendPreparedGossip(this);
                 }
 
-                if (info->goober.eventId)
-                {
-                    sLog.outDebug("Goober ScriptStart id %u for GO entry %u (GUID %u).", info->goober.eventId, GetEntry(), GetDBTableGUIDLow());
-                    GetMap()->ScriptsStart(sEventScripts, info->goober.eventId, player, this);
-                    EventInform(info->goober.eventId);
-                }
-
-                // possible quest objective for active quests
-                if (info->goober.questId && objmgr.GetQuestTemplate(info->goober.questId))
-                {
-                    //Quest require to be active for GO using
-                    if (player->GetQuestStatus(info->goober.questId) != QUEST_STATUS_INCOMPLETE)
-                        break;
-                }
-
                 if (BattleGround* bg = player->GetBattleGround())
                     bg->EventPlayerUsedGO(player, this);
 
                 player->CastedCreatureOrGO(info->id, GetGUID(), 0);
+
+                if (info->goober.eventId)
+                    GetMap()->ScriptsStart(sEventScripts, info->goober.eventId, player, this);
+     
             }
-
-            if (uint32 trapEntry = info->goober.linkedTrapId)
-                TriggeringLinkedGameObject(trapEntry, user);
-
-            SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_IN_USE);
-            SetLootState(GO_ACTIVATED);
-
-            uint32 time_to_restore = info->GetAutoCloseTime();
-
-            // this appear to be ok, however others exist in addition to this that should have custom (ex: 190510, 188692, 187389)
-            if (time_to_restore && info->goober.customAnim)
-                SendCustomAnim();
-            else
-                SetGoState(GO_STATE_ACTIVE);
-
-            m_cooldownTime = time(NULL) + time_to_restore;
-
             // cast this spell later if provided
             spellId = info->goober.spellId;
             spellCaster = NULL;
