@@ -1330,7 +1330,14 @@ void Spell::EffectDummy(uint32 i)
                     if (!m_CastItem)
                         return;
                     if (roll_chance_i(95))                  // Nitro Boosts - success
-                        m_caster->CastSpell(m_caster, 54861, true, m_CastItem);
+                    {
+                         m_caster->CastSpell(m_caster, 54861, true, m_CastItem);
+                        // drop flag
+                        m_caster->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION);
+                    }
+                     else                                    // Knocked Up   - backfire 5%
+                         m_caster->CastSpell(m_caster, 46014, true, m_CastItem);
+                     return;
                     else                                    // Knocked Up   - backfire 5%
                         m_caster->CastSpell(m_caster, 46014, true, m_CastItem);
                     return;
