@@ -46,6 +46,11 @@ enum Yells
     SAY_STOMP_3                                   = -1578011
 };
 
+enum
+{
+    ACHIEV_TIMED_START_EVENT                      = 18153,
+};
+
 struct boss_drakosAI : public ScriptedAI
 {
     boss_drakosAI(Creature *c) : ScriptedAI(c), lSummons(me)
@@ -149,7 +154,11 @@ struct boss_drakosAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
+	{
             pInstance->SetData(DATA_DRAKOS_EVENT, DONE);
+	    // start achievement timer (kill Eregos within 20 min)
+            pInstance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+	}
     }
     void KilledUnit(Unit * /*victim*/)
     {

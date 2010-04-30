@@ -60,6 +60,11 @@ const Position SpawnPoint[2] =
     { 551.1, 229.4, 224.3 },
 };
 
+enum
+{
+    ACHIEV_TIMED_START_EVENT                      = 20381,
+};
+
 struct boss_anub_arakAI : public ScriptedAI
 {
     boss_anub_arakAI(Creature *c) : ScriptedAI(c), lSummons(me)
@@ -105,7 +110,10 @@ struct boss_anub_arakAI : public ScriptedAI
         lSummons.DespawnAll();
 
         if (pInstance)
+	{
             pInstance->SetData(DATA_ANUBARAK_EVENT, NOT_STARTED);
+	    pInstance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+	}
     }
 
 
@@ -114,7 +122,10 @@ struct boss_anub_arakAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
+	{
             pInstance->SetData(DATA_ANUBARAK_EVENT, IN_PROGRESS);
+	    pInstance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+	}
     }
 
 
