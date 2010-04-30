@@ -5434,6 +5434,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
     Unit * target = aurApp->GetTarget();
 
     Unit * caster = GetCaster();
+	if (!caster) return;
 
     if (mode & AURA_EFFECT_HANDLE_REAL)
     {
