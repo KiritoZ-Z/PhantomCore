@@ -63,7 +63,11 @@ phantomauth
 phantomconfig
 vmaps
 g3dlite
-#jmalloc
+if(WIN32)
+jmalloc
+elseif(LINUX)
+jmalloc
+endif()
 ${SCRIPT_LIB}
 ${READLINE_LIBRARY}
 ${TERMCAP_LIBRARY}
