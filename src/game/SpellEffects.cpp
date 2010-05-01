@@ -7647,7 +7647,7 @@ void Spell::EffectCastButtons(uint32 i)
     for (; n_buttons; n_buttons--, button_id++)
     {
         ActionButton const* ab = p_caster->GetActionButton(button_id);
-        if (!ab || ab->GetAction() != ACTION_BUTTON_SPELL)
+        if (!ab || ab->GetType() != ACTION_BUTTON_SPELL)
             continue;
 
         uint32 spell_id = ab->GetAction();
