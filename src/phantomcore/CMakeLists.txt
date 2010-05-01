@@ -63,7 +63,7 @@ phantomauth
 phantomconfig
 vmaps
 g3dlite
-jmalloc
+#jmalloc
 ${SCRIPT_LIB}
 ${READLINE_LIBRARY}
 ${TERMCAP_LIBRARY}
