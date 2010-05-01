@@ -5957,7 +5957,7 @@ void Player::SendActionButtons(uint32 state) const
     sLog.outDetail("Action Buttons for '%u' spec '%u' Sent", GetGUIDLow(), m_activeSpec);
 }
 
-ActionButton* Player::addActionButton(uint8 button, uint32 action, uint8 type)
+bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type)
 {
     if (button >= MAX_ACTION_BUTTONS)
     {
