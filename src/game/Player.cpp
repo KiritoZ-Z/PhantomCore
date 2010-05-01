@@ -12066,17 +12066,22 @@ void Player::SplitItem(uint16 src, uint16 dst, uint32 count)
 
     if (IsInventoryPos(dst))
     {
+	bool isRefundable = pSrcItem->HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
+        if (isRefundable)
+            AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() - count);
+
         // change item amount before check (for unique max count check)
-	AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() - count);
         pSrcItem->SetCount(pSrcItem->GetCount() - count);
 
         ItemPosCountVec dest;
         uint8 msg = CanStoreItem(dstbag, dstslot, dest, pNewItem, false);
         if (msg != EQUIP_ERR_OK)
         {
+	    if (isRefundable)
+                AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() + count);
+
             delete pNewItem;
             pSrcItem->SetCount(pSrcItem->GetCount() + count);
-	    AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() + count);
             SendEquipError(msg, pSrcItem, NULL);
             return;
         }
@@ -12085,24 +12090,33 @@ void Player::SplitItem(uint16 src, uint16 dst, uint32 count)
             pSrcItem->SendUpdateToPlayer(this);
         pSrcItem->SetState(ITEM_CHANGED, this);
         StoreItem(dest, pNewItem, true);
-	AddRefundReference(pNewItem->GetGUID(), count);
-        pNewItem->SetPaidExtendedCost(pSrcItem->GetPaidExtendedCost());
-        pNewItem->SetPaidMoney(pSrcItem->GetPaidMoney());
-        pNewItem->SetRefundRecipient(GetGUIDLow());
-        pNewItem->SetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME, pSrcItem->GetPlayedTime());
-        pNewItem->SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
-        pNewItem->SaveRefundDataToDB(count);
+	if (isRefundable)
+        {
+            AddRefundReference(pNewItem->GetGUID(), count);
+            pNewItem->SetPaidExtendedCost(pSrcItem->GetPaidExtendedCost());
+            pNewItem->SetPaidMoney(pSrcItem->GetPaidMoney());
+            pNewItem->SetRefundRecipient(GetGUIDLow());
+            pNewItem->SetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME, pSrcItem->GetPlayedTime());
+            pNewItem->SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
+            pNewItem->SaveRefundDataToDB(count);
+        }
     }
     else if (IsBankPos (dst))
     {
+	bool isRefundable = pSrcItem->HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
+        if (isRefundable)
+            AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() - count);
+
         // change item amount before check (for unique max count check)
-	AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() - count);
         pSrcItem->SetCount(pSrcItem->GetCount() - count);
 
         ItemPosCountVec dest;
         uint8 msg = CanBankItem(dstbag, dstslot, dest, pNewItem, false);
         if (msg != EQUIP_ERR_OK)
         {
+	    if (isRefundable)
+                AlterRefundReferenceCount(pSrcItem->GetGUID(), pSrcItem->GetCount() + count);
+
             delete pNewItem;
             pSrcItem->SetCount(pSrcItem->GetCount() + count);
             SendEquipError(msg, pSrcItem, NULL);
@@ -12113,13 +12127,16 @@ void Player::SplitItem(uint16 src, uint16 dst, uint32 count)
             pSrcItem->SendUpdateToPlayer(this);
         pSrcItem->SetState(ITEM_CHANGED, this);
         BankItem(dest, pNewItem, true);
-	AddRefundReference(pNewItem->GetGUID(), count);
-        pNewItem->SetPaidExtendedCost(pSrcItem->GetPaidExtendedCost());
-        pNewItem->SetPaidMoney(pSrcItem->GetPaidMoney());
-        pNewItem->SetRefundRecipient(GetGUIDLow());
-        pNewItem->SetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME, pSrcItem->GetPlayedTime());
-        pNewItem->SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
-        pNewItem->SaveRefundDataToDB(count);
+	if (isRefundable)
+        {
+            AddRefundReference(pNewItem->GetGUID(), count);
+            pNewItem->SetPaidExtendedCost(pSrcItem->GetPaidExtendedCost());
+            pNewItem->SetPaidMoney(pSrcItem->GetPaidMoney());
+            pNewItem->SetRefundRecipient(GetGUIDLow());
+            pNewItem->SetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME, pSrcItem->GetPlayedTime());
+            pNewItem->SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAGS_REFUNDABLE);
+            pNewItem->SaveRefundDataToDB(count);
+        }
     }
     else if (IsEquipmentPos (dst))
     {
