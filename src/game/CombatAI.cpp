@@ -20,6 +20,7 @@
 
 #include "CombatAI.h"
 #include "SpellMgr.h"
+#include "Vehicle.h"
 
 int AggressorAI::Permissible(const Creature *creature)
 {
@@ -292,7 +293,7 @@ void AOEAI::UpdateAI(const uint32 /*diff*/)
 //////////////
 
 //NOTE: VehicleAI::UpdateAI runs even while the vehicle is mounted
-void VehicleAI::UpdateAI(const uint32 diff)
+void VehicleAI::UpdateAI(const uint32 /*diff*/)
 {
 }
 
