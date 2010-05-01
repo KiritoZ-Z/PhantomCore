@@ -1711,6 +1711,7 @@ DROP TABLE IF EXISTS `item_refund_instance`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `item_refund_instance` (                             
   `item_guid` int(11) unsigned NOT NULL COMMENT 'Item GUID',      
+  `count` int(10) UNSIGNED NOT NULL DEFAULT '1',
   `player_guid` int(11) unsigned NOT NULL COMMENT 'Player GUID',  
   `paidMoney` int(11) unsigned NOT NULL DEFAULT '0',              
   `paidExtendedCost` int(11) unsigned NOT NULL DEFAULT '0',       
