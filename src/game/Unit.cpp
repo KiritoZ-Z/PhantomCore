@@ -7159,22 +7159,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                         sLog.outError("Unit::HandleDummyAuraProc: non handled spell id: %u (LO)", procSpell->Id);
                         return false;
                 }
-				//mana spring totem
-				spellId = 0;
-				switch (procSpell->Id)
-				{
-					case   3573: spellId =  5675; break;		//Rank	1
-					case   7414: spellId = 10495; break;		//Rank	2
-					case   7415: spellId = 10496; break;		//Rank	3
-					case   7416: spellId = 10497; break;		//Rank	4
-					case  15489: spellId = 25570; break;		//Rank	5
-					case  31186: spellId = 58771; break;		//Rank	6
-					case  31189: spellId = 58773; break;		//Rank	7
-					case  31190: spellId = 58774; break;		//Rank	8
-				default:
-					sLog.outError("Unit:HandleDummyAuraProc: non handled spell id: %u (LO)", procSpell->Id);
-					return false;
-				}
                 // No thread generated mod
                 // TODO: exist special flag in spell attributes for this, need found and use!
                 SpellModifier *mod = new SpellModifier;
