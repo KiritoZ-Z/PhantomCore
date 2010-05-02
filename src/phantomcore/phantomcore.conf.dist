@@ -1604,21 +1604,6 @@ Death.Bones.BattlegroundOrArena = 1
 Die.Command.Mode = 1
 
 ###############################################################################
-# PREMIUM ACCOUNS SYSTEM
-#
-#    RatePremium.XP.Kill
-#    RatePremium.XP.Quest
-#    RatePremium.XP.Explore
-#      XP Rates for Premium Accounts
-#      default = 2
-#
-##############################################################################
-
-RatePremium.XP.Kill = 2
-RatePremium.XP.Quest = 2
-RatePremium.XP.Explore = 2
-
-###############################################################################
 # AUTO BROADCAST
 #
 #    AutoBroadcast.On

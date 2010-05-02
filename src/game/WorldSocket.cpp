@@ -766,9 +766,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
                                 "s, "                       //5
                                 "expansion, "               //6
                                 "mutetime, "                //7
-                                "locale, "                  //8
-				"premium, "                 //9
-				"premium_time "             //10
+                                "locale "                   //8
                                 "FROM account "
                                 "WHERE username = '%s'",
                                 safe_account.c_str ());
@@ -834,12 +832,6 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     time_t mutetime = time_t (fields[7].GetUInt64 ());
 
     locale = LocaleConstant (fields[8].GetUInt8 ());
-    
-    //Premium Accounts System
-    uint32 premium = fields[9].GetInt32();
-    uint64 premiumTimer = fields[10].GetInt64();
-    //*****************************************//
-
     if (locale >= MAX_LOCALE)
         locale = LOCALE_enUS;
 
@@ -934,7 +926,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
                             safe_account.c_str ());
 
     // NOTE ATM the socket is single-threaded, have this in mind ...
-    ACE_NEW_RETURN (m_Session, WorldSession (id, this, AccountTypes(security), expansion, mutetime, locale, premium, premiumTimer), -1);
+    ACE_NEW_RETURN (m_Session, WorldSession (id, this, AccountTypes(security), expansion, mutetime, locale), -1);
 
     m_Crypt.Init(&K);
 
