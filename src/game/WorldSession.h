@@ -127,7 +127,7 @@ class WorldSession
 {
     friend class CharacterHandler;
     public:
-        WorldSession(uint32 id, WorldSocket *sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale);
+	WorldSession(uint32 id, WorldSocket *sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 premium, uint64 premium_time);
         ~WorldSession();
 
         bool PlayerLoading() const { return m_playerLoading; }
@@ -161,6 +161,10 @@ class WorldSession
         std::string const& GetRemoteAddress() { return m_Address; }
         void SetPlayer(Player *plr);
         uint8 Expansion() const { return m_expansion; }
+
+	//Premium Accounts System
+	uint32 Premium() const { return m_premium; }
+	uint64 PremiumTimer() const { return m_premiumTimer; }
 
         /// Session in auth.queue currently
         void SetInQueue(bool state) { m_inQueue = state; }
@@ -802,6 +806,10 @@ class WorldSession
         AccountTypes _security;
         uint32 _accountId;
         uint8 m_expansion;
+
+	//Premium Accounts System
+	uint32 m_premium;
+	uint64 m_premiumTimer;
 
         time_t _logoutTime;
         bool m_inQueue;                                     // session wait in auth.queue
