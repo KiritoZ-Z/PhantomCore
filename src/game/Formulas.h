@@ -22,6 +22,9 @@
 #define TRINITY_FORMULAS_H
 
 #include "World.h"
+#include "WorldSession.h"
+#include "Player.h"
+#include <time.h>
 
 namespace Trinity
 {
@@ -124,7 +127,16 @@ namespace Trinity
             if (u->GetTypeId() == TYPEID_UNIT && ((Creature*)u)->isElite())
                 xp_gain *= 2;
 
-            return uint32(xp_gain*sWorld.getRate(RATE_XP_KILL));
+	    uint64 ltime = (uint64)time(NULL);
+
+	    if(pl->GetSession()->Premium() != 0 && pl->GetSession()->PremiumTimer() > ltime)
+	    {
+		return uint32(xp_gain*sWorld.getRate(RATE_PREMIUM_XP_KILL));
+	    }
+	    else
+	    {
+		return uint32(xp_gain*sWorld.getRate(RATE_XP_KILL));
+	    }
         }
 
         inline float xp_in_group_rate(uint32 count, bool isRaid)

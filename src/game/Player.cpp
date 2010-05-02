@@ -6164,7 +6164,9 @@ void Player::CheckExploreSystem()
 
     if (!(currFields & val))
     {
-        SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, (uint32)(currFields | val));
+	uint64 ltime = (uint64)time(NULL);        
+
+	SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, (uint32)(currFields | val));
 
         GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA);
 
@@ -6186,7 +6188,14 @@ void Player::CheckExploreSystem()
                 uint32 XP = 0;
                 if (diff < -5)
                 {
-                    XP = uint32(objmgr.GetBaseXP(getLevel()+5)*sWorld.getRate(RATE_XP_EXPLORE));
+		    if(GetSession()->Premium() != 0 && GetSession()->PremiumTimer() > ltime)
+		    {
+			XP = uint32(objmgr.GetBaseXP(getLevel()+5)*sWorld.getRate(RATE_PREMIUM_XP_EXPLORE));
+		    }
+		    else
+		    {
+			XP = uint32(objmgr.GetBaseXP(getLevel()+5)*sWorld.getRate(RATE_XP_EXPLORE));
+		    }
                 }
                 else if (diff > 5)
                 {
@@ -6196,11 +6205,25 @@ void Player::CheckExploreSystem()
                     else if (exploration_percent < 0)
                         exploration_percent = 0;
 
-                    XP = uint32(objmgr.GetBaseXP(p->area_level)*exploration_percent/100*sWorld.getRate(RATE_XP_EXPLORE));
+		    if(GetSession()->Premium() != 0 && GetSession()->PremiumTimer() > ltime)
+		    {
+			XP = uint32(objmgr.GetBaseXP(p->area_level)*exploration_percent/100*sWorld.getRate(RATE_PREMIUM_XP_EXPLORE));
+		    }
+		    else
+		    {
+			XP = uint32(objmgr.GetBaseXP(p->area_level)*exploration_percent/100*sWorld.getRate(RATE_XP_EXPLORE));
+		    }
                 }
                 else
                 {
-                    XP = uint32(objmgr.GetBaseXP(p->area_level)*sWorld.getRate(RATE_XP_EXPLORE));
+		    if(GetSession()->Premium() != 0 && GetSession()->PremiumTimer() > ltime)
+		    {
+			XP = uint32(objmgr.GetBaseXP(p->area_level)*sWorld.getRate(RATE_PREMIUM_XP_EXPLORE));
+		    }
+		    else
+		    {
+			XP = uint32(objmgr.GetBaseXP(p->area_level)*sWorld.getRate(RATE_XP_EXPLORE));
+		    }
                 }
 
                 GiveXP(XP, NULL);
@@ -14198,7 +14221,8 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     QuestStatusData& q_status = mQuestStatus[quest_id];
 
     // Not give XP in case already completed once repeatable quest
-    uint32 XP = q_status.m_rewarded ? 0 : uint32(pQuest->XPValue(this)*sWorld.getRate(RATE_XP_QUEST));
+    uint64 ltime = (uint64)time(NULL);
+    uint32 XP = q_status.m_rewarded ? 0 : (GetSession()->Premium() != 0 && GetSession()->PremiumTimer() > ltime ? uint32(pQuest->XPValue( this )*sWorld.getRate(RATE_PREMIUM_XP_QUEST)) : uint32(pQuest->XPValue( this )*sWorld.getRate(RATE_XP_QUEST)));
 
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
     Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);

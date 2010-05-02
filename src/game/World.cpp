@@ -491,6 +491,11 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_KILL]     = sConfig.GetFloatDefault("Rate.XP.Kill", 1.0f);
     rate_values[RATE_XP_QUEST]    = sConfig.GetFloatDefault("Rate.XP.Quest", 1.0f);
     rate_values[RATE_XP_EXPLORE]  = sConfig.GetFloatDefault("Rate.XP.Explore", 1.0f);
+    //Premium Accounts System
+    rate_values[RATE_PREMIUM_XP_KILL]     = sConfig.GetFloatDefault("RatePremium.XP.Kill", 2.0f);
+    rate_values[RATE_PREMIUM_XP_QUEST]    = sConfig.GetFloatDefault("RatePremium.XP.Quest", 2.0f);
+    rate_values[RATE_PREMIUM_XP_EXPLORE]  = sConfig.GetFloatDefault("RatePremium.XP.Explore", 2.0f);
+    //*******************************END PRemium Accounts System***********************************//
     rate_values[RATE_REPAIRCOST]  = sConfig.GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
     {
