@@ -6280,6 +6280,14 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 28848;
                     break;
                 }
+                // Item - Paladin T10 Retribution 2P Bonus
+ 	                case 70765:
+	                {
+ 	                    if (GetTypeId() != TYPEID_PLAYER)
+ 	                        return false;
+	                    this->ToPlayer()->RemoveSpellCooldown(53385, true);
+	                    return true;
+ 	                }
                 // Mana Restore (Malorne Raiment set / Malorne Regalia set)
                 case 37288:
                 case 37295:
