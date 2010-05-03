@@ -340,7 +340,15 @@ void AddSC_trial_of_the_crussader();
 void AddSC_twin_valkyr();
 void AddSC_Raid_Anubarak();
 void AddSC_boss_lord_jaraxxus();
-void AddSC_boss_northrend_beasts();
+void AddSC_boss_northrend_beasts();       
+void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
+void AddSC_instance_icecrown_citadel();
+void AddSC_boss_Marrowgar();
+void AddSC_LowerSpireTrash();
+void AddSC_boss_Deathwhisper();
+void AddSC_boss_festergut();
+void AddSC_boss_the_lich_king();
+void AddSC_boss_deathbringer_saurfang();
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
@@ -834,14 +842,22 @@ void AddScripts()
     AddSC_boss_grand_champions();
     AddSC_instance_trial_of_the_champion();
     AddSC_trial_of_the_champion();
-	AddSC_boss_tc_alliance_champions(); //Trial of the Crusader
-	AddSC_boss_tc_horde_champions();
-	AddSC_instance_trial_of_the_crussader();
-	AddSC_trial_of_the_crussader();
-	AddSC_twin_valkyr();
-	AddSC_Raid_Anubarak();
-	AddSC_boss_lord_jaraxxus();
-	AddSC_boss_northrend_beasts();
+    AddSC_boss_tc_alliance_champions(); //Trial of the Crusader
+    AddSC_boss_tc_horde_champions();
+    AddSC_instance_trial_of_the_crussader();
+    AddSC_trial_of_the_crussader();
+    AddSC_twin_valkyr();
+    AddSC_Raid_Anubarak();
+    AddSC_boss_lord_jaraxxus();
+    AddSC_boss_northrend_beasts();
+    AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
+    AddSC_instance_icecrown_citadel();
+    AddSC_boss_Marrowgar();
+    AddSC_LowerSpireTrash();
+    AddSC_boss_Deathwhisper();
+    AddSC_boss_festergut();
+    AddSC_boss_the_lich_king();
+    AddSC_boss_deathbringer_saurfang();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();
