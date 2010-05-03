@@ -3292,43 +3292,47 @@
 						Name="Icecrown"
 						>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\boss_deathbringer_saurfang.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_deathbringer_saurfang.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\boss_festergut.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_festergut.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\boss_lady_deathwhisper.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_lady_deathwhisper.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\boss_lichking_icc.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_lichking_icc.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\boss_lord_marrowgar.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_lord_marrowgar.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\citadel_transporter.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\citadel_transporter.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\def_spire.h"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\def_spire.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\instance_icecrown_citadel.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\instance_icecrown_citadel.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\instance_icecrown_citadel.h"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\instance_icecrown_citadel.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\Icecrown_Citadel\Lower_Spire_Trash.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\Lower_Spire_Trash.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\Shadowmourne.cpp"
 							>
 						</File>
 					</Filter>
