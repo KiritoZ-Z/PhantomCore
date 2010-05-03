@@ -327,23 +327,33 @@ SET(scripts_STAT_SRCS
    northrend/azjol_nerub/ahnkahet/boss_herald_volazj.cpp
    northrend/azjol_nerub/ahnkahet/boss_amanitar.cpp
    northrend/azjol_nerub/ahnkahet/ahnkahet.h
+   northrend/Icecrown_Citadel/boss_lady_deathwhisper.cpp
+   northrend/Icecrown_Citadel/boss_lord_marrowgar.cpp
+   northrend/Icecrown_Citadel/citadel_transporter.cpp
+   northrend/Icecrown_Citadel/boss_festergut.cpp
+   northrend/Icecrown_Citadel/def_spire.h
+   northrend/Icecrown_Citadel/boss_lichking_icc.cpp
+   northrend/Icecrown_Citadel/instance_icecrown_citadel.cpp
+   northrend/Icecrown_Citadel/instance_icecrown_citadel.h
+   northrend/Icecrown_Citadel/Lower_Spire_Trash.cpp
+   northrend/Icecrown_Citadel/Shadowmourne.cpp
+   northrend/Icecrown_Citadel/boss_deathbringer_saurfang.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_argent_challenge.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_black_knight.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_grand_champions.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/instance_trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.h
-   
-northrend/crusaders_coliseum/trial_of_the_crusader/alliance_champions.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/Anubarak.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/boss_lord_jaraxxus.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/boss_northrend_beasts.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/horde_champions.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/instance_trial_of_the_crussader.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.cpp
-northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.h
-northrend/crusaders_coliseum/trial_of_the_crusader/Twin_Valkyr.cpp
-northrend/draktharon_keep/instance_drak_tharon_keep.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/alliance_champions.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/Anubarak.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_lord_jaraxxus.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_northrend_beasts.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/horde_champions.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/instance_trial_of_the_crussader.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.h
+   northrend/crusaders_coliseum/trial_of_the_crusader/Twin_Valkyr.cpp
+   northrend/draktharon_keep/instance_drak_tharon_keep.cpp
    northrend/draktharon_keep/boss_trollgore.cpp
    northrend/draktharon_keep/boss_novos.cpp
    northrend/draktharon_keep/boss_dred.cpp
