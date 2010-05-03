@@ -442,7 +442,7 @@ void AddSC_sholazar_basin()
     newscript->Name = "npc_bushwhacker";
     newscript->GetAI = &GetAI_npc_bushwhacker;
     newscript->RegisterSelf();
-     
+
     newscript = new Script;
     newscript->Name = "npc_engineer_helice";
     newscript->GetAI = &GetAI_npc_engineer_helice; 

@@ -255,5 +255,4 @@ void AddSC_desolace()
     newscript->GetAI = &GetAI_npc_dalinda;
     newscript->pQuestAccept = &QuestAccept_npc_dalinda;
     newscript->RegisterSelf();
-
 }

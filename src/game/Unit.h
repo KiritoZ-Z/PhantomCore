@@ -1607,8 +1607,8 @@ class Unit : public WorldObject
         bool HasAuraEffect(uint32 spellId, uint8 effIndex, uint64 caster = 0) const;
         bool HasAura(uint32 spellId, uint64 caster = 0, uint8 reqEffMask = 0) const;
         bool HasAuraType(AuraType auraType) const;
-        bool HasAuraTypeWithMiscvalue(AuraType auratype, uint32 miscvalue) const;
-        bool HasAuraTypeWithValue(AuraType auratype, uint32 value) const;
+        bool HasAuraTypeWithMiscvalue(AuraType auratype, int32 miscvalue) const;
+        bool HasAuraTypeWithValue(AuraType auratype, int32 value) const;
         bool HasNegativeAuraWithInterruptFlag(uint32 flag);
 
         AuraEffect * IsScriptOverriden(SpellEntry const * spell, int32 script) const;
