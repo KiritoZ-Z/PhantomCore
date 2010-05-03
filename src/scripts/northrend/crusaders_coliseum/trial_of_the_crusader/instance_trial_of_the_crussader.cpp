@@ -319,11 +319,6 @@ struct instance_trial_of_the_crussader : public ScriptedInstance
 	if(uiData == DONE)
 		SaveToDB();
 	}
-	const char* Save()
-    {
-        return str_data.c_str();
-    }
-
     std::string GetSaveData()
     {
         return strInstData;
