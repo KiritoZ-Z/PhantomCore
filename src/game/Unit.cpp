@@ -5966,7 +5966,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 // Glyph of Life Tap
                 case 63320:
                 {
-                    triggered_spell_id = 63321;
+                    triggered_spell_id = 63941;
                     break;
                 }
                 // Nightfall
