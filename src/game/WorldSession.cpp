@@ -198,7 +198,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                         if (!_player)
                         {
                             // skip STATUS_LOGGEDIN opcode unexpected errors if player logout sometime ago - this can be network lag delayed packets
-                            if (!m_playerRecentlyLogout)
+                            if (!_player)
                                 LogUnexpectedOpcode(packet, "the player has not logged in yet");
                         }
                         else if (_player->IsInWorld())
