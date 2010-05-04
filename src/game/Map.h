@@ -465,8 +465,10 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
 
         NGridType* getNGrid(uint32 x, uint32 y) const
         {
-            ASSERT(x < MAX_NUMBER_OF_GRIDS);
-            ASSERT(y < MAX_NUMBER_OF_GRIDS);
+ 	
+
+            if (x >= MAX_NUMBER_OF_GRIDS || y >= MAX_NUMBER_OF_GRIDS)
+                return NULL;
             return i_grids[x][y];
         }
 
