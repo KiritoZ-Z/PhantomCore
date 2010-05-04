@@ -170,6 +170,8 @@ void Bag::StoreItem(uint8 slot, Item *pItem, bool /*update*/)
         pItem->SetContainer(this);
         pItem->SetSlot(slot);
     }
+	if (slot=0)
+		slot++;
 }
 
 void Bag::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) const
