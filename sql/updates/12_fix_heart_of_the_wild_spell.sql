@@ -1,4 +1,4 @@
-﻿#Fix Spell Heart of the Wild
+#Fix Spell Heart of the Wild
 DELETE FROM `spell_linked_spell` WHERE `spell_trigger` in ('-5487', '-9634', '-768');
 INSERT INTO `spell_linked_spell` VALUES
 (-5487,-24899,0, 'Heart of the Wild removed if not in Bear Form'),

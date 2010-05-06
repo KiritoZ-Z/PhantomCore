@@ -1,5 +1,5 @@
 # Neggod
-REPLASE INTO `npc_vendor` (`entry`,`item`,`maxcount`,`incrtime`,`extendedcost`) VALUES
+REPLACE INTO `npc_vendor` (`entry`,`item`,`maxcount`,`incrtime`,`extendedcost`) VALUES
 (15350,54637, 0, 0, 2995),
 (15350,54637, 0, 0, 2994),
 (15350,54637, 0, 0, 2993),

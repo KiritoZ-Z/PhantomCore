@@ -1,4 +1,4 @@
-﻿UPDATE `creature_template` SET `spell1` = 31707 WHERE `entry` = 37994;
+UPDATE `creature_template` SET `spell1` = 31707 WHERE `entry` = 37994;
 
 INSERT INTO `pet_levelstats` (`creature_entry`, `level`, `hp`, `mana`, `armor`, `str`, `agi`, `sta`, `inte`, `spi`) VALUES ('37994','1','60','60','0','20','16','20','13','8');
 INSERT INTO `pet_levelstats` (`creature_entry`, `level`, `hp`, `mana`, `armor`, `str`, `agi`, `sta`, `inte`, `spi`) VALUES ('37994','2','73','73','0','21','17','21','14','10');
