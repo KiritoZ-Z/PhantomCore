@@ -5883,14 +5883,20 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                 // Guarded by The Light
                 case 63521:
                 {
-                    // Divine Plea
-                    if (Aura * aura = m_caster->GetAura(54428))
-                        aura->RefreshDuration();
+                    // Refresh Divine Plea on target (3 aura slots)
+                    Unit::AuraApplicationMap& Auras = unitTarget->GetAppliedAuras();
+                    for(Unit::AuraApplicationMap::iterator itr = Auras.begin(); itr != Auras.end(); ++itr)
+					{
+						if((*itr).second->GetBase()->GetId() == 54428)
+						(*itr).second->GetBase()->SetDuration(15000);
+					}
+				}
                     return;
-                }
-            }
-            break;
+			}
         }
+			
+            break;
+    }
         case SPELLFAMILY_PRIEST:
         {
             switch(m_spellInfo->Id)
