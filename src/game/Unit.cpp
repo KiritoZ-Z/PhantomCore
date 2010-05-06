@@ -5008,7 +5008,7 @@ void Unit::SendPeriodicAuraLog(SpellPeriodicAuraLogInfo *pInfo)
         case SPELL_AURA_OBS_MOD_POWER:
         case SPELL_AURA_PERIODIC_ENERGIZE:
             data << uint32(aura->GetMiscValue());           // power type
-            data << uint32(pInfo->damage);                  // damage
+            data << uint32(pInfo->damage - pInfo->absorb - pInfo->resist);   // damage
             break;
         case SPELL_AURA_PERIODIC_MANA_LEECH:
             data << uint32(aura->GetMiscValue());           // power type
