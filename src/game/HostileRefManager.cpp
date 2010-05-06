@@ -107,7 +107,7 @@ void HostileRefManager::setOnlineOfflineState(bool bIsOnline)
 void HostileRefManager::updateThreatTables()
 {
     HostileReference* ref = getFirst();
-    while (ref)
+    while (ref && ref->next())
     {
         ref->updateOnlineStatus();
         ref = ref->next();
