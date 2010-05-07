@@ -2575,7 +2575,8 @@ void World::InitDailyQuestResetTime()
 }
 void World::InitRandomBGResetTime()
 {
-    QueryResult_AutoPtr result = CharacterDatabase.Query("SELECT NextRandomBGResetTime FROM saved_variables");
+    QueryResult_AutoPtr result = CharacterDatabase.Query("SELECT value FROM worldstates WHERE entry = 20100");
+
     if (!result)
         m_NextRandomBGReset = time_t(time(NULL));         // game time not yet init
     else
@@ -2599,7 +2600,7 @@ void World::InitRandomBGResetTime()
     m_NextRandomBGReset = m_NextRandomBGReset < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
-        CharacterDatabase.PExecute("INSERT INTO saved_variables (NextRandomBGResetTime) VALUES ('"UI64FMTD"')", uint64(m_NextRandomBGReset));
+        CharacterDatabase.PExecute("UPDATE `worldstates` SET value = '"UI64FMTD"' WHERE entry = 20100", uint64(m_NextRandomBGReset));
 }
 
 void World::ResetDailyQuests()
@@ -2741,5 +2742,5 @@ void World::ResetRandomBG()
             itr->second->GetPlayer()->SetRandomWinner(false);
 
     m_NextRandomBGReset = time_t(m_NextRandomBGReset + DAY);
-    CharacterDatabase.PExecute("UPDATE saved_variables SET NextRandomBGResetTime = '"UI64FMTD"'", uint64(m_NextRandomBGReset));
+    CharacterDatabase.PExecute("UPDATE worldstates SET  value = '"UI64FMTD"' where entry = 20100", uint64(m_NextRandomBGReset));
 }

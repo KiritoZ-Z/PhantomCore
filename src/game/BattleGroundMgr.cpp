@@ -22,8 +22,8 @@
 #include "ObjectMgr.h"
 #include "World.h"
 #include "WorldPacket.h"
-#include "Formulas.h"
 #include "Policies/SingletonImp.h"
+#include "Formulas.h"
 
 #include "ArenaTeam.h"
 #include "BattleGroundMgr.h"
@@ -1540,9 +1540,9 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 	
     bool isRandom = false;
 
-    if(bgTypeId  ==  BATTLEGROUND_RB)
+    if (bgTypeId == BATTLEGROUND_RB)
     {
-        BattleGroundTypeId random_bgs[] = {BATTLEGROUND_AV, BATTLEGROUND_WS, BATTLEGROUND_AB, BATTLEGROUND_EY, BATTLEGROUND_SA,/* BATTLEGROUND_IC*/};
+        BattleGroundTypeId random_bgs[] = {BATTLEGROUND_AV, BATTLEGROUND_WS, BATTLEGROUND_AB, BATTLEGROUND_EY/*, BATTLEGROUND_SA, BATTLEGROUND_IC*/};
         uint32 bg_num = urand(0,3/*5*/);
         bgTypeId = random_bgs[bg_num];
         bg_template = GetBattleGroundTemplate(bgTypeId);
@@ -1879,8 +1879,8 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint6
         uint32 win_arena = plr->GetRandomWinner() ? BG_REWARD_WINNER_ARENA_LAST : BG_REWARD_WINNER_ARENA_FIRST;
         uint32 loos_kills = plr->GetRandomWinner() ? BG_REWARD_LOOSER_HONOR_LAST : BG_REWARD_LOOSER_HONOR_FIRST;
 
-        win_kills = (uint32)Trinity::Honor::hk_honor_at_level(plr->getLevel(), win_kills*4);
-        loos_kills = (uint32)Trinity::Honor::hk_honor_at_level(plr->getLevel(), loos_kills*4);
+        win_kills = (uint32)Trinity::Honor::hk_honor_at_level(plr->getLevel(), win_kills);
+        loos_kills = (uint32)Trinity::Honor::hk_honor_at_level(plr->getLevel(), loos_kills);
 
         // Rewards (random)
         *data << uint8( plr->GetRandomWinner() );           // 3.3.3 hasWin_Random
