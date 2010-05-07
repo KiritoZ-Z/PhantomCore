@@ -1663,6 +1663,10 @@ AutoBroadcast.Timer = 60000
 #        Default: 1800000 (30 minutes)
 #                 0 - disable (not recommended)
 #
+#    BattleGround.Random.ResetHour
+#        Hour when random bg reset (0..23)
+#        Default: 6
+#
 ###############################################################################
 
 Battleground.CastDeserter = 1
@@ -1671,6 +1675,7 @@ Battleground.QueueAnnouncer.PlayerOnly = 0
 Battleground.InvitationType = 0
 BattleGround.PrematureFinishTimer = 300000
 BattleGround.PremadeGroupWaitForMatch = 1800000
+BattleGround.Random.ResetHour = 6
 
 ###############################################################################
 # ARENA CONFIG

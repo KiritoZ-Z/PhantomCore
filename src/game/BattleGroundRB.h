@@ -16,25 +16,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __BATTLEGROUNDABG_H
-#define __BATTLEGROUNDABG_H
+#ifndef __BATTLEGROUNDRB_H
+#define __BATTLEGROUNDRB_H
 
 class BattleGround;
 
-class BattleGroundABGScore : public BattleGroundScore
+class BattleGroundRBScore : public BattleGroundScore
 {
     public:
-        BattleGroundABGScore() {};
-        virtual ~BattleGroundABGScore() {};
+        BattleGroundRBScore() {};
+        virtual ~BattleGroundRBScore() {};
 };
 
-class BattleGroundABG : public BattleGround
+class BattleGroundRB : public BattleGround
 {
     friend class BattleGroundMgr;
 
     public:
-        BattleGroundABG();
-        ~BattleGroundABG();
+        BattleGroundRB();
+        ~BattleGroundRB();
         void Update(uint32 diff);
 
         /* inherited from BattlegroundClass */
