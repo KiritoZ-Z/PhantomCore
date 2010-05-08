@@ -5890,13 +5890,11 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 						if((*itr).second->GetBase()->GetId() == 54428)
 						(*itr).second->GetBase()->SetDuration(15000);
 					}
-				}
                     return;
+				}
 			}
+			break;
         }
-			
-            break;
-    }
         case SPELLFAMILY_PRIEST:
         {
             switch(m_spellInfo->Id)
