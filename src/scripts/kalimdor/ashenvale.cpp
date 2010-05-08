@@ -229,9 +229,6 @@ CreatureAI* GetAI_npc_ruul_snowhoofAI(Creature* pCreature)
     return new npc_ruul_snowhoofAI(pCreature);
 }
 
-#include "ScriptedPch.h"
-#include "ScriptedEscortAI.h"
-
 enum eEnums
 {
     SAY_MUG_START1          = -1800054,
