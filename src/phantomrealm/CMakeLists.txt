@@ -31,9 +31,6 @@ add_definitions(
 IF (DO_MYSQL)
    SET(phantom-realm_LINK_FLAGS "-pthread ${phantom-realm_LINK_FLAGS}")
 ENDIF(DO_MYSQL)
-IF (DO_POSTGRESQL)
-   SET(phantom-realm_LINK_FLAGS "-pthread ${phantom-realm_LINK_FLAGS}")
-ENDIF(DO_POSTGRESQL)
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    SET(phantom-realm_LINK_FLAGS "-framework Carbon ${phantom-realm_LINK_FLAGS}")
@@ -52,7 +49,6 @@ phantomconfig
 zlib
 ${SSLLIB}
 ${MYSQL_LIBRARIES}
-${POSTGRESQL_LIBRARIES}
 ${OSX_LIBS}
 )
 
