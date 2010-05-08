@@ -17435,8 +17435,8 @@ bool Player::CheckInstanceLoginValid()
 
     if (GetMap()->IsRaid())
     {
-        // cannot be in raid instance without a group
-        if (!GetGroup())
+        // cannot be in raid instance without a raid group
+        if (!GetGroup() || !GetGroup()->isRaidGroup())
             return false;
     }
     else
