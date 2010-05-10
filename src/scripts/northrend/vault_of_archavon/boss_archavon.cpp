@@ -63,13 +63,32 @@ struct boss_archavonAI : public ScriptedAI
 
     ScriptedInstance* pInstance;
     EventMap events;
+    uint32 checktimer;
 
     void Reset()
     {
         events.Reset();
 
+	CheckForVoA();
+
+        checktimer = 10000;
+
         if (pInstance)
             pInstance->SetData(DATA_ARCHAVON_EVENT, NOT_STARTED);
+    }
+
+    void CheckForVoA()
+    {
+        if (!sOutdoorPvPMgr.CanBeAttacked(me))
+        {
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_DISABLE_MOVE);
+            me->SetReactState(REACT_PASSIVE);
+        }
+        else
+        {
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_DISABLE_MOVE);
+            me->SetReactState(REACT_AGGRESSIVE);
+        }
     }
 
     void KilledUnit(Unit* /*Victim*/) {}
@@ -95,9 +114,15 @@ struct boss_archavonAI : public ScriptedAI
     // Below UpdateAI may need review/debug.
     void UpdateAI(const uint32 diff)
     {
-        //Return since we have no target
         if (!UpdateVictim())
+	{
+            if (checktimer <= diff)
+            {
+                CheckForVoA();
+                checktimer = 10000;
+            } 
             return;
+	}
 
         events.Update(diff);
 

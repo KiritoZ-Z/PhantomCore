@@ -1,28 +1,9 @@
-/*
- * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 #ifndef OUTDOOR_PVP_WG_
 #define OUTDOOR_PVP_WG_
 
 #include "OutdoorPvPImpl.h"
 
-#define ZONE_WINTERGRASP         4197
-#define POS_X_CENTER             5100
+#define POS_X_CENTER                5100
 #define MAX_VEHICLE_PER_WORKSHOP    4
 
 const uint32 WintergraspFaction[3] = {1732, 1735, 35};
@@ -50,8 +31,11 @@ enum OutdoorPvPWGSpell
     SPELL_DAMAGED_BUILDING                       = 59201,
     SPELL_INTACT_BUILDING                        = 59203,
 
-//    SPELL_TELEPORT_DALARAN                       = 53360,
-//    SPELL_VICTORY_AURA                           = 60044,
+    SPELL_ESSENCE_OF_WINTERGRASP_WINNER = 58045,
+    SPELL_ESSENCE_OF_WINTERGRASP_WORLD  = 57940
+
+    SPELL_TELEPORT_DALARAN                       = 53360,
+    SPELL_VICTORY_AURA                           = 60044,
 };
 
 /* Not used / Not implemented
@@ -218,8 +202,9 @@ class OutdoorPvPWG : public OutdoorPvP
 
         void HandlePlayerEnterZone(Player *plr, uint32 zone);
         void HandlePlayerLeaveZone(Player *plr, uint32 zone);
-        void HandlePlayerResurrects(Player * plr, uint32 zone);
+        void HandlePlayerResurrects(Player *plr, uint32 zone);
         void HandleKill(Player *killer, Unit *victim);
+	void HandleEssenceOfWintergrasp(Player *plr, uint32 zoneId);
 
         bool Update(uint32 diff);
 
@@ -234,8 +219,8 @@ class OutdoorPvPWG : public OutdoorPvP
         void setTimer(uint32 timer) { if (timer >= 0) m_timer = timer; };
         uint32 GetNumPlayersA() const { return m_players[TEAM_ALLIANCE].size(); };
         uint32 GetNumPlayersH() const { return m_players[TEAM_HORDE].size(); };
-        TeamId getDefenderTeam() const { return m_defender; };
-        TeamId getAttackerTeam() const { return OTHER_TEAM(m_defender); };
+        TeamId getDefenderTeamId() const { return m_defender; };
+        TeamId getAttackerTeamId() const { return OTHER_TEAM(m_defender); };
         void forceChangeTeam();
         void forceStopBattle();
         void forceStartBattle();
@@ -300,7 +285,6 @@ class OutdoorPvPWG : public OutdoorPvP
         void RebuildAllBuildings();
 
         void SendInitWorldStatesTo(Player *player = NULL) const;
-        void RemoveOfflinePlayerWGAuras();
         void RewardMarkOfHonor(Player *player, uint32 count);
         void MoveQuestGiver(uint32 guid);
         void LoadQuestGiverMap(uint32 guid, Position posHorde, Position posAlli);

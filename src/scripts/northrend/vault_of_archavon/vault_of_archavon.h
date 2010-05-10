@@ -1,12 +1,14 @@
 #ifndef DEF_ARCHAVON_H
 #define DEF_ARCHAVON_H
 
+#include "OutdoorPvPMgr.h"
+
 enum Creatures
 {
-    CREATURE_ARCHAVON                           = 31125,
-    CREATURE_EMALON                             = 33993,
-    CREATURE_KORALON                            = 35013,
-    CREATURE_TORAVON                            = 38433,
+    CREATURE_ARCHAVON   = 31125,
+    CREATURE_EMALON     = 33993,
+    CREATURE_KORALON    = 35013,
+    CREATURE_TORAVON    = 38433,
 };
 
 enum Data

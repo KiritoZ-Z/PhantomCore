@@ -12,3 +12,5 @@
 #include "ObjectMgr.h"
 
 #include "ScriptedPch.h"
+
+#include "OutdoorPvPMgr.h"

@@ -1846,6 +1846,20 @@ void Creature::SendAIReaction(AiReaction reactionType)
     sLog.outDebug("WORLD: Sent SMSG_AI_REACTION, type %u.", reactionType);
 }
 
+// Copies the threatlist of pUnit to the own list.
+void Creature::CopyThreatlist(Unit* pUnit)
+{
+    if (pUnit && pUnit->isAlive() && !pUnit->getThreatManager().isThreatListEmpty())
+    {
+        std::list<HostileReference *> t_list = pUnit->getThreatManager().getThreatList();
+        for (std::list<HostileReference *>::iterator itr = t_list.begin(); itr!= t_list.end(); ++itr)
+        {
+            Unit* victim = Unit::GetUnit((*pUnit), (*itr)->getUnitGuid());
+            if (victim && victim->isAlive() && victim->IsHostileTo(this)) AddThreat(victim, 0.0f);
+        }
+    }
+}
+
 void Creature::CallAssistance()
 {
     if (!m_AlreadyCallAssistance && getVictim() && !isPet() && !isCharmed())

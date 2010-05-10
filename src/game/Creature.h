@@ -555,6 +555,9 @@ class Creature : public Unit, public GridObject<Creature>
 
         void SendAIReaction(AiReaction reactionType);
 
+	// Copies the threatlist of pUnit to the own list.
+        void CopyThreatlist(Unit* pUnit);
+
         Unit* SelectNearestTarget(float dist = 0) const;
         Unit* SelectNearestTargetInAttackDistance(float dist = 0) const;
 
