@@ -50,18 +50,27 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
         sWorld.setWorldState(WS_WINTERGRASP_CONTROLING_TEAMID, getDefenderTeamId());
     }
 
-    m_workshopCount[TEAM_ALLIANCE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_SHOP_CNT_ALLY));
-    m_workshopCount[TEAM_HORDE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_SHOP_CNT_HORDE));
-
     m_clock[TEAM_ALLIANCE] = uint64(sWorld.getWorldState(WS_WINTERGRASP_CLOCK_ALLY));
     m_clock[TEAM_HORDE] = uint64(sWorld.getWorldState(WS_WINTERGRASP_CLOCK_HORDE));
 
-    m_towerDestroyedCount[TEAM_ALLIANCE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_TOWER_DEST_ALLY));
-    m_towerDestroyedCount[TEAM_HORDE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_TOWER_DEST_HORDE));
-
     m_wartime = (bool)sWorld.getWorldState(WS_WINTERGRASP_ISWAR);
     m_timer = uint64(sWorld.getWorldState(WS_WINTERGRASP_TIMER));
+
+    // TODO: Until the team/state is at startup correct set (not implemented yet) we must set 0 here!
+    //m_workshopCount[TEAM_ALLIANCE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_SHOP_CNT_ALLY));
+    //m_workshopCount[TEAM_HORDE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_SHOP_CNT_HORDE));
+    //m_towerDestroyedCount[TEAM_ALLIANCE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_TOWER_DEST_ALLY));
+    //m_towerDestroyedCount[TEAM_HORDE] = uint32(sWorld.getWorldState(WS_WINTERGRASP_TOWER_DEST_HORDE));
+    m_workshopCount[TEAM_ALLIANCE] = 0;
+    m_workshopCount[TEAM_HORDE] = 0;
+    m_towerDestroyedCount[TEAM_ALLIANCE] = 0;
+    m_towerDestroyedCount[TEAM_HORDE] = 0;
+
+    m_towerDamagedCount[TEAM_ALLIANCE] = 0;
+    m_towerDamagedCount[TEAM_HORDE] = 0;
+
     m_changeDefender = false;
+    m_tenacityStack = 0;
     m_gate = NULL;
 
     std::list<uint32> engGuids;
@@ -758,9 +767,6 @@ void OutdoorPvPWG::UpdateAllWorldObject()
 
 void OutdoorPvPWG::RebuildAllBuildings()
 {
-    m_workshopCount[TEAM_ALLIANCE] = 0;
-    m_workshopCount[TEAM_HORDE] = 0;
-
     for (BuildingStateMap::const_iterator itr = m_buildingStates.begin(); itr != m_buildingStates.end(); ++itr)
     {
         if (itr->second->building)
@@ -782,8 +788,8 @@ void OutdoorPvPWG::RebuildAllBuildings()
         itr->second->SetTeam(getDefenderTeamId() == TEAM_ALLIANCE ? OTHER_TEAM(itr->second->defaultTeam) : itr->second->defaultTeam);
     }
     m_towerDamagedCount[TEAM_ALLIANCE] = 0;
-    m_towerDestroyedCount[TEAM_ALLIANCE] = 0;
     m_towerDamagedCount[TEAM_HORDE] = 0;
+    m_towerDestroyedCount[TEAM_ALLIANCE] = 0;
     m_towerDestroyedCount[TEAM_HORDE] = 0;
 }
 
@@ -1298,14 +1304,20 @@ void OutdoorPvPWG::UpdateClock()
 void OutdoorPvPWG::SaveData()
 {
     sWorld.setWorldState(WS_WINTERGRASP_CONTROLING_TEAMID, uint64(m_defender));
-    sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_ALLY, uint64(m_workshopCount[TEAM_ALLIANCE]));
-    sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_HORDE, uint64(m_workshopCount[TEAM_HORDE]));
     sWorld.setWorldState(WS_WINTERGRASP_CLOCK_ALLY, uint64(m_clock[TEAM_ALLIANCE]));
     sWorld.setWorldState(WS_WINTERGRASP_CLOCK_HORDE, uint64(m_clock[TEAM_HORDE]));
-    sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_ALLY, uint64(m_towerDestroyedCount[TEAM_ALLIANCE]));
-    sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_HORDE, uint64(m_towerDestroyedCount[TEAM_HORDE]));
     sWorld.setWorldState(WS_WINTERGRASP_ISWAR, uint64(m_wartime));
     sWorld.setWorldState(WS_WINTERGRASP_TIMER, uint64(m_timer));
+
+    // TODO: Until the team/state is at startup correct set (not implemented yet) we must set 0 here!
+    //sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_ALLY, uint64(m_workshopCount[TEAM_ALLIANCE]));
+    //sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_HORDE, uint64(m_workshopCount[TEAM_HORDE]));
+    //sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_ALLY, uint64(m_towerDestroyedCount[TEAM_ALLIANCE]));
+    //sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_HORDE, uint64(m_towerDestroyedCount[TEAM_HORDE]));
+    sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_ALLY, uint64(0));
+    sWorld.setWorldState(WS_WINTERGRASP_SHOP_CNT_HORDE, uint64(0));
+    sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_ALLY, uint64(0));
+    sWorld.setWorldState(WS_WINTERGRASP_TOWER_DEST_HORDE, uint64(0));
 
     m_saveinterval = 300000;
 }
@@ -1421,7 +1433,7 @@ bool OutdoorPvPWG::Update(uint32 diff)
 	SaveData();
     }
 
-    return true;
+    return false;
 }
 
 void OutdoorPvPWG::forceStartBattle()
