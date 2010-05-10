@@ -287,7 +287,18 @@ struct instance_trial_of_the_crussader : public ScriptedInstance
 
         }
 
-       
+        if (Data == DONE)
+        {
+            OUT_SAVE_INST_DATA;
+
+            std::ostringstream saveStream;
+            saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2] << " " << m_auiEncounter[3] << " " << m_auiEncounter[4] << " " << m_auiEncounter[5] << " " << m_auiEncounter[6] << " " << m_auiEncounter[7];
+
+            strInstData = saveStream.str();
+
+            SaveToDB();
+            OUT_SAVE_INST_DATA_COMPLETE;
+        }
     }
 
     void OnPlayerEnter(Player *m_player)
@@ -315,13 +326,6 @@ struct instance_trial_of_the_crussader : public ScriptedInstance
         }
 
         return 0;
-    }
-	if (uiData==DONE)
-		SaveToDB();
-
-	const char* Save()
-    {
-        return str_data.c_str();
     }
 
     std::string GetSaveData()
