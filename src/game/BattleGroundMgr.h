@@ -38,6 +38,23 @@ typedef UNORDERED_MAP<uint32, BattleGroundTypeId> BattleMastersMap;
 #define COUNT_OF_PLAYERS_TO_AVERAGE_WAIT_TIME 10
 #define WS_ARENA_DISTRIBUTION_TIME 20001                    // Custom worldstate
 
+enum WintergraspWorldStatesAndSpells
+{
+    // Worldstates
+    WS_WINTERGRASP_CONTROLING_TEAMID    = 90001,            // Wintergrasp: Current team id
+    WS_WINTERGRASP_ISWAR                = 90002,            // Wintergrasp: Is currently wartime?
+    WS_WINTERGRASP_TIMER                = 90003,            // Wintergrasp: Timer
+    WS_WINTERGRASP_CLOCK_ALLY           = 90004,            // Wintergrasp: Clock Ally
+    WS_WINTERGRASP_CLOCK_HORDE          = 90005,            // Wintergrasp: Clock Horde
+    WS_WINTERGRASP_SHOP_CNT_ALLY        = 90006,            // Wintergrasp: Workshop count Ally
+    WS_WINTERGRASP_SHOP_CNT_HORDE       = 90007,            // Wintergrasp: Workshop count Horde
+    WS_WINTERGRASP_TOWER_DEST_ALLY      = 90008,            // Wintergrasp: Tower destroyed Ally
+    WS_WINTERGRASP_TOWER_DEST_HORDE     = 90009,            // Wintergrasp: Tower destroyed Horde
+    // Special spells
+    SPELL_ESSENCE_OF_WINTERGRASP_WINNER = 58045,            // Only within wintergrasp
+    SPELL_ESSENCE_OF_WINTERGRASP_WORLD  = 57940             // For entire northrend
+};
+
 struct GroupQueueInfo;                                      // type predefinition
 struct PlayerQueueInfo                                      // stores information for players in queue
 {

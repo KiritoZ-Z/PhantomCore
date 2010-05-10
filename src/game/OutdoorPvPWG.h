@@ -2,6 +2,7 @@
 #define OUTDOOR_PVP_WG_
 
 #include "OutdoorPvPImpl.h"
+#include "BattleGroundMgr.h"
 
 #define POS_X_CENTER                5100
 #define MAX_VEHICLE_PER_WORKSHOP    4
@@ -30,9 +31,6 @@ enum OutdoorPvPWGSpell
     SPELL_DESTROYED_TOWER                        = 59136,
     SPELL_DAMAGED_BUILDING                       = 59201,
     SPELL_INTACT_BUILDING                        = 59203,
-
-    SPELL_ESSENCE_OF_WINTERGRASP_WINNER = 58045,
-    SPELL_ESSENCE_OF_WINTERGRASP_WORLD  = 57940
 
     SPELL_TELEPORT_DALARAN                       = 53360,
     SPELL_VICTORY_AURA                           = 60044,
@@ -243,7 +241,6 @@ class OutdoorPvPWG : public OutdoorPvP
         // BG end
 
         TeamId m_defender;
-        int32 m_tenacityStack;
 
         BuildingStateMap m_buildingStates;
         BuildingState *m_gate;
@@ -258,11 +255,13 @@ class OutdoorPvPWG : public OutdoorPvP
 
         bool m_wartime;
         bool m_changeDefender;
-        uint32 m_timer;
-        uint32 m_clock[2];
+        uint64 m_timer;
+        uint64 m_clock[2];
         uint32 m_workshopCount[2];
         uint32 m_towerDestroyedCount[2];
         uint32 m_towerDamagedCount[2];
+	uint32 m_saveinterval; // Minimum save interval if nothing happends - 300000 - 5 Min.
+        int32 m_tenacityStack;
 
         OPvPCapturePointWG *GetWorkshop(uint32 lowguid) const;
         OPvPCapturePointWG *GetWorkshopByEngGuid(uint32 lowguid) const;
@@ -289,6 +288,8 @@ class OutdoorPvPWG : public OutdoorPvP
         void MoveQuestGiver(uint32 guid);
         void LoadQuestGiverMap(uint32 guid, Position posHorde, Position posAlli);
         bool UpdateQuestGiverPosition(uint32 guid, Creature *creature);
+
+	void SaveData();
 };
 
 class OPvPCapturePointWG : public OPvPCapturePoint
