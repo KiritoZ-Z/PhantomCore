@@ -39,6 +39,7 @@
 #include "WaypointManager.h"
 #include "DBCEnums.h"
 #include "ScriptMgr.h"
+#include "OutdoorPvPMgr.h"
 
 #include "MapInstanced.h"
 #include "InstanceSaveMgr.h"
