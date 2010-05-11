@@ -4236,7 +4236,7 @@ bool ChatHandler::HandleWintergraspStatusCommand(const char* args)
     }
 
     PSendSysMessage(LANG_BG_WG_STATUS, objmgr.GetTrinityStringForDBCLocale(
-        pvpWG->getDefenderTeam() == TEAM_ALLIANCE ? LANG_BG_AB_ALLY : LANG_BG_AB_HORDE),
+        pvpWG->getDefenderTeamId() == TEAM_ALLIANCE ? LANG_BG_AB_ALLY : LANG_BG_AB_HORDE),
         secsToTimeString(pvpWG->GetTimer(), true).c_str(),
         pvpWG->isWarTime() ? "Yes" : "No",
         pvpWG->GetNumPlayersH(),
@@ -4365,7 +4365,7 @@ bool ChatHandler::HandleWintergraspSwitchTeamCommand(const char* args)
     uint32 timer = pvpWG->GetTimer();
     pvpWG->forceChangeTeam();
     pvpWG->setTimer(timer);
-    PSendSysMessage(LANG_BG_WG_SWITCH_FACTION, GetTrinityString(pvpWG->getDefenderTeam() == TEAM_ALLIANCE ? LANG_BG_AB_ALLY : LANG_BG_AB_HORDE));
+    PSendSysMessage(LANG_BG_WG_SWITCH_FACTION, GetTrinityString(pvpWG->getDefenderTeamId() == TEAM_ALLIANCE ? LANG_BG_AB_ALLY : LANG_BG_AB_HORDE));
     return true;
 }
 
