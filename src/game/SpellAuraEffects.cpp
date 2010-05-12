@@ -1941,8 +1941,8 @@ void AuraEffect::PeriodicDummyTick(Unit * target, Unit * caster) const
                 }
                 // Overkill
                 case 58428:
-                    if (!target->HasAuraType(SPELL_AURA_MOD_STEALTH))
-                        target->RemoveAurasDueToSpell(58427);
+                    if (!caster->HasAuraType(SPELL_AURA_MOD_STEALTH))
+                        caster->RemoveAurasDueToSpell(58427);
                     break;
             }
             break;
