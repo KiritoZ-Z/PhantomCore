@@ -1055,33 +1055,34 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player *plr, uint32 zone)
 {
     HandleEssenceOfWintergrasp(plr, zone);
 
-{
-    if (!sWorld.getConfig(CONFIG_OUTDOORPVP_WINTERGRASP_ENABLED))
-        return;
+	{
+		if (!sWorld.getConfig(CONFIG_OUTDOORPVP_WINTERGRASP_ENABLED))
+			return;
 
-    if (isWarTime())
-    {
-        if (plr->getLevel() > 69)
-        {
-            if (!plr->HasAura(SPELL_RECRUIT) && !plr->HasAura(SPELL_CORPORAL)
-                && !plr->HasAura(SPELL_LIEUTENANT))
-                plr->CastSpell(plr, SPELL_RECRUIT, true);
-            if (plr->GetTeamId() == getAttackerTeamId())
-            {
-                if (m_towerDestroyedCount[getAttackerTeamId()] < 3)
-                    plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, 3 - m_towerDestroyedCount[getAttackerTeamId()]);
-            }
-            else
-            {
-                if (m_towerDestroyedCount[getAttackerTeamId()])
-                    plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, m_towerDestroyedCount[getAttackerTeamId()]);
-            }
-        }
-    }
+		if (isWarTime())
+		{
+			if (plr->getLevel() > 69)
+			{
+				if (!plr->HasAura(SPELL_RECRUIT) && !plr->HasAura(SPELL_CORPORAL)
+					&& !plr->HasAura(SPELL_LIEUTENANT))
+					plr->CastSpell(plr, SPELL_RECRUIT, true);
+				if (plr->GetTeamId() == getAttackerTeamId())
+				{
+					if (m_towerDestroyedCount[getAttackerTeamId()] < 3)
+						plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, 3 - m_towerDestroyedCount[getAttackerTeamId()]);
+				}
+				else
+				{
+					if (m_towerDestroyedCount[getAttackerTeamId()])
+						plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, m_towerDestroyedCount[getAttackerTeamId()]);
+				}
+			}
+		}
 
-    SendInitWorldStatesTo(plr);
-    OutdoorPvP::HandlePlayerEnterZone(plr, zone);
-    UpdateTenacityStack();
+		SendInitWorldStatesTo(plr);
+		OutdoorPvP::HandlePlayerEnterZone(plr, zone);
+		UpdateTenacityStack();
+	}
 }
 
 // Reapply Auras if needed
