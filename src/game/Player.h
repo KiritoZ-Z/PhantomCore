@@ -2029,6 +2029,7 @@ class Player : public Unit, public GridObject<Player>
         void SendInitWorldStates(uint32 zone, uint32 area);
         void SendUpdateWorldState(uint32 Field, uint32 Value);
         void SendDirectMessage(WorldPacket *data);
+        void SendBGWeekendWorldStates();
 
         void SendAurasForTarget(Unit *target);
 

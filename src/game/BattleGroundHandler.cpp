@@ -121,7 +121,7 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPacket & recv_data)
         return;
 
     GroupJoinBattlegroundResult err;
-    BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(bgTypeId, 0);
+    BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(bg->GetTypeID(), bg->GetArenaType());
 
     // check queue conditions
     if (!joinAsGroup)
