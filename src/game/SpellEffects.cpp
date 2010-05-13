@@ -5265,27 +5265,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     }
                     break;
                 }
-                case 75614:                                     // Celestial Steed
-                {
-                if (!unitTarget)
-                        return;
-
-                    switch(unitTarget->ToPlayer()->GetBaseSkillValue(762))
-                    {
-                        case 75: unitTarget->CastSpell(unitTarget, 75619, true); break;;
-                        case 150: unitTarget->CastSpell(unitTarget, 75620, true); break;
-                        case 225:
-                            if (unitTarget->ToPlayer()->GetMapId() == 571 || unitTarget->ToPlayer()->GetMapId() == 530)
-                                unitTarget->CastSpell(unitTarget, 75618, true);
-                            break;
-                        case 300:
-                            if (unitTarget->ToPlayer()->GetMapId() == 571 || unitTarget->ToPlayer()->GetMapId() == 530)
-                                unitTarget->CastSpell(unitTarget, 76153, true);
-                            break;
-                        default: break;
-                    }
-                    break;
-                }
                 case 72286:                                     // Invincible
                 {
                 if (!unitTarget)
