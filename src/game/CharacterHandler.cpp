@@ -1178,7 +1178,6 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 	Field *fields = result->Fetch();
     uint32 at_loginFlags = fields[0].GetUInt32();
 	uint32 used_loginFlag = recv_data.GetOpcode() == CMSG_CHAR_RACE_CHANGE ? AT_LOGIN_CHANGE_RACE : AT_LOGIN_CHANGE_FACTION;
-    delete result;
 
 	if (!(at_loginFlags & used_loginFlag))
     {
@@ -1207,7 +1206,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
     }
 
     // check name limitations
-    if (GetSecurity() == SEC_PLAYER && sObjectMgr.IsReservedName(newname))
+    if (GetSecurity() == SEC_PLAYER && objmgr.IsReservedName(newname))
     {
         WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
         data << uint8(CHAR_NAME_RESERVED);
