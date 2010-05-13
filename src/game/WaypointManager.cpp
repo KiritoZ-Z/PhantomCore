@@ -24,11 +24,15 @@
 #include "ProgressBar.h"
 #include "MapManager.h"
 
-UNORDERED_MAP<uint32, WaypointPath*> waypoint_map;
-WaypointStore WaypointMgr;
-
 void WaypointStore::Free()
 {
+    for (UNORDERED_MAP<uint32, WaypointPath*>::const_iterator itr = waypoint_map.begin(); itr != waypoint_map.end(); ++itr)
+    {
+        for (WaypointPath::const_iterator it = itr->second->begin(); it != itr->second->end(); ++it)
+            delete *it;
+        itr->second->clear();
+        delete itr->second;
+    }
     waypoint_map.clear();
 }
 
