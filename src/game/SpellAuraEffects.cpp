@@ -2417,6 +2417,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
             break;
         case FORM_SHADOW:
             spellId = 49868;
+			spellId2 = 71167;
             break;
         case FORM_GHOSTWOLF:
             spellId = 67116;
