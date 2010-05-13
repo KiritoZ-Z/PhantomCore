@@ -2597,4 +2597,3 @@ void AddSC_npcs_special()
     newscript->pGossipSelect = &GossipSelect_npc_experience;
     newscript->RegisterSelf();
  }
-}
