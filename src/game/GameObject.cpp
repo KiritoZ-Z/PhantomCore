@@ -62,7 +62,7 @@ GameObject::GameObject() : WorldObject(), m_goValue(new GameObjectValue)
     m_rotation = 0;
 
     m_groupLootTimer = 0;
-    lootingGroupLeaderGUID = 0;
+    lootingGroupGUID = 0;
 
     ResetLootMode(); // restore default loot mode
 }
@@ -192,19 +192,25 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     SetGoType(GameobjectTypes(goinfo->type));
 
     SetGoArtKit(0);                                         // unknown what this is
-    SetGoAnimProgress(animprogress);
-
     SetByteValue(GAMEOBJECT_BYTES_1, 2, artKit);
 
     switch(goinfo->type)
     {
         case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
             m_goValue->building.health = goinfo->building.intactNumHits + goinfo->building.damagedNumHits;
+            SetGoAnimProgress(255);
             break;
         case GAMEOBJECT_TYPE_TRANSPORT:
             SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
             if (goinfo->transport.startOpen)
                 SetGoState(GO_STATE_ACTIVE);
+            SetGoAnimProgress(animprogress);
+            break;
+        case GAMEOBJECT_TYPE_FISHINGNODE:
+            SetGoAnimProgress(0);
+            break;
+        default:
+            SetGoAnimProgress(animprogress);
             break;
     }
 
@@ -430,11 +436,11 @@ void GameObject::Update(uint32 diff)
                     {
                         if (m_groupLootTimer <= diff)
                         {
-                            Group* group = objmgr.GetGroupByLeader(lootingGroupLeaderGUID);
+                            Group* group = objmgr.GetGroupByGUID(lootingGroupGUID);
                             if (group)
                                 group->EndRoll(&loot);
                             m_groupLootTimer = 0;
-                            lootingGroupLeaderGUID = 0;
+                            lootingGroupGUID = 0;
                         }
                         else m_groupLootTimer -= diff;
                     }
@@ -1505,7 +1511,7 @@ void GameObject::SendCustomAnim()
 {
     WorldPacket data(SMSG_GAMEOBJECT_CUSTOM_ANIM,8+4);
     data << GetGUID();
-    data << (uint32)0;
+    data << uint32(GetGoAnimProgress());
     SendMessageToSet(&data, true);
 }
 
@@ -1536,11 +1542,13 @@ void GameObject::TakenDamage(uint32 damage, Unit *who)
         return;
 
     Player* pwho = NULL;
-    if (who && who->GetTypeId() == TYPEID_PLAYER)
-      pwho = (Player*)who;
-
-    if (who && who->IsVehicle())
-      pwho = (Player*)who->GetCharmerOrOwner();
+    if (who)
+    {
+        if (who->GetTypeId() == TYPEID_PLAYER)
+            pwho = who->ToPlayer();
+        else if (who->IsVehicle() && who->GetCharmerOrOwner())
+            pwho = who->GetCharmerOrOwner()->ToPlayer();
+    }
 
     if (m_goValue->building.health > damage)
         m_goValue->building.health -= damage;
@@ -1556,12 +1564,10 @@ void GameObject::TakenDamage(uint32 damage, Unit *who)
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
             SetUInt32Value(GAMEOBJECT_DISPLAYID, m_goInfo->building.destroyedDisplayId);
             EventInform(m_goInfo->building.destroyedEvent);
-        if (pwho)
-          {
-        if (BattleGround* bg = pwho->GetBattleGround())
-          bg->EventPlayerDamagedGO(pwho, this, m_goInfo->building.destroyedEvent);
-          }
-    }
+            if (pwho)
+                if (BattleGround* bg = pwho->GetBattleGround())
+                    bg->EventPlayerDamagedGO(pwho, this, m_goInfo->building.destroyedEvent);
+        }
     }
     else // from intact to damaged
     {
@@ -1577,6 +1583,7 @@ void GameObject::TakenDamage(uint32 damage, Unit *who)
             EventInform(m_goInfo->building.damagedEvent);
         }
     }
+    SetGoAnimProgress(m_goValue->building.health*255/(m_goInfo->building.intactNumHits + m_goInfo->building.damagedNumHits));
 }
 
 void GameObject::Rebuild()

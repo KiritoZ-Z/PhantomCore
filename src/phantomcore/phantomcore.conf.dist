@@ -1660,6 +1660,11 @@ AutoBroadcast.Timer = 60000
 #        Hour when random bg reset (0..23)
 #        Default: 6
 #
+#    Battleground.GiveXPForKills
+#        Give experience for honorable kills in battlegrounds
+#        Default: 0 (disable)
+#                 1 (enable)
+#
 ###############################################################################
 
 Battleground.CastDeserter = 1
@@ -1669,7 +1674,7 @@ Battleground.InvitationType = 0
 BattleGround.PrematureFinishTimer = 300000
 BattleGround.PremadeGroupWaitForMatch = 1800000
 BattleGround.Random.ResetHour = 6
-
+Battleground.GiveXPForKills = 0
 ###############################################################################
 # ARENA CONFIG
 #

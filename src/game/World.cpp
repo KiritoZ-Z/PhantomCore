@@ -1062,6 +1062,7 @@ void World::LoadConfigSettings(bool reload)
     m_configs[CONFIG_BATTLEGROUND_INVITATION_TYPE]              = sConfig.GetIntDefault ("Battleground.InvitationType", 0);
     m_configs[CONFIG_BATTLEGROUND_PREMATURE_FINISH_TIMER]       = sConfig.GetIntDefault ("BattleGround.PrematureFinishTimer", 5 * MINUTE * IN_MILISECONDS);
     m_configs[CONFIG_BATTLEGROUND_PREMADE_GROUP_WAIT_FOR_MATCH] = sConfig.GetIntDefault ("BattleGround.PremadeGroupWaitForMatch", 30 * MINUTE * IN_MILISECONDS);
+	m_configs[CONFIG_BG_XP_FOR_KILL]                            = sConfig.GetBoolDefault("Battleground.GiveXPForKills", false);
 	m_configs[CONFIG_RANDOM_BG_RESET_HOUR]						= sConfig.GetIntDefault ("BattleGround.Random.ResetHour", 6);
     m_configs[CONFIG_ARENA_MAX_RATING_DIFFERENCE]               = sConfig.GetIntDefault ("Arena.MaxRatingDifference", 150);
     m_configs[CONFIG_ARENA_RATING_DISCARD_TIMER]                = sConfig.GetIntDefault ("Arena.RatingDiscardTimer", 10 * MINUTE * IN_MILISECONDS);
@@ -1299,7 +1300,7 @@ void World::SetInitialWorldSettings()
     // not send custom type REALM_FFA_PVP to realm list
     uint32 server_type = IsFFAPvPRealm() ? REALM_TYPE_PVP : getConfig(CONFIG_GAME_TYPE);
     uint32 realm_zone = getConfig(CONFIG_REALM_ZONE);
-    loginDatabase.PExecute("UPDATE realmlist SET icon = %u, timezone = %u WHERE id = '%d'", server_type, realm_zone, realmID);
+    LoginDatabase.PExecute("UPDATE realmlist SET icon = %u, timezone = %u WHERE id = '%d'", server_type, realm_zone, realmID);
 
     ///- Remove the bones after a restart
     CharacterDatabase.Execute("DELETE FROM corpse WHERE corpse_type = '0'");
@@ -1643,7 +1644,7 @@ void World::SetInitialWorldSettings()
     sprintf(isoDate, "%04d-%02d-%02d %02d:%02d:%02d",
         local.tm_year+1900, local.tm_mon+1, local.tm_mday, local.tm_hour, local.tm_min, local.tm_sec);
 
-    loginDatabase.PExecute("INSERT INTO uptime (realmid, starttime, startstring, uptime, revision) VALUES('%u', " UI64FMTD ", '%s', 0, '%s')",
+    LoginDatabase.PExecute("INSERT INTO uptime (realmid, starttime, startstring, uptime, revision) VALUES('%u', " UI64FMTD ", '%s', 0, '%s')",
         realmID, uint64(m_startTime), isoDate, _FULLVERSION);
 
     static uint32 abtimer = 0;
@@ -1703,7 +1704,7 @@ void World::SetInitialWorldSettings()
     objmgr.LoadTransportEvents();
 
     sLog.outString("Deleting expired bans...");
-    loginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate <= UNIX_TIMESTAMP() AND unbandate<>bandate");
+    LoginDatabase.Execute("DELETE FROM ip_banned WHERE unbandate <= UNIX_TIMESTAMP() AND unbandate<>bandate");
 
     sLog.outString("Calculate next daily quest reset time...");
     InitDailyQuestResetTime();
@@ -1938,7 +1939,7 @@ void World::Update(uint32 diff)
         uint32 maxClientsNum = GetMaxActiveSessionCount();
 
         m_timers[WUPDATE_UPTIME].Reset();
-        loginDatabase.PExecute("UPDATE uptime SET uptime = %u, maxplayers = %u WHERE realmid = %u AND starttime = " UI64FMTD, tmpDiff, maxClientsNum, realmID, uint64(m_startTime));
+        LoginDatabase.PExecute("UPDATE uptime SET uptime = %u, maxplayers = %u WHERE realmid = %u AND starttime = " UI64FMTD, tmpDiff, maxClientsNum, realmID, uint64(m_startTime));
     }
 
     /// <li> Clean logs table
@@ -1950,7 +1951,7 @@ void World::Update(uint32 diff)
             //uint32 maxClientsNum = sWorld.GetMaxActiveSessionCount();
 
             m_timers[WUPDATE_CLEANDB].Reset();
-            loginDatabase.PExecute("DELETE FROM logs WHERE (time + %u) < "UI64FMTD";",
+            LoginDatabase.PExecute("DELETE FROM logs WHERE (time + %u) < "UI64FMTD";",
                 sWorld.getConfig(CONFIG_LOGDB_CLEARTIME), uint64(time(0)));
         }
     }
@@ -2217,10 +2218,10 @@ void World::KickAllLess(AccountTypes sec)
 /// Ban an account or ban an IP address, duration will be parsed using TimeStringToSecs if it is positive, otherwise permban
 BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string duration, std::string reason, std::string author)
 {
-    loginDatabase.escape_string(nameOrIP);
-    loginDatabase.escape_string(reason);
+    LoginDatabase.escape_string(nameOrIP);
+    LoginDatabase.escape_string(reason);
     std::string safe_author=author;
-    loginDatabase.escape_string(safe_author);
+    LoginDatabase.escape_string(safe_author);
 
     uint32 duration_secs = TimeStringToSecs(duration);
     QueryResult_AutoPtr resultAccounts = QueryResult_AutoPtr(NULL);                     //used for kicking
@@ -2230,12 +2231,12 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string dura
     {
         case BAN_IP:
             //No SQL injection as strings are escaped
-            resultAccounts = loginDatabase.PQuery("SELECT id FROM account WHERE last_ip = '%s'",nameOrIP.c_str());
-            loginDatabase.PExecute("INSERT INTO ip_banned VALUES ('%s',UNIX_TIMESTAMP(),UNIX_TIMESTAMP()+%u,'%s','%s')",nameOrIP.c_str(),duration_secs,safe_author.c_str(),reason.c_str());
+            resultAccounts = LoginDatabase.PQuery("SELECT id FROM account WHERE last_ip = '%s'",nameOrIP.c_str());
+            LoginDatabase.PExecute("INSERT INTO ip_banned VALUES ('%s',UNIX_TIMESTAMP(),UNIX_TIMESTAMP()+%u,'%s','%s')",nameOrIP.c_str(),duration_secs,safe_author.c_str(),reason.c_str());
             break;
         case BAN_ACCOUNT:
             //No SQL injection as string is escaped
-            resultAccounts = loginDatabase.PQuery("SELECT id FROM account WHERE username = '%s'",nameOrIP.c_str());
+            resultAccounts = LoginDatabase.PQuery("SELECT id FROM account WHERE username = '%s'",nameOrIP.c_str());
             break;
         case BAN_CHARACTER:
             //No SQL injection as string is escaped
@@ -2262,7 +2263,7 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string dura
         if (mode != BAN_IP)
         {
             //No SQL injection as strings are escaped
-            loginDatabase.PExecute("INSERT INTO account_banned VALUES ('%u', UNIX_TIMESTAMP(), UNIX_TIMESTAMP()+%u, '%s', '%s', '1')",
+            LoginDatabase.PExecute("INSERT INTO account_banned VALUES ('%u', UNIX_TIMESTAMP(), UNIX_TIMESTAMP()+%u, '%s', '%s', '1')",
                 account,duration_secs,safe_author.c_str(),reason.c_str());
         }
 
@@ -2280,8 +2281,8 @@ bool World::RemoveBanAccount(BanMode mode, std::string nameOrIP)
 {
     if (mode == BAN_IP)
     {
-        loginDatabase.escape_string(nameOrIP);
-        loginDatabase.PExecute("DELETE FROM ip_banned WHERE ip = '%s'",nameOrIP.c_str());
+        LoginDatabase.escape_string(nameOrIP);
+        LoginDatabase.PExecute("DELETE FROM ip_banned WHERE ip = '%s'",nameOrIP.c_str());
     }
     else
     {
@@ -2295,7 +2296,7 @@ bool World::RemoveBanAccount(BanMode mode, std::string nameOrIP)
             return false;
 
         //NO SQL injection as account is uint32
-        loginDatabase.PExecute("UPDATE account_banned SET active = '0' WHERE id = '%u'",account);
+        LoginDatabase.PExecute("UPDATE account_banned SET active = '0' WHERE id = '%u'",account);
     }
     return true;
 }
@@ -2524,8 +2525,8 @@ void World::_UpdateRealmCharCount(QueryResult_AutoPtr resultCharCount, uint32 ac
         Field *fields = resultCharCount->Fetch();
         uint32 charCount = fields[0].GetUInt32();
 
-        loginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%d' AND realmid = '%d'", accountId, realmID);
-        loginDatabase.PExecute("INSERT INTO realmcharacters (numchars, acctid, realmid) VALUES (%u, %u, %u)", charCount, accountId, realmID);
+        LoginDatabase.PExecute("DELETE FROM realmcharacters WHERE acctid= '%d' AND realmid = '%d'", accountId, realmID);
+        LoginDatabase.PExecute("INSERT INTO realmcharacters (numchars, acctid, realmid) VALUES (%u, %u, %u)", charCount, accountId, realmID);
     }
 }
 
@@ -2614,7 +2615,7 @@ void World::ResetDailyQuests()
 
 void World::UpdateAllowedSecurity()
 {
-    QueryResult_AutoPtr result = loginDatabase.PQuery("SELECT allowedSecurityLevel from realmlist WHERE id = '%d'", realmID);
+    QueryResult_AutoPtr result = LoginDatabase.PQuery("SELECT allowedSecurityLevel from realmlist WHERE id = '%d'", realmID);
     if (result)
     {
         m_allowedSecurityLevel = AccountTypes(result->Fetch()->GetUInt16());

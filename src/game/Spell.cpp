@@ -1193,7 +1193,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
             m_healthLeech += damageInfo.damage;
 			if(Aura * pGlyph = caster->GetAura(63220, 0))
                 m_healthLeech += (m_healthLeech * pGlyph->GetAmount() / 100);
-
+		}
         // Haunt
         if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellFamilyFlags[1] & 0x40000 && m_spellAura && m_spellAura->GetEffect(1))
         {
@@ -5199,6 +5199,15 @@ SpellCastResult Spell::CheckCast(bool strict)
             {
                 if (m_targets.getUnitTarget() == m_caster)
                     return SPELL_FAILED_BAD_TARGETS;
+                break;
+            }
+            case SPELL_EFFECT_LEAP_BACK:
+            {
+                if (m_spellInfo->Id == 781)
+                    if (!m_caster->isInCombat())
+                        return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+                if (m_caster->hasUnitState(UNIT_STAT_ROOT))
+                    return SPELL_FAILED_ROOTED;
                 break;
             }
             default:break;
