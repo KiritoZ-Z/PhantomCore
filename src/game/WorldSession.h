@@ -767,6 +767,7 @@ class WorldSession
         void HandleAlterAppearance(WorldPacket& recv_data);
         void HandleRemoveGlyph(WorldPacket& recv_data);
         void HandleCharCustomize(WorldPacket& recv_data);
+		void HandleCharFactionOrRaceChange(WorldPacket& recv_data);
         void HandleQueryInspectAchievements(WorldPacket& recv_data);
         void HandleEquipmentSetSave(WorldPacket& recv_data);
         void HandleEquipmentSetDelete(WorldPacket& recv_data);
