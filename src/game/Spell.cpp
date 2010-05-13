@@ -1192,7 +1192,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
 		{
             m_healthLeech += damageInfo.damage;
 			if(Aura * pGlyph = caster->GetAura(63220, 0))
-                m_healthLeech += (m_healthLeech * pGlyph->GetAmount() / 100);
+                m_healthLeech += (m_healthLeech * pGlyph->aurEff->GetAmount() / 100);
 		}
         // Haunt
         if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellFamilyFlags[1] & 0x40000 && m_spellAura && m_spellAura->GetEffect(1))
