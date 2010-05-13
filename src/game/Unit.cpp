@@ -10653,14 +10653,13 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
         if (spellProto->SpellFamilyFlags[2] & 0x80000000 && spellProto->SpellIconID == 329)
         {
             scripted = true;
+			coeff = 0.0f;
             int32 apBonus = std::max(GetTotalAttackPowerValue(BASE_ATTACK), GetTotalAttackPowerValue(RANGED_ATTACK));
-            if (apBonus > DoneAdvertisedBenefit)
-            {
-                DoneTotal += apBonus * 0.2f;
-                coeff = 0.0f;
-            }
+			int32 spBonus = SpellBaseDamageBonus(SPELL_SCHOOL_MASK_HOLY);
+			if (apBonus > spBonus)
+				DoneTotal += apBonus * 0.220f;
             else
-                coeff = 1.0f;
+                DoneTotal += spBonus * 0.377f;
         }
         // Earthliving - 0.45% of normal hot coeff
         else if (spellProto->SpellFamilyName == SPELLFAMILY_SHAMAN && spellProto->SpellFamilyFlags[1] & 0x80000)
