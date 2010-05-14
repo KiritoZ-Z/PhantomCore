@@ -1180,6 +1180,7 @@ class Unit : public WorldObject
         bool isHunterPet() const{ return m_unitTypeMask & UNIT_MASK_HUNTER_PET; }
         bool isTotem() const    { return m_unitTypeMask & UNIT_MASK_TOTEM; }
         bool IsVehicle() const  { return m_unitTypeMask & UNIT_MASK_VEHICLE; }
+        bool IsOnlyNoneOrAndSummonOrAndMinionOrAndGuardian() const  { return ((m_unitTypeMask & ~(UNIT_MASK_SUMMON | UNIT_MASK_GUARDIAN | UNIT_MASK_MINION | UNIT_MASK_NONE)) == 0); }
 
         uint8 getLevel() const { return uint8(GetUInt32Value(UNIT_FIELD_LEVEL)); }
         virtual uint8 getLevelForTarget(Unit const* /*target*/) const { return getLevel(); }
