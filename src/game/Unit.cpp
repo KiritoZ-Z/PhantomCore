@@ -8296,6 +8296,14 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
             trigger_spell_id = 64413;
             break;
         }
+		//Althor's Abacus
+		case 50359:
+			{
+				Unit *caster = triggeredByAura->GetCaster();
+				if (target = caster)
+					return false;
+					break;
+			}
         // Decimation
         case 63156:
         case 63158:
