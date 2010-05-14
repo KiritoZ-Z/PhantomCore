@@ -3798,6 +3798,18 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_CASTER;
             count++;
             break;
+			case SPELLFAMILY_WARLOCK:
+				switch(spellInfo->Id)
+				{
+					//corruption should be affected by everlasting affliction
+					case 172: case 6222: case 6223: case 7648: //Corruption spellIDs
+					case 11671: case 11672: case 25311: //Corruption spellIDs
+					case 27216: case 47812: case 47813: //Corruption spellIDs
+						spellInfo->SpellFamilyFlags[1] |= 256;
+						count++;
+					break;
+				}
+				break;
         case 18755:
             spellInfo->EffectApplyAuraName[0] = SPELL_AURA_ADD_FLAT_MODIFIER;
             spellInfo->EffectBasePoints[0] = -1.5*IN_MILISECONDS*0.44;           //  reduce cast time of seduction by 44%
