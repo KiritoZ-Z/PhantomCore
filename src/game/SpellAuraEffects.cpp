@@ -483,16 +483,33 @@ int32 AuraEffect::CalculateAmount(Unit * caster)
                     // Ice Barrier
                     if (GetSpellProto()->SpellFamilyFlags[1] & 0x1 && GetSpellProto()->SpellFamilyFlags[2] & 0x8)
                     {
-                        // +80.67% from sp bonus
-                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.8067f;
+                        // +80.68% from sp bonus
+                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.8068f;
+
+                        // Glyph of Ice Barrier: its weird having a SPELLMOD_ALL_EFFECTS here but its blizzards doing :)
+                        // Glyph of Ice Barrier is only applied at the spell damage bonus because it was already applied to the base value in CalculateSpellDamage
+                        if (Player* modOwner = caster->GetSpellModOwner())
+                            modOwner->ApplySpellMod(GetSpellProto()->Id, SPELLMOD_ALL_EFFECTS, DoneActualBenefit);
                     }
+                    // Fire Ward
+                    else if(GetSpellProto()->SpellFamilyFlags[0] & 0x8 && GetSpellProto()->SpellFamilyFlags[2] & 0x8)
+                    {
+                        // +80.68% from sp bonus
+                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.8068f;
+                    }
+                    // Frost Ward
+                    else if(GetSpellProto()->SpellFamilyFlags[0] & 0x100 && GetSpellProto()->SpellFamilyFlags[2] & 0x8)
+                    {
+                        // +80.68% from sp bonus
+                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.8068f;
+					}
                     break;
                 case SPELLFAMILY_WARLOCK:
                     // Shadow Ward
-                    if (m_spellProto->SpellFamilyFlags[2]& 0x40)
+                    if(m_spellProto->SpellFamilyFlags[2] & 0x40)
                     {
-                        // +30% from sp bonus
-                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.3f;
+                        // +80.68% from sp bonus
+                        DoneActualBenefit += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 0.8068f;
                     }
                     break;
                 case SPELLFAMILY_PRIEST:
@@ -504,10 +521,28 @@ int32 AuraEffect::CalculateAmount(Unit * caster)
                         AuraEffect const* pAurEff;
 
                         // Borrowed Time
-                        pAurEff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_PRIEST, 2899, 1);
-                        if (pAurEff)
+                        if (pAurEff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_PRIEST, 2899, 1))
                             bonus += (float)pAurEff->GetAmount() / 100.0f;
 
+                        DoneActualBenefit = caster->SpellBaseHealingBonus(GetSpellSchoolMask(GetSpellProto())) * bonus;
+                        // Improved PW: Shield: its weird having a SPELLMOD_ALL_EFFECTS here but its blizzards doing :)
+                        // Improved PW: Shield is only applied at the spell healing bonus because it was already applied to the base value in CalculateSpellDamage
+                        if (Player* modOwner = caster->GetSpellModOwner())
+                            modOwner->ApplySpellMod(GetSpellProto()->Id, SPELLMOD_ALL_EFFECTS, DoneActualBenefit);
+                        DoneActualBenefit *= caster->CalculateLevelPenalty(GetSpellProto());
+
+                        amount += (int32)DoneActualBenefit;
+
+                        // Twin Disciplines
+                        if (pAurEff = caster->GetAuraEffect(SPELL_AURA_ADD_PCT_MODIFIER, SPELLFAMILY_PRIEST, 0x400000, 0, 0, caster->GetGUID()))
+                            amount *= (100.0f + pAurEff->GetAmount()) / 100.0f;
+
+                        // Focused Power
+                        Unit::AuraEffectList const& mHealingDonePct = caster->GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
+                        for (Unit::AuraEffectList::const_iterator i = mHealingDonePct.begin(); i != mHealingDonePct.end(); ++i)
+                            amount *= (100.0f + (*i)->GetAmount()) / 100.0f;
+
+                        return amount;
                         // Twin Disciplines
                         pAurEff = caster->GetAuraEffect(SPELL_AURA_ADD_PCT_MODIFIER, SPELLFAMILY_PRIEST, 0x400000, 0, 0, caster->GetGUID());
                         if (pAurEff)
