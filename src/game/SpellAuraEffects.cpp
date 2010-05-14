@@ -2207,15 +2207,24 @@ void AuraEffect::TriggerSpell(Unit * target, Unit * caster) const
                     case 53302:
                     case 53303:
                     case 53304:
-                        // We are standing at the moment
-                        if (GetAmount() != -1)
-                            return;
+                        static bool CastOnMove;
+                        // We have started moving
+                        if (GetAmount() >= 0)
+                            if (CastOnMove) {
+                                CastOnMove = false;
+                                triggerSpellId = 64418 + auraId - 53302;
+                           }
+                            else
+                                return;
 
-                        triggerSpellId = 64418 + auraId - 53302;
 
-                        // If aura is active - no need to continue
-                        if (target->HasAura(triggerSpellId))
-                            return;
+                        else {
+                            triggerSpellId = 64418 + auraId - 53302;
+                           CastOnMove = true;
+                            // If aura is active - no need to continue
+                            if (target->HasAura(triggerSpellId))
+                                return;
+                       }
                        break;
                 }
                 break;
