@@ -1799,21 +1799,6 @@ void Spell::EffectDummy(uint32 i)
         case SPELLFAMILY_HUNTER:
             switch(m_spellInfo->Id)
             {
-                case 781:                                 // Disengage
-                {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                        return;
-
-                    WorldPacket data(SMSG_MOVE_KNOCK_BACK, 50);
-                    data.append(m_caster->GetPackGUID());
-                    data << getMSTime();
-                    data << float(cosf(m_caster->GetOrientation()+M_PI));
-                    data << float(sinf(m_caster->GetOrientation()+M_PI));
-                    data << float(15);
-                    data << float(-7.0f);
-                    m_caster->ToPlayer()->GetSession()->SendPacket(&data);
-                    return;
-                }
                 case 23989:                                 // Readiness talent
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -3769,8 +3754,13 @@ void Spell::EffectSummonType(uint32 i)
             if (!summon || !summon->IsVehicle())
                 return;
 
-            if (damage)
-                m_caster->CastSpell(summon, damage, true);
+            if (m_spellInfo->EffectBasePoints[i])
+            {
+                SpellEntry const *spellProto = sSpellStore.LookupEntry(m_spellInfo->CalculateSimpleValue(i));
+                if (spellProto)
+                    m_caster->CastSpell(summon, spellProto, true);
+            }
+
             m_caster->EnterVehicle(summon->GetVehicleKit());
             break;
         }

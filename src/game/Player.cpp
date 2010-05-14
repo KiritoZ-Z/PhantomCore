@@ -13152,6 +13152,14 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
                             ApplyHealthRegenBonus(enchant_amount, apply);
                             sLog.outDebug("+ %u HEALTH_REGENERATION", enchant_amount);
                             break;
+                        case ITEM_MOD_SPELL_PENETRATION:
+                            ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, enchant_amount, apply);
+                            sLog.outDebug("+ %u SPELL_PENETRATION", enchant_amount);
+                            break;
+                        case ITEM_MOD_BLOCK_VALUE:
+                            HandleBaseModValue(SHIELD_BLOCK_VALUE, FLAT_MOD, float(enchant_amount), apply);
+                            sLog.outDebug("+ %u BLOCK_VALUE", enchant_amount);
+                            break;
                         case ITEM_MOD_SPELL_HEALING_DONE:   // deprecated
                         case ITEM_MOD_SPELL_DAMAGE_DONE:    // deprecated
                         default:
@@ -13302,6 +13310,20 @@ void Player::PrepareGossipMenu(WorldObject *pSource, uint32 menuId)
     if (pMenuItemBounds.first == pMenuItemBounds.second && menuId == GetDefaultGossipMenuForSource(pSource))
         pMenuItemBounds = objmgr.GetGossipMenuItemsMapBounds(0);
 
+    uint32 npcflags = 0;
+    Creature *pCreature = NULL;
+    GameObject *pGo = NULL;
+
+    if (pSource->GetTypeId() == TYPEID_UNIT)
+    {
+        pCreature = pSource->ToCreature();
+        npcflags = pCreature->GetUInt32Value(UNIT_NPC_FLAGS);
+        if (npcflags & UNIT_NPC_FLAG_QUESTGIVER)
+            PrepareQuestMenu(pSource->GetGUID());
+    }
+    else if (pSource->GetTypeId() == TYPEID_GAMEOBJECT)
+        pGo = (GameObject*)pSource;
+
     for (GossipMenuItemsMap::const_iterator itr = pMenuItemBounds.first; itr != pMenuItemBounds.second; ++itr)
     {
         bool bCanTalk = true;
@@ -13317,19 +13339,11 @@ void Player::PrepareGossipMenu(WorldObject *pSource, uint32 menuId)
 
         if (pSource->GetTypeId() == TYPEID_UNIT)
         {
-            Creature *pCreature = pSource->ToCreature();
-
-            uint32 npcflags = pCreature->GetUInt32Value(UNIT_NPC_FLAGS);
-
             if (!(itr->second.npc_option_npcflag & npcflags))
                 continue;
 
             switch(itr->second.option_id)
             {
-                case GOSSIP_OPTION_QUESTGIVER:
-                    PrepareQuestMenu(pSource->GetGUID());
-                    bCanTalk = false;
-                    break;
                 case GOSSIP_OPTION_ARMORER:
                     bCanTalk = false;                       // added in special mode
                     break;
@@ -23395,6 +23409,8 @@ void Player::_SaveEquipmentSets()
                 ++itr;
                 break;                                      // nothing do
             case EQUIPMENT_SET_CHANGED:
+                CharacterDatabase.escape_string(eqset.Name);
+                CharacterDatabase.escape_string(eqset.IconName);
                 CharacterDatabase.PExecute("UPDATE character_equipmentsets SET name='%s', iconname='%s', item0='%u', item1='%u', item2='%u', item3='%u', item4='%u', item5='%u', item6='%u', item7='%u', item8='%u', item9='%u', item10='%u', item11='%u', item12='%u', item13='%u', item14='%u', item15='%u', item16='%u', item17='%u', item18='%u' WHERE guid='%u' AND setguid='"UI64FMTD"' AND setindex='%u'",
                     eqset.Name.c_str(), eqset.IconName.c_str(), eqset.Items[0], eqset.Items[1], eqset.Items[2], eqset.Items[3], eqset.Items[4], eqset.Items[5], eqset.Items[6], eqset.Items[7],
                     eqset.Items[8], eqset.Items[9], eqset.Items[10], eqset.Items[11], eqset.Items[12], eqset.Items[13], eqset.Items[14], eqset.Items[15], eqset.Items[16], eqset.Items[17], eqset.Items[18], GetGUIDLow(), eqset.Guid, index);
@@ -23402,6 +23418,8 @@ void Player::_SaveEquipmentSets()
                 ++itr;
                 break;
             case EQUIPMENT_SET_NEW:
+                CharacterDatabase.escape_string(eqset.Name);
+                CharacterDatabase.escape_string(eqset.IconName);
                 CharacterDatabase.PExecute("INSERT INTO character_equipmentsets VALUES ('%u', '"UI64FMTD"', '%u', '%s', '%s', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u')",
                     GetGUIDLow(), eqset.Guid, index, eqset.Name.c_str(), eqset.IconName.c_str(), eqset.Items[0], eqset.Items[1], eqset.Items[2], eqset.Items[3], eqset.Items[4], eqset.Items[5], eqset.Items[6], eqset.Items[7],
                     eqset.Items[8], eqset.Items[9], eqset.Items[10], eqset.Items[11], eqset.Items[12], eqset.Items[13], eqset.Items[14], eqset.Items[15], eqset.Items[16], eqset.Items[17], eqset.Items[18]);
