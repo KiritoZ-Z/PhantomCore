@@ -914,6 +914,8 @@ void Creature::UpdateDamagePhysical(WeaponAttackType attType)
 #define ENTRY_TREANT            1964
 #define ENTRY_FIRE_ELEMENTAL    15438
 #define ENTRY_GHOUL             26125
+#define ENTRY_VIPER             19921
+#define ENTRY_VEN_SNAKE         19833
 
 bool Guardian::UpdateStats(Stats stat)
 {
@@ -1041,7 +1043,7 @@ void Guardian::UpdateArmor()
     UnitMods unitMod = UNIT_MOD_ARMOR;
 
     // hunter and warlock pets gain 35% of owner's armor value
-    if (isPet())
+    if(isPet()&&!IsPetGhoul())
         bonus_armor = 0.35f * float(m_owner->GetArmor());
 
     value  = GetModifierValue(unitMod, BASE_VALUE);
@@ -1066,12 +1068,17 @@ void Guardian::UpdateMaxHealth()
         case ENTRY_SUCCUBUS:    multiplicator = 9.1f;   break;
         case ENTRY_FELHUNTER:   multiplicator = 9.5f;   break;
         case ENTRY_FELGUARD:    multiplicator = 11.0f;  break;
-        case ENTRY_GHOUL:       multiplicator = 5.4f;   break;
+        case ENTRY_GHOUL:       multiplicator = 10.0f;   break;
+        case ENTRY_VIPER:       multiplicator = 0.0f;   break;
+        case ENTRY_VEN_SNAKE:   multiplicator = 0.0f;   break;
         default:                multiplicator = 10.0f;  break;
     }
 
     float value   = GetModifierValue(unitMod, BASE_VALUE) + GetCreateHealth();
     value  *= GetModifierValue(unitMod, BASE_PCT);
+	if (GetEntry()==ENTRY_GHOUL)
+    value  += GetModifierValue(unitMod, TOTAL_VALUE) + (stamina+GetCreateStat(STAT_STAMINA)) * multiplicator;
+	else
     value  += GetModifierValue(unitMod, TOTAL_VALUE) + stamina * multiplicator;
     value  *= GetModifierValue(unitMod, TOTAL_PCT);
 
