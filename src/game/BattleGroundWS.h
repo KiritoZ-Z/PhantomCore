@@ -138,6 +138,16 @@ enum BG_WS_CarrierDebuffs
     WS_SPELL_BRUTAL_ASSAULT    = 46393
 };
 
+enum BG_WS_Archievement
+{
+	WS_QUICK_CAP_ALLIANCE        = 202,
+	WS_QUICK_CAP_HORDE           = 1502,
+	WS_CAPTURE_FLAG              = 199,
+	WS_SUPREME_DEFENDER_ALLIANCE = 206,
+	WS_SUPREME_DEFENDER_HORDE    = 1252,
+	WS_NOT_SO_FAST               = 1259,
+};
+
 class BattleGroundWGScore : public BattleGroundScore
 {
     public:
