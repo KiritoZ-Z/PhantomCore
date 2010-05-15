@@ -8968,7 +8968,7 @@ void Player::SendBGWeekendWorldStates()
         }
     }
 
-	SendBGWeekendWorldStates()
+	SendBGWeekendWorldStates();
 }
 
 uint32 Player::GetXPRestBonus(uint32 xp)
