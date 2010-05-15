@@ -8297,7 +8297,7 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
             break;
         }
 		//Althor's Abacus
-		case 50359:
+		case 71611:
 			{
 				Unit *caster = triggeredByAura->GetCaster();
 				if (target = caster)
