@@ -311,6 +311,9 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
     }
     //for flag capture is reward 2 honorable kills
     RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
+	
+	AchievementEntry const *Achiev1 = GetAchievementStore()->LookupEntry(WS_CAPTURE_FLAG);
+	plr->GetArchievementMgr().CompletedAchievement(AchievNSF);
 
     SpawnBGObject(BG_WS_OBJECT_H_FLAG, BG_WS_FLAG_RESPAWN_TIME);
     SpawnBGObject(BG_WS_OBJECT_A_FLAG, BG_WS_FLAG_RESPAWN_TIME);
@@ -750,6 +753,18 @@ void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
         return;
 
     EventPlayerDroppedFlag(player);
+	
+	AchievementEntry const *AchievNSF = GetAchievementStore()->LookupEntry(WS_NOT_SO_FAST);
+	AchievementEntry const *AchievSDA = GetAchievementStore()->LookupEntry(WS_SUPREME_DEFENDER_ALLIANCE);
+	AchievementEntry const *AchievSDH = GetAchievementStore()->LookupEntry(WS_SUPREME_DEFENDER_HORDE);
+	
+	if(player->HasAura(23978) || player->HasAura(23451))
+		plr->GetArchievementMgr().CompletedAchievement(AchievNSF);
+		
+	if(player->HasAura(23335))
+		plr->GetArchievementMgr().SetCriteriaProgress(AchievSDH, 1, PROGRESS_ACCUMULATE);
+	else if(player->HasAura(23333))
+		plr->GetArchievementMgr().SetCriteriaProgress(AchievSDA, 1, PROGRESS_ACCUMULATE);
 
     BattleGround::HandleKillPlayer(player, killer);
 }

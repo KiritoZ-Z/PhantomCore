@@ -1263,9 +1263,9 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 		// Reset homebind
 		CharacterDatabase.PExecute("DELETE FROM `character_homebind` WHERE guid = '%u'",GUID_LOPART(guid));
 		if(team == BG_TEAM_ALLIANCE)
-			CharacterDatabase.PExecute("INSERT INTO `character_homebind` VALUES ('%u','0', '1519', '-8867.68', '673.373', '97.9034'",GUID_LOPART(guid));
+			CharacterDatabase.PExecute("INSERT INTO `character_homebind` VALUES ('%u','0', '1519', '-8867.68', '673.373', '97.9034')",GUID_LOPART(guid));
 		else
-			CharacterDatabase.PExecute("INSERT INTO `character_homebind` VALUES ('%u','1', '1637', '1633.33', '-4439.11', '15.7588'",GUID_LOPART(guid));
+			CharacterDatabase.PExecute("INSERT INTO `character_homebind` VALUES ('%u','1', '1637', '1633.33', '-4439.11', '15.7588')",GUID_LOPART(guid));
 
 		// Achievement conversion
 		if(QueryResult_AutoPtr result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_achievements"))
