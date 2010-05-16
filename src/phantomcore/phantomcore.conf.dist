@@ -1,5 +1,5 @@
 ##########################################
-# Trinity Core worldd configuration file #
+# Phantom Core worldd configuration file #
 ##########################################
 # Note to devs, line breaks should be at column 80
 ###############################################################################
@@ -48,9 +48,9 @@
 RealmID = 1
 DataDir = "."
 LogsDir = ""
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;realmd"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+LoginDatabaseInfo     = "127.0.0.1;3306;phantom;phantom;realmd"
+WorldDatabaseInfo     = "127.0.0.1;3306;phantom;phantom;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;phantom;phantom;characters"
 MaxPingTime = 30
 WorldServerPort = 8085
 BindIP = "0.0.0.0"
@@ -936,7 +936,7 @@ ClientCacheVersion = 0
 Event.Announce = 0
 BeepAtStart = 1
 WaitAtStartupError = 0
-Motd = "Welcome to a Trinity Core server."
+Motd = "Welcome to a Phantom Core server."
 Server.LoginInfo = 0
 
 ###############################################################################

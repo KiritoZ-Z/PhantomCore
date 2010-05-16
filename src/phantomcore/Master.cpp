@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
+ * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -211,6 +213,7 @@ int Master::Run()
     sLog.outString( "      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
     sLog.outString( "                                 C O R E  /\\___/");
     sLog.outString( "http://TrinityCore.org                    \\/__/\n");
+	sLog.outString( "http://Phantom-Project.org                        ");
 
     /// worldd PID file creation
     std::string pidfile = sConfig.GetStringDefault("PidFile", "");
