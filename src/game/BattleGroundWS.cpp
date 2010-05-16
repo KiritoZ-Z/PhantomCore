@@ -29,6 +29,7 @@
 #include "Player.h"
 #include "World.h"
 #include "WorldPacket.h"
+#include "AchievementMgr.h"
 
 // these variables aren't used outside of this file, so declare them only here
 enum BG_WSG_Rewards
@@ -312,8 +313,9 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
     //for flag capture is reward 2 honorable kills
     RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
 	
+	AchievementEntry const *AchievNSF = GetAchievementStore()->LookupEntry(WS_NOT_SO_FAST);
 	AchievementEntry const *Achiev1 = GetAchievementStore()->LookupEntry(WS_CAPTURE_FLAG);
-	plr->GetArchievementMgr().CompletedAchievement(AchievNSF);
+	Source->GetAchievementMgr().CompletedAchievement(AchievNSF);
 
     SpawnBGObject(BG_WS_OBJECT_H_FLAG, BG_WS_FLAG_RESPAWN_TIME);
     SpawnBGObject(BG_WS_OBJECT_A_FLAG, BG_WS_FLAG_RESPAWN_TIME);
@@ -759,12 +761,12 @@ void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
 	AchievementEntry const *AchievSDH = GetAchievementStore()->LookupEntry(WS_SUPREME_DEFENDER_HORDE);
 	
 	if(player->HasAura(23978) || player->HasAura(23451))
-		plr->GetArchievementMgr().CompletedAchievement(AchievNSF);
+		player->GetAchievementMgr().CompletedAchievement(AchievNSF);
 		
-	if(player->HasAura(23335))
-		plr->GetArchievementMgr().SetCriteriaProgress(AchievSDH, 1, PROGRESS_ACCUMULATE);
+	/*if(player->HasAura(23335))
+		player->GetAchievementMgr().SetCriteriaProgress(AchievSDH, 1, PROGRESS_ACCUMULATE);
 	else if(player->HasAura(23333))
-		plr->GetArchievementMgr().SetCriteriaProgress(AchievSDA, 1, PROGRESS_ACCUMULATE);
+		player->GetAchievementMgr().SetCriteriaProgress(AchievSDA, 1, PROGRESS_ACCUMULATE);*/
 
     BattleGround::HandleKillPlayer(player, killer);
 }

@@ -40,6 +40,13 @@ struct CriteriaProgress
     bool changed;
 };
 
+enum ProgressType 
+{
+	PROGRESS_SET,
+	PROGRESS_ACCUMULATE,
+	PROGRESS_HIGHEST
+};
+
 enum AchievementCriteriaDataType
 {                                                           // value1         value2        comment
     ACHIEVEMENT_CRITERIA_DATA_TYPE_NONE                = 0, // 0              0
@@ -255,7 +262,6 @@ class AchievementMgr
         void RemoveTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry);   // used for quest and scripted timed achievements
 
     private:
-        enum ProgressType { PROGRESS_SET, PROGRESS_ACCUMULATE, PROGRESS_HIGHEST };
         void SendAchievementEarned(AchievementEntry const* achievement);
         void SendCriteriaUpdate(AchievementCriteriaEntry const* entry, CriteriaProgress const* progress, uint32 timeElapsed, bool timedCompleted);
         void SetCriteriaProgress(AchievementCriteriaEntry const* entry, uint32 changeValue, ProgressType ptype = PROGRESS_SET);
