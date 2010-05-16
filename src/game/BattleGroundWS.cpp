@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
+ * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -313,9 +315,8 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
     //for flag capture is reward 2 honorable kills
     RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
 	
-	AchievementEntry const *AchievNSF = GetAchievementStore()->LookupEntry(WS_NOT_SO_FAST);
 	AchievementEntry const *Achiev1 = GetAchievementStore()->LookupEntry(WS_CAPTURE_FLAG);
-	Source->GetAchievementMgr().CompletedAchievement(AchievNSF);
+	Source->GetAchievementMgr().CompletedAchievement(Achiev1);
 
     SpawnBGObject(BG_WS_OBJECT_H_FLAG, BG_WS_FLAG_RESPAWN_TIME);
     SpawnBGObject(BG_WS_OBJECT_A_FLAG, BG_WS_FLAG_RESPAWN_TIME);
@@ -499,6 +500,12 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
             PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
             UpdatePlayerScore(Source, SCORE_FLAG_RETURNS, 1);
             m_BothFlagsKept = false;
+			
+			if(Source->GetPositionX()<950 && GetFlagState(HORDE) == BG_WS_FLAG_STATE_ON_BASE)
+				{
+					AchievementEntry const *Achiev1 = GetAchievementStore()->LookupEntry(WS_SAVE_DAY);
+					Source->GetAchievementMgr().CompletedAchievement(Achiev1);
+				}
         }
         else
         {
@@ -533,6 +540,12 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
             PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
             UpdatePlayerScore(Source, SCORE_FLAG_RETURNS, 1);
             m_BothFlagsKept = false;
+			
+			if(Source->GetPositionX()>1500 && GetFlagState(ALLIANCE) == BG_WS_FLAG_STATE_ON_BASE)
+				{
+					AchievementEntry const *Achiev1 = GetAchievementStore()->LookupEntry(WS_SAVE_DAY);
+					Source->GetAchievementMgr().CompletedAchievement(Achiev1);
+				}
         }
         else
         {

@@ -1,5 +1,5 @@
 ##########################################
-# Trinity Core worldd configuration file #
+# Phantom Core worldd configuration file #
 ##########################################
 # Note to devs, line breaks should be at column 80
 ###############################################################################
@@ -48,9 +48,9 @@
 RealmID = 1
 DataDir = "."
 LogsDir = ""
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;realmd"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+LoginDatabaseInfo     = "127.0.0.1;3306;phantom;phantom;realmd"
+WorldDatabaseInfo     = "127.0.0.1;3306;phantom;phantom;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;phantom;phantom;characters"
 MaxPingTime = 30
 WorldServerPort = 8085
 BindIP = "0.0.0.0"
@@ -121,6 +121,11 @@ EAIErrorLevel = 2
 #        Time in milliseconds afer which a connection sitting idle on the character
 #        selection screen is disconnected.
 #        Default: 900000 (15 minutes)
+#
+#    SessionAddDelay
+#        Time in microseconds that a network thread will sleep after authentication
+#        protocol and adding a connection to the world session map.
+#        Default: 10000 (10 milliseconds, 0,01 second)
 #
 #    GridCleanUpDelay
 #        Grid clean up delay (in milliseconds)
@@ -226,6 +231,7 @@ MaxOverspeedPings = 2
 GridUnload = 1
 SocketSelectTime = 10000
 SocketTimeOutTime = 900000
+SessionAddDelay = 10000
 GridCleanUpDelay = 300000
 MapUpdateInterval = 100
 ChangeWeatherInterval = 600000
@@ -936,7 +942,7 @@ ClientCacheVersion = 0
 Event.Announce = 0
 BeepAtStart = 1
 WaitAtStartupError = 0
-Motd = "Welcome to a Trinity Core server."
+Motd = "Welcome to a Phantom Core server."
 Server.LoginInfo = 0
 
 ###############################################################################
