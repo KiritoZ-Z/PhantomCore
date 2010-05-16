@@ -146,6 +146,9 @@ enum BG_WS_Archievement
 	WS_SUPREME_DEFENDER_ALLIANCE = 206,
 	WS_SUPREME_DEFENDER_HORDE    = 1252,
 	WS_NOT_SO_FAST               = 1259,
+	WS_NOT_IN_MY_HOUSE_ALLIANCE  = 203,
+	WS_NOT_IN_MY_HOUSE_HORDE     = 1251,
+	WS_SAVE_DAY                  = 207,
 };
 
 class BattleGroundWGScore : public BattleGroundScore
