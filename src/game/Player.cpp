@@ -5774,6 +5774,7 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
         }
         else                                                //remove
         {
+		_RemoveAllItemMods();
             //remove enchantments needing this skill
             UpdateSkillEnchantments(id, currVal, 0);
             // clear skill fields
@@ -5792,6 +5793,7 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
                 if (SkillLineAbilityEntry const *pAbility = sSkillLineAbilityStore.LookupEntry(j))
                     if (pAbility->skillId == id)
                         removeSpell(spellmgr.GetFirstSpellInChain(pAbility->spellId));
+				_ApplyAllItemMods();
         }
     }
     else if (newVal)                                        //add
