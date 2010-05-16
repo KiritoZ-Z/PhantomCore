@@ -5317,7 +5317,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 						case 150: unitTarget->CastSpell(unitTarget, 75620, true); break;
 						case 225:
 							if (unitTarget->ToPlayer()->GetMapId() == 571 || unitTarget->ToPlayer()->GetMapId() == 530)
-								unitTarget->CastSpell(unitTarget, 75618, true); break;
+								unitTarget->CastSpell(unitTarget, 75618, true);
                             else
                                 unitTarget->CastSpell(unitTarget, 75619, true);
                             break;
