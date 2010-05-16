@@ -903,6 +903,29 @@ void Log::outRemote(const char * str, ...)
     }
     fflush(stdout);
 }
+ 
+void Log::WaitBeforeContinueIfNeed()
+{
+    int mode = sConfig.GetIntDefault("WaitAtStartupError",0);
+
+    if (mode < 0)
+    {
+        printf("\nPress <Enter> for continue\n");
+
+        std::string line;
+        std::getline (std::cin, line);
+    }
+    else if (mode > 0)
+    {
+        printf("\nWait %u secs for continue.\n",mode);
+        barGoLink bar(mode);
+        for(int i = 0; i < mode; ++i)
+        {
+            bar.step();
+            ACE_OS::sleep(1);
+        }
+    }
+}
 
 void Log::outChat(const char * str, ...)
 {

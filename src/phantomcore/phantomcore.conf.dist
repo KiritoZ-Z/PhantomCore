@@ -865,6 +865,12 @@ ChatLogTimestamp = 0
 #        Default: 1 (true)
 #                 0 (false)
 #
+#    WaitAtStartupError
+#        After startup error report wait <Enter> or some time before continue (and possible close console window)
+#                 -1 (wait until <Enter> press)
+#        Default:  0 (not wait)
+#                  N (>0, wait N secs)
+#
 #    Motd
 #        Message of the Day. Displayed at worldlogin for every user
 #         Use '@' for a newline, and be sure to escape special characters.
@@ -929,6 +935,7 @@ OffhandCheckAtSpellUnlearn = 0
 ClientCacheVersion = 0
 Event.Announce = 0
 BeepAtStart = 1
+WaitAtStartupError = 0
 Motd = "Welcome to a Trinity Core server."
 Server.LoginInfo = 0
 
