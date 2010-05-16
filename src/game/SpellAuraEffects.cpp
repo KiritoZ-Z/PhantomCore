@@ -5621,6 +5621,12 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                 case 47977:                             // Magic Broom
                     Spell::SelectMountByAreaAndSkill(m_target, 42680, 42683, 42667, 42668, 0);
                         return;
+                case 71342:                             // Big Love Rocket
+                    Spell::SelectMountByAreaAndSkill(m_target, 71344, 71345, 71346, 71347, 0);
+                        return;
+                case 72286:                             // Invincible 	
+                    Spell::SelectMountByAreaAndSkill(m_target, 72281, 72282, 72283, 72284, 0);
+                         return;
                 case 62061:                                     // Festive Holiday Mount
                     if (target->HasAuraType(SPELL_AURA_MOUNTED))
                         target->CastSpell(target, 25860, true, NULL, this); // Reindeer Transformation
