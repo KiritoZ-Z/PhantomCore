@@ -433,6 +433,8 @@ void AddSC_boss_garfrost();
 void AddSC_boss_ick();
 void AddSC_boss_tyrannus();
 
+void AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
+
 void AddSC_dalaran();
 void AddSC_borean_tundra();
 void AddSC_dragonblight();
@@ -945,6 +947,8 @@ void AddScripts()
     AddSC_boss_garfrost();
     AddSC_boss_ick();
     AddSC_boss_tyrannus();
+
+	AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
     AddSC_dalaran();
     AddSC_borean_tundra();

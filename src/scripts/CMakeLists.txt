@@ -338,6 +338,7 @@ SET(scripts_STAT_SRCS
    northrend/icecrown_citadel/Lower_Spire_Trash.cpp
    northrend/icecrown_citadel/Shadowmourne.cpp
    northrend/icecrown_citadel/boss_deathbringer_saurfang.cpp
+   northrend/icecrown_citadel/boss_blood-queen_lanathel.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_argent_challenge.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_black_knight.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_grand_champions.cpp
