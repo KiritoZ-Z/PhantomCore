@@ -52,6 +52,8 @@
 #include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 
+#include <iosfwd>
+
 #define SPELL_CHANNEL_UPDATE_INTERVAL (1 * IN_MILISECONDS)
 
 extern pEffect SpellEffects[TOTAL_SPELL_EFFECTS];
@@ -7043,7 +7045,7 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
         return;
 
     // Prevent stacking of mounts
-    target->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+    target->RemoveMovementImpairingAuras(SPELL_AURA_MOUNTED);
     uint16 skillval = ((Player*)target)->GetSkillValue(SKILL_RIDING);
     if (!skillval)
         return;
@@ -7056,8 +7058,8 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
         uint32 zone, area;
         target->GetZoneAndAreaId(zone, area);
 
-        SpellCastResult locRes= sSpellMgr.GetSpellAllowedInLocationError(pSpell, target->GetMapId(), zone, area, target->GetCharmerOrOwnerPlayerOrPlayerItself());
-        if (locRes != SPELL_CAST_OK || !((Player*)target)->IsKnowHowFlyIn(target->GetMapId(), zone, area))
+        SpellCastResult locRes= spellmgr.GetSpellAllowedInLocationError(pSpell, target->GetMapId(), zone, area, target->GetCharmerOrOwnerPlayerOrPlayerItself());
+        if (locRes != SPELL_CAST_OK || !((Player*)target)->IsKnowHowFlyIn(target->GetMapId(), zone))
             target->CastSpell(target, spellId150, true);
         else if (spellIdSpecial > 0)
         {
