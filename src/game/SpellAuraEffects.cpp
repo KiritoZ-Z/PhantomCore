@@ -5618,7 +5618,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         if (AuraEffect *aurEff = caster->GetAuraEffect(63330, 0)) // glyph of Dancing Rune Weapon
                             GetBase()->SetDuration(GetBase()->GetDuration() + aurEff->GetAmount());
                     break;
-                case 47977:                             // Magic Broom
+                /*case 47977:                             // Magic Broom
                     Spell::SelectMountByAreaAndSkill(target, 42680, 42683, 42667, 42668, 0);
                         return;
                 case 71342:                             // Big Love Rocket
@@ -5626,7 +5626,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         return;
                 case 72286:                             // Invincible 	
                     Spell::SelectMountByAreaAndSkill(target, 72281, 72282, 72283, 72284, 0);
-                         return;
+                         return;*/
                 case 62061:                                     // Festive Holiday Mount
                     if (target->HasAuraType(SPELL_AURA_MOUNTED))
                         target->CastSpell(target, 25860, true, NULL, this); // Reindeer Transformation
