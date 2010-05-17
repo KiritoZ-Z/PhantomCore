@@ -33,6 +33,12 @@
 #include "WaypointMovementGenerator.h"
 #include "InstanceSaveMgr.h"
 #include "ObjectMgr.h"
+#include "World.h"
+
+// Movement anticheat defines
+//#define ANTICHEAT_DEBUG
+#define ANTICHEAT_EXCEPTION_INFO
+// End Movement anticheat defines
 
 void WorldSession::HandleMoveWorldportAckOpcode(WorldPacket & /*recv_data*/)
 {
@@ -247,6 +253,12 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
     assert(mover != NULL);                                  // there must always be a mover
 
     Player *plMover = mover->GetTypeId() == TYPEID_PLAYER ? (Player*)mover : NULL;
+    Vehicle *vehMover = mover->GetVehicleKit();
+    if (vehMover)
+        if (mover->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED))
+            if (Unit *charmer = mover->GetCharmer())
+                if (charmer->GetTypeId() == TYPEID_PLAYER)
+                    plMover = (Player*)charmer;
 
     // ignore, waiting processing in WorldSession::HandleMoveWorldportAckOpcode and WorldSession::HandleMoveTeleportAck
     if (plMover && plMover->IsBeingTeleported())
@@ -299,7 +311,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
         }
 
         // if we boarded a transport, add us to it
-        if (plMover && !plMover->GetTransport())
+        if (plMover && !plMover->m_transport && !plMover->m_temp_transport)
         {
             // elevators also cause the client to send MOVEMENTFLAG_ONTRANSPORT - just unmount if the guid can be found in the transport list
             for (MapManager::TransportSet::const_iterator iter = MapManager::Instance().m_Transports.begin(); iter != MapManager::Instance().m_Transports.end(); ++iter)
@@ -311,19 +323,27 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
                     break;
                 }
             }
+            if (!plMover->m_transport)
+                if (Map *tempMap = mover->GetMap())
+                    if (GameObject *tempTransport = tempMap->GetGameObject(movementInfo.t_guid))
+                        if (tempTransport->IsTransport())
+                            plMover->m_temp_transport = tempTransport;
         }
 
-        if (!mover->GetTransport() && !mover->GetVehicle())
+        if ((!plMover && !mover->GetTransport() && !mover->GetVehicle()) || (plMover && !plMover->m_vehicle && !plMover->m_transport && !plMover->m_temp_transport)) // Not sure if the first part is needed. Just added it for verbosity.
         {
             GameObject *go = mover->GetMap()->GetGameObject(movementInfo.t_guid);
             if (!go || go->GetGoType() != GAMEOBJECT_TYPE_TRANSPORT)
                 movementInfo.flags &= ~MOVEMENTFLAG_ONTRANSPORT;
         }
     }
-    else if (plMover && plMover->GetTransport())                // if we were on a transport, leave
+    else if (plMover && (plMover->m_transport || plMover->m_temp_transport))                // if we were on a transport, leave
     {
-        plMover->m_transport->RemovePassenger(plMover);
-        plMover->m_transport = NULL;
+        if (plMover->m_transport)
+        {
+            plMover->m_transport->RemovePassenger(plMover);
+            plMover->m_transport = NULL;
+        }
         movementInfo.t_x = 0.0f;
         movementInfo.t_y = 0.0f;
         movementInfo.t_z = 0.0f;
@@ -334,7 +354,13 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 
     // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
     if (opcode == MSG_MOVE_FALL_LAND && plMover && !plMover->isInFlight())
-        plMover->HandleFall(movementInfo);
+    {
+        // movement anticheat
+        plMover->m_anti_JumpCount = 0;
+        plMover->m_anti_JumpBaseZ = 0;
+        if (!vehMover)
+            plMover->HandleFall(movementInfo);
+    }
 
     if (plMover && ((movementInfo.flags & MOVEMENTFLAG_SWIMMING) != 0) != plMover->IsInWater())
     {
@@ -343,8 +369,343 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
     }
 
     /*----------------------*/
-
+     // begin anti cheat
+     bool check_passed = true;
+     #ifdef ANTICHEAT_DEBUG
+     sLog.outBasic("AC2-%s > time: %d fall-time: %d | xyzo: %f, %f, %fo(%f) flags[%X] opcode[%s] | transport (xyzo): %f, %f, %fo(%f)",
+         plMover->GetName(), movementInfo.time, movementInfo.fallTime, movementInfo.x, movementInfo.y, movementInfo.z, movementInfo.o,
+         movementInfo.flags, LookupOpcodeName(opcode), movementInfo.t_x, movementInfo.t_y, movementInfo.t_z, movementInfo.t_o);
+     sLog.outBasic("AC2-%s Transport > GUID: (low)%d - (high)%d",
+         plMover->GetName(), GUID_LOPART(movementInfo.t_guid), GUID_HIPART(movementInfo.t_guid));
+     #endif
+  
+     if (plMover)
+     {
+         if (World::GetEnableMvAnticheat() && !plMover->GetCharmerOrOwnerPlayerOrPlayerItself()->isGameMaster())
+         {
+             // calc time deltas
+             int32 cClientTimeDelta = 1500;
+             if (plMover->m_anti_LastClientTime != 0)
+             {
+                 cClientTimeDelta = movementInfo.time - plMover->m_anti_LastClientTime;
+                 plMover->m_anti_DeltaClientTime += cClientTimeDelta;
+                 plMover->m_anti_LastClientTime = movementInfo.time;
+             }
+             else
+                 plMover->m_anti_LastClientTime = movementInfo.time;
+ 
+             const uint64 cServerTime = getMSTime();
+             uint32 cServerTimeDelta = 1500;
+             if (plMover->m_anti_LastServerTime != 0)
+             {
+                 cServerTimeDelta = cServerTime - plMover->m_anti_LastServerTime;
+                 plMover->m_anti_DeltaServerTime += cServerTimeDelta;
+                 plMover->m_anti_LastServerTime = cServerTime;
+             }
+             else
+                 plMover->m_anti_LastServerTime = cServerTime;
+ 
+             // resync times on client login (first 15 sec for heavy areas)
+             if (plMover->m_anti_DeltaServerTime < 15000 && plMover->m_anti_DeltaClientTime < 15000)
+                 plMover->m_anti_DeltaClientTime = plMover->m_anti_DeltaServerTime;
+ 
+             const int32 sync_time = plMover->m_anti_DeltaClientTime - plMover->m_anti_DeltaServerTime;
+ 
+             #ifdef ANTICHEAT_DEBUG
+             sLog.outBasic("AC2-%s Time > cClientTimeDelta: %d, cServerTime: %d | deltaC: %d - deltaS: %d | SyncTime: %d", plMover->GetName(), cClientTimeDelta, cServerTime, plMover->m_anti_DeltaClientTime, plMover->m_anti_DeltaServerTime, sync_time);
+             #endif
+ 
+             // mistiming checks
+             const int32 GetMistimingDelta = abs(int32(World::GetMistimingDelta()));
+             if (sync_time > GetMistimingDelta)
+             {
+                 cClientTimeDelta = cServerTimeDelta;
+                 ++(plMover->m_anti_MistimingCount);
+ 
+                 const bool bMistimingModulo = plMover->m_anti_MistimingCount % 50 == 0;
+ 
+                 if (bMistimingModulo)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO
+                     sLog.outError("AC2-%s, mistiming exception #%d, mistiming: %dms", plMover->GetName(), plMover->m_anti_MistimingCount, sync_time);
+                     #endif
+                     check_passed = false;
+                 }                   
+                 if (vehMover)
+                     vehMover->Die();
+                 // Tell the player "Sure, you can fly!"
+                 {
+                     WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
+                     data.append(plMover->GetPackGUID());
+                     data << uint32(0);
+                     SendPacket(&data);
+                 }
+                 // Then tell the player "Wait, no, you can't."
+                 {
+                     WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                     data.append(plMover->GetPackGUID());
+                     data << uint32(0);
+                     SendPacket(&data);
+                 }
+                 plMover->FallGround(2);
+ 
+                 /* Disabled, not passive at all, and apparently causing crashes:
+                 if (plMover->m_anti_MistimingCount > World::GetMistimingAlarms())
+                 {
+                     sWorld.SendWorldText(3, strcat("Kicking cheater: ", plMover->GetName()));
+                     KickPlayer();
+                     return;
+                 } */ 
+             }
+             // end mistiming checks
+ 
+             const uint32 curDest = plMover->m_taxi.GetTaxiDestination(); // check taxi flight
+             if (!curDest)
+             {
+                 UnitMoveType move_type;
+ 
+                 // calculating section
+                 // current speed
+                 if (movementInfo.flags & MOVEMENTFLAG_FLYING)
+                     move_type = movementInfo.flags & MOVEMENTFLAG_BACKWARD ? MOVE_FLIGHT_BACK : MOVE_FLIGHT;
+                 else if (movementInfo.flags & MOVEMENTFLAG_SWIMMING)
+                     move_type = movementInfo.flags & MOVEMENTFLAG_BACKWARD ? MOVE_SWIM_BACK : MOVE_SWIM;
+                 else if (movementInfo.flags & MOVEMENTFLAG_WALK_MODE)
+                     move_type = MOVE_WALK;
+                 // hmm... in first time after login player has MOVE_SWIMBACK instead MOVE_WALKBACK
+                 else
+                     move_type = movementInfo.flags & MOVEMENTFLAG_BACKWARD ? MOVE_SWIM_BACK : MOVE_RUN;
+ 
+                 const float current_speed = mover->GetSpeed(move_type);
+                 // end current speed
+ 
+                 // movement distance
+                 const float delta_x = plMover->m_transport || plMover->m_temp_transport ? 0 : plMover->GetPositionX() - movementInfo.x;
+                 const float delta_y = plMover->m_transport || plMover->m_temp_transport ? 0 : plMover->GetPositionY() - movementInfo.y;
+                 const float delta_z = plMover->m_transport || plMover->m_temp_transport ? 0 : plMover->GetPositionZ() - movementInfo.z;
+                 const float real_delta = plMover->m_transport || plMover->m_temp_transport ? 0 : pow(delta_x, 2) + pow(delta_y, 2);
+                 // end movement distance
+ 
+                 const bool no_fly_auras = !(plMover->HasAuraType(SPELL_AURA_FLY) || plMover->HasAuraType(SPELL_AURA_MOD_INCREASE_VEHICLE_FLIGHT_SPEED)
+                     || plMover->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) || plMover->HasAuraType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED)
+                     || plMover->HasAuraType(SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS) || plMover->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK));
+                 const bool no_fly_flags = (movementInfo.flags & (MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLY_MODE | MOVEMENTFLAG_FLYING)) == 0;
+ 
+                 const bool no_swim_flags = (movementInfo.flags & MOVEMENTFLAG_SWIMMING) == 0;
+                 const bool no_swim_in_water = !mover->IsInWater();
+                 const bool no_swim_above_water = movementInfo.z-7.0f >= mover->GetBaseMap()->GetWaterLevel(movementInfo.x,movementInfo.y);
+                 const bool no_swim_water = no_swim_in_water && no_swim_above_water;
+ 
+                 const bool no_waterwalk_flags = (movementInfo.flags & MOVEMENTFLAG_WATERWALKING) == 0;
+                 const bool no_waterwalk_auras = !(plMover->HasAuraType(SPELL_AURA_WATER_WALK) || plMover->HasAuraType(SPELL_AURA_GHOST));
+ 
+                 if (cClientTimeDelta < 0)
+                     cClientTimeDelta = 0;
+                 const float time_delta = cClientTimeDelta < 1500 ? float(cClientTimeDelta)/1000.0f : 1.5f; // normalize time - 1.5 second allowed for heavy loaded server
+ 
+                 const float tg_z = (real_delta != 0 && no_fly_auras && no_swim_flags) ? (pow(delta_z, 2) / real_delta) : -99999; // movement distance tangents
+ 
+                 if (current_speed < plMover->m_anti_Last_HSpeed && plMover->m_anti_LastSpeedChangeTime == 0)
+                     plMover->m_anti_LastSpeedChangeTime = movementInfo.time + uint32(floor(((plMover->m_anti_Last_HSpeed / current_speed) * 1500)) + 100); // 100ms above for random fluctuation
+ 
+                 const float allowed_delta = plMover->m_transport || plMover->m_temp_transport ? 2 : // movement distance allowed delta
+                     pow(std::max(current_speed, plMover->m_anti_Last_HSpeed) * time_delta, 2)
+                     + 2                                                                             // minimum allowed delta
+                     + (tg_z > 2.2 ? pow(delta_z, 2)/2.37f : 0);                                     // mountain fall allowed delta
+ 
+                 if (movementInfo.time > plMover->m_anti_LastSpeedChangeTime)
+                 {
+                     plMover->m_anti_Last_HSpeed = current_speed;                                    // store current speed
+                     plMover->m_anti_Last_VSpeed = -2.3f;
+                     plMover->m_anti_LastSpeedChangeTime = 0;
+                 }
+                 // end calculating section
+ 
+                 // AntiGravity (thanks to Meekro)
+                 const float JumpHeight = plMover->m_anti_JumpBaseZ - movementInfo.z;
+                 if (no_fly_auras && no_swim_in_water && plMover->m_anti_JumpBaseZ != 0 && JumpHeight < plMover->m_anti_Last_VSpeed)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO
+                     sLog.outError("AC2-%s, AntiGravity exception. JumpHeight = %f, Allowed Vertical Speed = %f",
+                         plMover->GetName(), JumpHeight, plMover->m_anti_Last_VSpeed);
+                     #endif
+                     check_passed = false;
+                     if (vehMover)
+                         vehMover->Die();
+                     // Tell the player "Sure, you can fly!"
+                     {
+                         WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     // Then tell the player "Wait, no, you can't."
+                     {
+                         WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     plMover->FallGround(2);
+                 }
+ 
+                 // multi jump checks
+                 if (opcode == MSG_MOVE_JUMP)
+                 {
+                     if (no_fly_auras && no_swim_water)
+                     {
+                         if (plMover->m_anti_JumpCount >= 1)
+                         {
+                             // don't process new jump packet
+                             check_passed = false;
+                             if (vehMover)
+                                 vehMover->Die();
+                             // Tell the player "Sure, you can fly!"
+                             {
+                                 WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
+                                 data.append(plMover->GetPackGUID());
+                                 data << uint32(0);
+                                 SendPacket(&data);
+                             }
+                             // Then tell the player "Wait, no, you can't."
+                             {
+                                 WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                                 data.append(plMover->GetPackGUID());
+                                 data << uint32(0);
+                                 SendPacket(&data);
+                             }
+                             plMover->FallGround(2);
+                             plMover->m_anti_JumpCount = 0;
+                         }
+                         else
+                         {
+                             plMover->m_anti_JumpCount += 1;
+                             plMover->m_anti_JumpBaseZ = movementInfo.z;
+                         }
+                     } else
+                         plMover->m_anti_JumpCount = 0;
+                 }
+ 
+                 // speed and teleport hack checks
+                 if (real_delta > allowed_delta)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO
+                     if (real_delta < 4900.0f)
+                         sLog.outError("AC2-%s, speed exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plMover->GetName(), real_delta, allowed_delta, current_speed, plMover->m_anti_Last_HSpeed, time_delta);
+                     else
+                         sLog.outError("AC2-%s, teleport exception | cDelta=%f aDelta=%f | cSpeed=%f lSpeed=%f deltaTime=%f", plMover->GetName(), real_delta, allowed_delta, current_speed, plMover->m_anti_Last_HSpeed, time_delta);
+                     #endif
+                     check_passed = false;
+                     if (vehMover)
+                         vehMover->Die();
+                     plMover->FallGround(2);
+                 }
+ 
+                 // mountain hack checks // 1.56f (delta_z < GetPlayer()->m_anti_Last_VSpeed))
+                 if (delta_z < plMover->m_anti_Last_VSpeed && plMover->m_anti_JumpCount == 0 && tg_z > 2.37f)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO
+                     sLog.outError("AC2-%s, mountain exception | tg_z=%f", plMover->GetName(), tg_z);
+                     #endif
+                     check_passed = false;
+                     if (vehMover)
+                         vehMover->Die();
+                 }
+ 
+                 // Fly hack checks
+                 if (no_fly_auras && !no_fly_flags)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO // Aura numbers: 201, 206, 207, 208, 209, 211
+                     sLog.outError("AC2-%s, flight exception. {SPELL_AURA_FLY=[%X]} {SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED=[%X]} {SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED=[%X]} {SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS=[%X]} {SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK=[%X]} {plMover->GetVehicle()=[%X]}",
+                         plMover->GetName(),
+                         plMover->HasAuraType(SPELL_AURA_FLY), plMover->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED),
+                         plMover->HasAuraType(SPELL_AURA_MOD_INCREASE_FLIGHT_SPEED), plMover->HasAuraType(SPELL_AURA_MOD_MOUNTED_FLIGHT_SPEED_ALWAYS),
+                         plMover->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_NOT_STACK), plMover->GetVehicle());
+                     #endif
+                     check_passed = false;
+                     if (vehMover)
+                         vehMover->Die();
+                     // Tell the player "Sure, you can fly!"
+                     {
+                         WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     // Then tell the player "Wait, no, you can't."
+                     {
+                         WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     plMover->FallGround(2);
+                 }
+ 
+                 // Waterwalk checks
+                 if (no_waterwalk_auras && !no_waterwalk_flags)
+                 {
+                     #ifdef ANTICHEAT_EXCEPTION_INFO
+                     sLog.outError("AC2-%s, waterwalk exception. [%X]{SPELL_AURA_WATER_WALK=[%X]}",
+                         plMover->GetName(), movementInfo.flags, plMover->HasAuraType(SPELL_AURA_WATER_WALK));
+                     #endif
+                     check_passed = false;
+                     if (vehMover)
+                         vehMover->Die();
+                     // Tell the player "Sure, you can fly!"
+                     {
+                         WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     // Then tell the player "Wait, no, you can't."
+                     {
+                         WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+                         data.append(plMover->GetPackGUID());
+                         data << uint32(0);
+                         SendPacket(&data);
+                     }
+                     plMover->FallGround(2);
+                 }
+ 
+                 // Teleport To Plane checks
+                 if (no_swim_in_water && movementInfo.z < 0.0001f && movementInfo.z > -0.0001f)
+                 {
+                     if (const Map *map = plMover->GetMap())
+                     {
+                         float plane_z = map->GetHeight(movementInfo.x, movementInfo.y, MAX_HEIGHT) - movementInfo.z;
+                         plane_z = (plane_z < -500.0f) ? 0.0f : plane_z; // check holes in height map
+                         if (plane_z > 0.1f || plane_z < -0.1f)
+                         {
+                             #ifdef ANTICHEAT_DEBUG
+                             sLog.outDebug("AC2-%s, teleport to plane exception. plane_z: %f", plMover->GetName(), plane_z);
+                             #endif
+                             #ifdef ANTICHEAT_EXCEPTION_INFO
+                             if (plMover->m_anti_TeleToPlane_Count > World::GetTeleportToPlaneAlarms())
+                             {
+                                 sLog.outError("AC2-%s, teleport to plane exception. Exception count: %d", plMover->GetName(), plMover->m_anti_TeleToPlane_Count);
+                                 /* Disabled, not passive at all, and apparently causing crashes:
+                                 sWorld.SendWorldText(3, strcat("Kicking cheater: ", plMover->GetName()));
+                                 KickPlayer();
+                                 return; */
+                             }
+                             #endif
+                             ++(plMover->m_anti_TeleToPlane_Count);
+                             check_passed = false;
+                             if (vehMover)
+                                 vehMover->Die();
+                         }
+                     }
+                 }
+                 else
+                     plMover->m_anti_TeleToPlane_Count = 0;
+             }
+         }
+     }	
     /* process position-change */
+    if (check_passed)
+    {
     WorldPacket data(opcode, recv_data.size());
     movementInfo.time = getMSTime();
     movementInfo.guid = mover->GetGUID();
@@ -362,7 +723,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 
     mover->SetPosition(movementInfo.x, movementInfo.y, movementInfo.z, movementInfo.o);
 
-    if (plMover)                                            // nothing is charmed, or player charmed
+    if (plMover && !vehMover)                                            // nothing is charmed, or player charmed
     {
         plMover->UpdateFallInformationIfNeed(movementInfo, opcode);
 
@@ -396,6 +757,13 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
                 plMover->RepopAtGraveyard();
             }
         }
+        // movement anticheat
+        if (plMover->m_anti_AlarmCount > 0)
+        {
+            sLog.outError("AC2-%s produce %d anticheat alarms", plMover->GetName(), plMover->m_anti_AlarmCount);
+            plMover->m_anti_AlarmCount = 0;
+        }
+        // end movement anticheat
     }
     /*else                                                    // creature charmed
     {
@@ -409,6 +777,22 @@ void WorldSession::HandleMovementOpcodes(WorldPacket & recv_data)
 
     //sLog.outString("Receive Movement Packet %s:", opcodeTable[recv_data.GetOpcode()]);
     //mover->OutMovementInfo();
+    }
+    else if (plMover)
+    {
+        if (plMover->m_transport)
+        {
+            plMover->m_transport->RemovePassenger(plMover);
+            plMover->m_transport = NULL;
+        }
+        plMover->m_temp_transport = NULL;
+        ++(plMover->m_anti_AlarmCount);
+        WorldPacket data;
+        plMover->SetUnitMovementFlags(0);
+        plMover->SendTeleportAckPacket();
+        plMover->BuildHeartBeatMsg(&data);
+        plMover->SendMessageToSet(&data, true);
+    }
 }
 
 void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
@@ -697,6 +1081,21 @@ void WorldSession::HandleMoveKnockBackAck(WorldPacket & recv_data)
 
     MovementInfo movementInfo;
     ReadMovementInfo(recv_data, &movementInfo);
+
+    // Save movement flags
+    _player->SetUnitMovementFlags(movementInfo.flags);
+    #ifdef ANTICHEAT_DEBUG
+    sLog.outBasic("%s CMSG_MOVE_KNOCK_BACK_ACK: time: %d, fall time: %d | xyzo: %f,%f,%fo(%f) flags[%X]", GetPlayer()->GetName(), movementInfo.time, movementInfo.fallTime, movementInfo.x, movementInfo.y, movementInfo.z, movementInfo.o, movementInfo.flags);
+    sLog.outBasic("%s CMSG_MOVE_KNOCK_BACK_ACK additional: Vspeed: %f, Hspeed: %f", GetPlayer()->GetName(), movementInfo.j_unk, movementInfo.j_xyspeed);
+    #endif
+
+    _player->m_movementInfo = movementInfo;
+    _player->m_anti_Last_HSpeed = movementInfo.j_xyspeed;
+    _player->m_anti_Last_VSpeed = movementInfo.j_zspeed < 3.2f ? movementInfo.j_zspeed - 1.0f : 3.2f;
+
+    const uint32 dt = (_player->m_anti_Last_VSpeed < 0) ? int(ceil(_player->m_anti_Last_VSpeed/-25)*1000) : int(ceil(_player->m_anti_Last_VSpeed/25)*1000);
+    _player->m_anti_LastSpeedChangeTime = movementInfo.time + dt + 1000;
+
 }
 
 void WorldSession::HandleMoveHoverAck(WorldPacket& recv_data)
