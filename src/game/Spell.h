@@ -512,7 +512,11 @@ class Spell
         void CleanupTargetList();
 
         void SetSpellValue(SpellValueMod mod, int32 value);
+
+		static void SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial);
+
     protected:
+    
 
         void SendLoot(uint64 guid, LootType loottype);
 
