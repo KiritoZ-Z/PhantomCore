@@ -2055,6 +2055,11 @@ void Spell::EffectDummy(uint32 i)
                 m_caster->CastCustomSpell(m_caster, 45470, &bp, NULL, NULL, false);
                 return;
             }
+			else if (m_spellInfo->Id == 45524)
+			{
+				m_caster->CastSpell(unitTarget, 55095, true);
+				return;
+			}
             // Scourge Strike
             if (m_spellInfo->SpellFamilyFlags[1] & SPELLFAMILYFLAG1_DK_SCOURGE_STRIKE)
             {
