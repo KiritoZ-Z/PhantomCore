@@ -3335,6 +3335,10 @@
 							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\Shadowmourne.cpp"
 							>
 						</File>
+						<File
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\boss_blood-queen_lanathel.cpp"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter
