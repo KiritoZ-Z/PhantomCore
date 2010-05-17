@@ -25,9 +25,13 @@
 #include "Policies/SingletonImp.h"
 #include "Config/ConfigEnv.h"
 #include "Util.h"
+#include "ProgressBar.h"
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <fstream>
+#include <iostream>
+
 
 INSTANTIATE_SINGLETON_1( Log );
 
@@ -915,7 +919,7 @@ void Log::WaitBeforeContinueIfNeed()
         printf("\nPress <Enter> for continue\n");
 
         std::string line;
-        std::getline (std::cin, line);
+		std::getline (std::cin, line);
     }
     else if (mode > 0)
     {
