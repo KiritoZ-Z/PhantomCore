@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
+ * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -19,299 +21,471 @@
 #include "ScriptedPch.h"
 #include "instance_icecrown_citadel.h"
 
-#define SAY_INTRO_1                   -1609402
-#define SAY_INTRO_2                   -1609403
-#define SAY_INTRO_3                   -1609404
-#define SAY_INTRO_4                   -1609405
-#define SAY_INTRO_5                   -1609406
-#define SAY_INTRO_6                   -1609407
-#define SAY_INTRO_7                   -1609408
-#define SAY_AGGRO                     -1609409
-#define SAY_PHASE_2                   -1609410
-#define SAY_DARK_EMPOWERMENT          -1609411
-#define SAY_DARK_TRANSFORMATION       -1609412
-#define SAY_RAISE_DEAD                -1609413
-#define SAY_DOMINATE_MIND             -1609414
-#define SAY_ENRAGE                    -1609415
-#define SAY_DEATH                     -1609416
-#define SAY_SLAY_1                    -1609417
-#define SAY_SLAY_2                    -1609418
-
-
-#define SPELL_ENRAGE                   RAID_MODE(26662,26662)
-#define SPELL_DAD                      RAID_MODE(71001,72108)
-#define SPELL_FROSTBOLT                RAID_MODE(71420,72007)
-#define SPELL_FROSTBOLT_VOLLEY         RAID_MODE(72905,72906)
-#define SPELL_MANA_BARRIER             RAID_MODE(70842,70842)
-#define SPELL_SHADOW_BOLT              RAID_MODE(71254,72008)
-#define SPELL_TOUCH_OF_INSIGINIFANCE   RAID_MODE(71204,71204)
-#define SPELL_DARK_EMPOWERMENT         RAID_MODE(70901,70901)
-#define SPELL_DOMINATE_MIND            71289
-#define SPELL_HACK_HEAL                15068 // This is not right, but im just hackin it for now.
-
-#define EVENT_ENRAGE              1
-#define EVENT_DAD                 2
-#define EVENT_FROSTBOLT           3
-#define EVENT_FROSTBOLT_VOLLEY    4
-#define EVENT_MANA_BARRIER        5
-#define EVENT_SHADOW_BOLT         6
-#define EVENT_TOUCH_OF_INSI       7
-#define EVENT_DARK_EMPOWERMENT    8
-#define EVENT_DOMINATE_MIND  	  9
-#define EVENT_INTRO_1             10
-#define EVENT_INTRO_2             11
-#define EVENT_INTRO_3             12
-#define EVENT_INTRO_4             13
-#define EVENT_INTRO_5             14
-#define EVENT_INTRO_6             15
-#define EVENT_INTRO_7             16
-#define EVENT_SPAWN_LEFT          17
-#define EVENT_SPAWN_RIGHT         18
-
-// Not like I couldnt have just checked the NPCs in the DB, but thanks scriptdev2 people for the coords
-#define ADD_1X -619.006
-#define ADD_1Y 2158.104
-#define ADD_1Z 50.848
-
-#define ADD_2X -598.697
-#define ADD_2Y 2157.767
-#define ADD_2Z 50.848
-
-#define ADD_3X -577.992
-#define ADD_3Y 2156.989
-#define ADD_3Z 50.848
-
-#define ADD_4X -618.748
-#define ADD_4Y 2266.648
-#define ADD_4Z 50.849
-
-#define ADD_5X -598.573
-#define ADD_5Y 2266.870
-#define ADD_5Z 50.849
-
-#define ADD_6X -578.360
-#define ADD_6Y 2267.210
-#define ADD_6Z 50.849
-
-struct boss_DeathwhisperAI : public ScriptedAI
+enum Spells
 {
-    boss_DeathwhisperAI(Creature *c) : ScriptedAI(c)
-    {
-        pInstance = c->GetInstanceData();
+	/******** Lady Deathwhisper Spell *********/
+	SPELL_DEATH_AND_DECAY			=	72108,
+	SPELL_DOMINATE_MIND				=	71289,
+	SPELL_SHADOW_BOLT				=   71254,
+	SPELL_MANA_BARRIER				=	70842,
+	SPELL_DARK_TRANSFORMATION		=	70900,
+	SPELL_DARK_EMPOWEREMENT			=	70901,
+	SPELL_FROST_BOLT				=	71420,
+	SPELL_FROST_BOLT_VALLEY			=	72905,
+	SPELL_SUMMON_SHADE				=	71363,
+	SPELL_INSIGNIFICANCE			=	71204,
+	SPELL_ROOT						=	42716,
+	SPELL_BERSERK					=	47008,
+	
+	/********* Cult Adherents & Reanimated Adherents Spells *********/
+	SPELL_FROST_FEVER				=	71129,
+	SPELL_DEATHCHILL_BOLT			=	70594,
+	SPELL_DEATHCHILL_BLAST			=	70906,
+	SPELL_DARK_MARTYRDROM			=	70903,
+	SPELL_CURSE_OF_TOPOR			=	71237,
+	SPELL_SHORUD_OF_THE_OCCULUT		=	70768,
+	SPELL_ADHERENTS_DETERMINIATION	=	71234,
+	SPELL_PORT_VISUAL				=	41236,
 
-        SpellEntry *TempSpell;
-        TempSpell = GET_SPELL(SPELL_MANA_BARRIER);
-        if (TempSpell && TempSpell->EffectTriggerSpell[0] != SPELL_HACK_HEAL)
-        {
-            TempSpell->EffectTriggerSpell[0] = SPELL_HACK_HEAL;
-        }
+	/******* Difficulty Spells *******/
+	SPELL_DEATH_AND_DECAY_25			=	72110,
+	SPELL_SHADOW_BOLT_25				=	72008,
+	H_SPELL_SHADOW_BOLT_10				=	72008,	
+	H_SPELL_SHADOW_BOLT_25				=	72504,
+	//SPELL_ANIMATED_DEAD				=	?????,
+	N_25_SPELL_FROST_BOLT				=	72501,
+	H_10_SPELL_FROST_BOLT				=	72007,
+	H_25_SPELL_FROST_BOLT				=	72502,
+	H_10_SPELL_FROST_BOLT_VALLEY		=	72907,
+	N_25_SPELL_FROST_BOLT_VALLEY		=	72906,
+	H_25_SPELL_FROST_BOLT_VALLEY		=	72909,
+	H_10_SPELl_FROST_FEVER				=	67719,
+	N_25_SPELL_FROST_FEVER				=	67934,
+	H_25_SPELL_FROST_FEVER				=	67978,
+	N_25_SPELL_DEATHCHILL_BOLT			=	72005,
+	H_10_SPELL_DEATHCHILL_BOLT			=	72005,	
+	H_25_SPELL_DEATHCHILL_BOLT			=	72489,
+	H_10_SPELL_DEATHCHILL_BLAST			=	72485,
+	N_25_SPELL_DEATHCHILL_BLAST			=	72485,
+	H_25_SPELL_DEATHCHILL_BLAST			=	72487,
+	H_10_SPELL_DARK_MARTYRDROM			=	72497,
+	N_25_SPELL_DARK_MARTYRDROM			=	72497,
+  //H_25_SPELL_DARK_MARTYRDROM			=   ?????, // Ungekannte ID
+};
+
+enum Summons
+{
+	NPC_CULT_ADHERENT          = 37949,
+    NPC_CULT_FANATIC           = 37890,
+    NPC_VENGEFUL_SHADE         = 38222,
+};
+
+enum Yells
+{
+	SAY_INTRO_1			=	-1665907,
+	SAY_INTRO_2			=	-1665908,
+	SAY_INTRO_3			=	-1665902,	
+	SAY_INTRO_4			=	-1665903,
+	SAY_INTRO_5			=	-1665904,
+	SAY_INTRO_6			=	-1665905,
+	SAY_INTRO_7			=	-1665906,
+
+	SAY_AGGRO			=	-1665909,
+	SAY_PHASE_2			=	-1665910,
+	SAY_EMPOWERMENT		=	-1665911,
+	SAY_TRANSFORMATION	=	-1665912,
+	SAY_ANIMATE_DEAD	=	-1665913,
+	SAY_KILL_1			=	-1665917,
+	SAY_KILL_2			=	-1665918,
+	SAY_BERSERK			=	-1665915,
+	SAY_DEATH			=	-1665916,	
+};
+
+float SpawnLoc[6][3] =
+{
+    {-620.197449f, 2272.062256f, 50.848679f}, // 1 Right Door 1
+    {-598.636353f, 2272.062256f, 50.848679f}, // 2 Right Door 2
+    {-578.495728f, 2272.062256f, 50.848679f}, // 3 Right Door 3
+    {-578.495728f, 2149.211182f, 50.848679f}, // 4 Left Door 1
+    {-598.636353f, 2149.211182f, 50.848679f}, // 5 Left Door 2
+    {-620.197449f, 2149.211182f, 50.848679f}, // 6 Left Door 3
+};
+
+float HeroicSpawnLoc[3][3] =
+{
+	{-517.652466f, 2216.611328f, 62.823681f}, // 7 Upper marsh 1
+    {-517.652466f, 2211.611328f, 62.823681f}, // 8 Upper marsh 2
+    {-517.652466f, 2206.611328f, 62.823681f}, // 9 Upper marsh 3
+};
+
+struct NotCharmedTargetSelector : public std::unary_function<Unit *, bool> 
+{
+    NotCharmedTargetSelector() {}
+
+    bool operator() (const Unit *pTarget) {
+        return (!pTarget->isCharmed());
+    }
+};
+
+struct Boss_Lady_DeathwisperAI : public ScriptedAI
+{
+	Boss_Lady_DeathwisperAI(Creature *pCreature) : ScriptedAI(pCreature)
+    {
+		m_pInstance = pCreature->GetInstanceData();
     }
     
-    ScriptedInstance* pInstance;
-    EventMap events;
+    ScriptedInstance* m_pInstance;
 
-	bool Enraged;
-	bool deathwhisperintro;
-    uint8 Phase;
+	uint32 m_uiPhase;
+	uint32 m_uiDominateMindTimer;
+	uint32 m_uiSummonWaveTimer;
+	uint32 m_uiDeathandDecayTimer;
+	uint8  m_uiIntroText;
+    uint32 m_uiIntroTextTimer;
+	uint32 m_uiFrostBoltTimer;
+	uint32 m_uiFrostValleyTimer;
+	uint32 m_uiShadowBoltTimer;
+	uint32 m_uiDarkEmpoweredTimer;
 
     void Reset()
     {
-		events.Reset();
-        
-        if (pInstance)
-            pInstance->SetData(DATA_DEATHWHISPER_EVENT, NOT_STARTED);
+		m_uiPhase = 1;
+		m_uiSummonWaveTimer	= 15000;
+		m_uiDeathandDecayTimer = 10000;
+		m_uiIntroText = 0;
+        m_uiIntroTextTimer = 12000;
+		m_uiFrostBoltTimer = 15000;
+		m_uiFrostValleyTimer = 5000;
+		m_uiShadowBoltTimer = urand(5000,10000);
+		m_uiDarkEmpoweredTimer	= 30000;
 
-		Enraged = false;
-		deathwhisperintro = false;
-        Phase = 1;
+		if (!getDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+		m_uiDominateMindTimer = 15000;
+
+		if (m_pInstance)
+            m_pInstance->SetData(DATA_DEATHWHISPER_EVENT, NOT_STARTED);
     }
 
     void EnterCombat(Unit* who)
     {
-        if (pInstance)
-		{
-            pInstance->SetData(DATA_DEATHWHISPER_EVENT, IN_PROGRESS);
-		}
-		
-		Phase = 1;
 		DoScriptText(SAY_AGGRO, me);
-		events.ScheduleEvent(EVENT_ENRAGE, 600000);
-        events.ScheduleEvent(EVENT_SPAWN_LEFT, 20000);
-        events.ScheduleEvent(EVENT_DAD, 15000);
-        events.ScheduleEvent(EVENT_SHADOW_BOLT, 1);
+
+		if (m_pInstance)
+            m_pInstance->SetData(DATA_DEATHWHISPER_EVENT, IN_PROGRESS);
     }
 
-    // Mana Barrier is broken, it appears as though mana shields effects dont work either(?)
-    void DamageTaken(Unit *done_by, uint32 &damage)
+	void JustDied(Unit* killer)
+    {  
+		DoScriptText(SAY_DEATH, me);
+
+		if (m_pInstance)
+            m_pInstance->SetData(DATA_DEATHWHISPER_EVENT, DONE);
+    }
+
+	void KilledUnit(Unit *victim)
+    {
+        DoScriptText(RAND(SAY_KILL_1,SAY_KILL_2), me);
+    }
+
+	void MoveInLineOfSight(Unit* pWho)
+    {
+        if (me->IsWithinDistInMap(pWho, 50.0f) && m_uiIntroText == 0)
+        {
+            DoScriptText(SAY_INTRO_1, me);
+            m_uiIntroText++;
+        }
+    }
+
+	void JustSummoned(Creature* pSummoned)
+    {
+		pSummoned->CastSpell(pSummoned, SPELL_PORT_VISUAL, false);  
+
+        if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
+            pSummoned->AI()->AttackStart(pTarget);
+    }
+
+	void DamageTaken(Unit *done_by, uint32 &damage)
     {
         if (me->HasAura(SPELL_MANA_BARRIER))
         {
             me->SetHealth(me->GetHealth()+damage);
-            me->SetPower(POWER_MANA,me->GetPower(POWER_MANA)-damage);
+            me->SetPower(POWER_MANA, me->GetPower(POWER_MANA)>damage ? me->GetPower(POWER_MANA)-damage : 0);
         }
     }
 
-    void MoveInLineOfSight(Unit *who)
-    {
-        if (!deathwhisperintro && me->IsWithinDistInMap(who,105.0f))
-        {
-			deathwhisperintro = true;
-			events.ScheduleEvent(EVENT_INTRO_1, 1);
-		}
-        ScriptedAI::MoveInLineOfSight(who);
-    }
+	
+	void AdherentList(Unit* me)
+	{
+		me->FindNearestCreature(NPC_CULT_ADHERENT, 200.0f);
 
-    void KilledUnit(Unit *victim)
-    {
-        if (victim == me)
+        std::list<Creature*> pAdherentList;
+        Trinity::AllCreaturesOfEntryInRange checker(me, NPC_CULT_ADHERENT, 200.0f);
+        Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, pAdherentList, checker);
+        me->VisitNearbyObject(200.0f, searcher);
+
+        if(pAdherentList.empty())
             return;
-        DoScriptText(RAND(SAY_SLAY_1,SAY_SLAY_2), me);
-    }
-    
-    void UpdateAI(const uint32 diff)
+
+        std::list<Creature*>::iterator itr = pAdherentList.begin();
+        uint32 rnd = rand()%pAdherentList.size();
+
+        for(uint32 i = 0; i < rnd; ++i)
+            ++itr;
+
+        (*itr)->CastSpell(me, SPELL_DARK_EMPOWEREMENT, true);
+	}
+
+	void FanaticList(Unit* me)
+	{
+		me->FindNearestCreature(NPC_CULT_FANATIC, 200.0f);
+
+        std::list<Creature*> pFanaticList;
+        Trinity::AllCreaturesOfEntryInRange checker(me, NPC_CULT_FANATIC, 200.0f);
+        Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, pFanaticList, checker);
+        me->VisitNearbyObject(200.0f, searcher);
+
+        if(pFanaticList.empty())
+            return;
+
+        std::list<Creature*>::iterator itr = pFanaticList.begin();
+        uint32 rnd = rand()%pFanaticList.size();
+
+        for(uint32 i = 0; i < rnd; ++i)
+            ++itr;
+
+        (*itr)->CastSpell(me, SPELL_DARK_EMPOWEREMENT, true);
+	}
+	
+    void UpdateAI(const uint32 uiDiff)
     {
-         //Return since we have no target
+		if (m_uiIntroText == 1 || m_uiIntroText == 2 || 
+			m_uiIntroText == 3 || m_uiIntroText == 4 ||
+			m_uiIntroText == 5 || m_uiIntroText == 6)
+			{
+			if (m_uiIntroTextTimer < uiDiff)
+            {
+                switch(m_uiIntroText)
+                {
+                    case 1: DoScriptText(SAY_INTRO_2, me); break;
+                    case 2: DoScriptText(SAY_INTRO_3, me); break;
+					case 3: DoScriptText(SAY_INTRO_4, me); break;
+					case 4: DoScriptText(SAY_INTRO_5, me); break;
+					case 5: DoScriptText(SAY_INTRO_6, me); break;
+					case 6: DoScriptText(SAY_INTRO_7, me); break;
+                }
+                m_uiIntroText++;
+                m_uiIntroTextTimer = 10500;
+            }
+            else m_uiIntroTextTimer -= uiDiff;
+        }
+
         if (!UpdateVictim())
             return;
 
-        events.Update(diff);
+		if (m_uiPhase == 1)
+        {
+			if (m_uiShadowBoltTimer < uiDiff)
+            {
+				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
+				DoCast(pTarget, SPELL_SHADOW_BOLT);
+				m_uiShadowBoltTimer = urand(5000,10000);
+            }
+			else m_uiShadowBoltTimer -= uiDiff;
 
-        if (me->hasUnitState(UNIT_STAT_CASTING))
-            return;
+			if (m_uiDarkEmpoweredTimer < uiDiff)
+            {
+				DoScriptText(SAY_EMPOWERMENT, me);
+				switch(rand() % 2)
+				{
+					case 0: AdherentList(me); break;
+					case 1: FanaticList(me); break;
+				}
+				m_uiDarkEmpoweredTimer = urand(25000,30000);
+            }
+            else m_uiDarkEmpoweredTimer -= uiDiff;
 
-		if ((!me->HasAura(SPELL_MANA_BARRIER)) && (Phase = 1))
-		{
-			DoCast(me, SPELL_MANA_BARRIER);
-            DoStartNoMovement(me->getVictim());
+			if (m_uiSummonWaveTimer < uiDiff)
+			{
+				for (uint8 i = 0; i < RAID_MODE(3,6,3,6); ++i)
+				{
+					me->SummonCreature(RAND(NPC_CULT_FANATIC, NPC_CULT_ADHERENT), SpawnLoc[i][0], SpawnLoc [i][1], SpawnLoc[i][2],0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 10000);
+				}
+				m_uiSummonWaveTimer = 60000;
+            }
+            else m_uiSummonWaveTimer -= uiDiff;
+
+			if (!me->HasAura(SPELL_MANA_BARRIER))
+                DoCast(me, SPELL_MANA_BARRIER);
+			if (!me->HasAura(SPELL_ROOT))
+                DoCast(me, SPELL_ROOT);
+
+			if (m_uiPhase == 1 || m_uiPhase == 2)
+			{
+			if (m_uiDominateMindTimer < uiDiff)
+            {
+				uint32 count = RAID_MODE(0,1,1,3);
+                for (uint8 i = 1; i <= count; i++)
+                {
+					Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1, 200, true);
+					if (pTarget && !pTarget->isCharmed())
+					{
+						DoCast(pTarget, SPELL_DOMINATE_MIND);
+					}
+				}
+				m_uiDominateMindTimer = urand(15000,30000);
+            }
+            else m_uiDominateMindTimer -= uiDiff;
+
+			if (m_uiDeathandDecayTimer < uiDiff)
+            {
+				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
+				DoCast(pTarget, SPELL_DEATH_AND_DECAY);
+				m_uiDeathandDecayTimer = urand(10000,12000);
+            }
+            else m_uiDeathandDecayTimer -= uiDiff;
+
+			if (getDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || getDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC)
+			if (m_uiSummonWaveTimer < uiDiff)
+            {
+                for (uint8 i = 0; i < RAID_MODE(3,3,3,3); ++i)
+				{
+					me->SummonCreature(RAND(NPC_CULT_FANATIC, NPC_CULT_ADHERENT), HeroicSpawnLoc[i][0], HeroicSpawnLoc [i][1], HeroicSpawnLoc[i][2],0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 10000);
+				}
+                m_uiSummonWaveTimer = 60000;
+            }
+            else m_uiSummonWaveTimer -= uiDiff;
 		}
 
-        if (Phase == 1)
-        {
-            if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 10)
-            {
-                Phase = 2;
-                return;
+			if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1)
+			{
+				DoScriptText(SAY_PHASE_2, me);
+                m_uiPhase = 2;
             }
-        }
+		}
 
-        if (Phase == 2)
+		if (m_uiPhase == 2)
         {
             if (me->HasAura(SPELL_MANA_BARRIER))
                 me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
-        }
 
-        while(uint32 eventId = events.ExecuteEvent())
-        {
-            Creature* prightmob1= NULL;
-            Creature* prightmob2= NULL;
-            Creature* prightmob3= NULL;
-            Creature* pleftmob1= NULL;
-            Creature* pleftmob2= NULL;
-            Creature* pleftmob3= NULL;
-            switch(eventId)
+			if (me->HasAura(SPELL_ROOT))
+                me->RemoveAurasDueToSpell(SPELL_ROOT);
+
+			if (m_uiFrostBoltTimer < uiDiff)
             {
-                case EVENT_INTRO_1:
-                    DoScriptText(SAY_INTRO_1, me);
-                    events.ScheduleEvent(EVENT_INTRO_2, 1500);
-                    return;
-                case EVENT_INTRO_2:
-                    DoScriptText(SAY_INTRO_2, me);
-					events.ScheduleEvent(EVENT_INTRO_3, 1500);
-                    return;
-                case EVENT_INTRO_3:
-                    DoScriptText(SAY_INTRO_3, me);
-					events.ScheduleEvent(EVENT_INTRO_4, 1500);
-                    return;
-                case EVENT_INTRO_4:
-                    DoScriptText(SAY_INTRO_4, me);
-					events.ScheduleEvent(EVENT_INTRO_5, 1500);
-                    return;
-                case EVENT_INTRO_5:
-                    DoScriptText(SAY_INTRO_5, me);
-					events.ScheduleEvent(EVENT_INTRO_6, 1500);
-                    return;
-                case EVENT_INTRO_6:
-                    DoScriptText(SAY_INTRO_6, me);
-					events.ScheduleEvent(EVENT_INTRO_7, 1500);
-                    return;
-                case EVENT_INTRO_7:
-                    DoScriptText(SAY_INTRO_7, me);
-                    return;
-				case EVENT_ENRAGE:
-                    DoCast(me->getVictim(), SPELL_ENRAGE);
-					DoScriptText( SAY_ENRAGE, me);
-					events.ScheduleEvent(EVENT_ENRAGE, 300000);
-                    return;
-                // Why wouldnt this work with just pleftmobs?
-                case EVENT_SPAWN_LEFT:
-                    if (Phase = 1)
-                    {
-                    pleftmob1 = me->SummonCreature(NPC_CULT_FANATIC,ADD_1X,ADD_1Y,ADD_1Z,1.532153,TEMPSUMMON_CORPSE_DESPAWN);
-                    pleftmob2 = me->SummonCreature(NPC_CULT_ADHERENT,ADD_2X,ADD_2Y,ADD_2Z,1.532153,TEMPSUMMON_CORPSE_DESPAWN);
-                    pleftmob3 = me->SummonCreature(NPC_CULT_FANATIC,ADD_3X,ADD_3Y,ADD_3Z,1.532153,TEMPSUMMON_CORPSE_DESPAWN);
-                    if (pleftmob1)
-                    {
-                    pleftmob1->setActive(true);
-                    pleftmob1->AI()->DoZoneInCombat();
-                    pleftmob2->setActive(true);
-                    pleftmob2->AI()->DoZoneInCombat();
-                    pleftmob3->setActive(true);
-                    pleftmob3->AI()->DoZoneInCombat();
-                    }
-                    events.ScheduleEvent(EVENT_SPAWN_RIGHT, 60000);
-                    }
-                    return;
-                // Why wouldn't this work just prightmobs?
-                case EVENT_SPAWN_RIGHT:
-                    if (Phase = 1)
-                    {
-                    prightmob1 = me->SummonCreature(NPC_CULT_ADHERENT,ADD_4X,ADD_4Y,ADD_4Z,4.669165,TEMPSUMMON_CORPSE_DESPAWN);
-                    prightmob2 = me->SummonCreature(NPC_CULT_FANATIC,ADD_5X,ADD_5Y,ADD_5Z,4.669165,TEMPSUMMON_CORPSE_DESPAWN);
-                    prightmob3 = me->SummonCreature(NPC_CULT_ADHERENT,ADD_6X,ADD_6Y,ADD_6Z,4.669165,TEMPSUMMON_CORPSE_DESPAWN);
-                    if (prightmob2)
-                    {
-                    prightmob1->setActive(true);
-                    prightmob1->AI()->DoZoneInCombat();
-                    prightmob2->setActive(true);
-                    prightmob2->AI()->DoZoneInCombat();
-                    prightmob3->setActive(true);
-                    prightmob3->AI()->DoZoneInCombat();
-                    }
-                    events.ScheduleEvent(EVENT_SPAWN_LEFT, 60000);
-                    }
-                    return;
-				case EVENT_DAD:
-                    if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
-                    DoCast(pTarget, SPELL_DAD);
-					events.ScheduleEvent(EVENT_DAD, 20000);
-                    return;
-				case EVENT_SHADOW_BOLT:
-                    if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
-                    DoCast(pTarget, SPELL_SHADOW_BOLT);
-					events.ScheduleEvent(EVENT_SHADOW_BOLT, 5000);
-                    return;
-			}
-		}
-    }
+				DoCast(me->getVictim(), SPELL_FROST_BOLT);
+				m_uiFrostBoltTimer = urand(5000,10000);
+            }
+            else m_uiFrostBoltTimer -= uiDiff;
 
-    void JustDied(Unit* killer)  
+			if (m_uiFrostValleyTimer < uiDiff)
+            {
+				DoCastAOE(SPELL_FROST_BOLT_VALLEY);
+				m_uiFrostValleyTimer = urand(30000,35000);
+            }
+            else m_uiFrostValleyTimer -= uiDiff;
+
+			DoMeleeAttackIfReady();
+		}
+	}
+};
+
+CreatureAI* GetAI_Boss_Lady_Deathwisper(Creature* pCreature)
+{
+    return new Boss_Lady_DeathwisperAI(pCreature);
+}
+
+struct CultAdherentsAI : public ScriptedAI
+{
+    CultAdherentsAI(Creature *pCreature) : ScriptedAI(pCreature) 
+	{
+	}
+
+	uint32 uiFrostFeverTimer;
+	uint32 uiDeathchillBoltTimer;
+	uint32 uiCurseofToporTimer;
+	uint32 uiPhaseTimer;
+
+	bool m_bIsDarkMartydrom; 
+	bool m_bIsPhase2;
+
+    void Reset() 
+	{
+		uiFrostFeverTimer	=	15000;
+		uiDeathchillBoltTimer	= 10000;
+		uiCurseofToporTimer	=	urand(10000,20000);
+		uiPhaseTimer = 120000;
+
+		m_bIsDarkMartydrom = false;
+		m_bIsPhase2 = false;
+	}
+
+    void EnterCombat(Unit* who) 
+	{
+		DoCast(me, SPELL_SHORUD_OF_THE_OCCULUT);
+	}
+
+    void UpdateAI(const uint32 uiDiff)
     {
-			DoScriptText( SAY_DEATH, me);
-		 	if (pInstance)
-            pInstance->SetData(DATA_DEATHWHISPER_EVENT, DONE);
+        if (!UpdateVictim())
+            return;
+
+			if (uiFrostFeverTimer < uiDiff)
+            {
+				DoCast(me->getVictim(), SPELL_FROST_FEVER);
+				uiFrostFeverTimer = 15000;
+            }
+            else uiFrostFeverTimer -= uiDiff;
+			if (uiDeathchillBoltTimer < uiDiff)
+            {
+				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
+				DoCast(pTarget, RAND(SPELL_DEATHCHILL_BLAST, SPELL_DEATHCHILL_BOLT));
+				uiDeathchillBoltTimer = 5000;
+            }
+            else uiDeathchillBoltTimer -= uiDiff;
+			if (uiCurseofToporTimer < uiDiff)
+            {
+				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
+				DoCast(pTarget, SPELL_CURSE_OF_TOPOR);
+				uiCurseofToporTimer = urand(10000,20000);
+            }
+            else uiCurseofToporTimer -= uiDiff;
+
+			if (HealthBelowPct(15) && !m_bIsDarkMartydrom)
+			{
+				me->CastStop();
+				DoCast(me, SPELL_DARK_MARTYRDROM);
+				m_bIsDarkMartydrom = true;
+				uiPhaseTimer = 5000;
+			}
+			if (uiPhaseTimer < uiDiff && !m_bIsPhase2)
+            {
+				me->SetHealth(me->GetMaxHealth());
+				DoCast(me, SPELL_ADHERENTS_DETERMINIATION);
+				m_bIsPhase2 = true;
+            }
+            else uiPhaseTimer -= uiDiff;
+
+	DoMeleeAttackIfReady();
     }
 };
 
-CreatureAI* GetAI_boss_Deathwhisper(Creature* pCreature)
+CreatureAI* GetAI_CultAdherents(Creature* pCreature)
 {
-    return new boss_DeathwhisperAI (pCreature);
+    return new CultAdherentsAI (pCreature);
 }
 
 void AddSC_boss_Deathwhisper()
 {
-    Script *newscript;
-    newscript = new Script;
-    newscript->Name="boss_Deathwhisper";
-    newscript->GetAI = &GetAI_boss_Deathwhisper;
-    newscript->RegisterSelf();
+    Script* NewScript;
+
+    NewScript = new Script;
+    NewScript->Name = "Boss_Lady_Deathwisper";
+    NewScript->GetAI = &GetAI_Boss_Lady_Deathwisper;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "mob_CultAdherents";
+    NewScript->GetAI = &GetAI_CultAdherents;
+    NewScript->RegisterSelf();
 }
