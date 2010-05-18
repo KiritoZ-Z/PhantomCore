@@ -3622,6 +3622,13 @@ void SpellMgr::LoadSpellCustomAttr()
 
         switch(i)
         {
+        // Natural Shapeshifter
+        case 16834:
+        case 16835: 
+        {
+            SpellEntry const* spellInf = sSpellStore.LookupEntry(16833);
+            spellInfo->DurationIndex=spellInf->DurationIndex;
+        }
         // Bind
         case 3286:
             spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
