@@ -458,10 +458,13 @@ struct npc_marzon_silent_bladeAI : public ScriptedAI
 
         if (me->isSummon())
         {
-            if (Unit* pSummoner = CAST_SUM(me)->GetSummoner())
+            if (Creature* pSummoner = CAST_CRE(CAST_SUM(me)->GetSummoner()))
             {
-                CAST_AI(npc_lord_gregor_lescovarAI, CAST_CRE(pSummoner)->AI())->uiTimer = 2000;
-                CAST_AI(npc_lord_gregor_lescovarAI, CAST_CRE(pSummoner)->AI())->uiPhase = 5;
+				if (npc_lord_gregor_lescovarAI* pAI = CAST_AI(npc_lord_gregor_lescovarAI,pSummoner->AI()))
+				{
+					pAI->uiTimer = 2000;
+					pAI->uiPhase = 5;
+				}
                 //me->ChangeOrient(0.0f, pSummoner);
             }
         }
