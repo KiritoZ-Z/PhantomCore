@@ -5864,7 +5864,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 break;
             }
             // Damage Shield
-            if (dummySpell->SpellIconID == 3214)
+            if (dummySpell->SpellIconID == 3214 && damage)
             {
                 triggered_spell_id = 59653;
                 // % of amount blocked
