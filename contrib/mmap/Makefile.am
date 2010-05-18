@@ -1,0 +1,4 @@
+
+
+SUBDIRS = dep src
+

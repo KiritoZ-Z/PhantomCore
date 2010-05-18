@@ -59,6 +59,9 @@ phantomauth
 phantomconfig
 vmaps
 g3dlite
+pathfind
+recast
+detour
 #jmalloc
 ${SCRIPT_LIB}
 ${READLINE_LIBRARY}

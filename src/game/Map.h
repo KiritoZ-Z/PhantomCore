@@ -34,6 +34,7 @@
 #include "GameSystem/GridRefManager.h"
 #include "MapRefManager.h"
 #include "mersennetwister/MersenneTwister.h"
+#include "pathfinding/Detour/DetourNavMesh.h"
 
 #include <bitset>
 #include <list>
@@ -316,6 +317,8 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
         float GetHeight(float x, float y, float z, bool pCheckVMap=true) const;
         float GetVmapHeight(float x, float y, float z) const;
         bool IsInWater(float x, float y, float z, float min_depth = 2.0f) const;
+		
+		Position getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz);
 
         ZLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, LiquidData *data = 0) const;
 
@@ -440,6 +443,7 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
         void LoadMapAndVMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
         void LoadMap(int gx,int gy, bool reload = false);
+		void LoadNavMesh(int gx, int gy);
         GridMap *GetGrid(float x, float y);
 
         void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }

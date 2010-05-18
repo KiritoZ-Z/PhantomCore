@@ -54,7 +54,10 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
 
     CreatureTraveller traveller(owner);
 
-    uint32 travel_time = i_destinationHolder.SetDestination(traveller, x, y, z);
+    float myx,myy,myz;
+	owner.GetPosition(myx,myy,myz);
+	Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+	uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
     modifyTravelTime(travel_time);
     owner.clearUnitState(UNIT_STAT_ALL_STATE);
 }
@@ -66,7 +69,19 @@ HomeMovementGenerator<Creature>::Update(Creature &owner, const uint32& time_diff
     i_destinationHolder.UpdateTraveller(traveller, time_diff);
 
     if (time_diff > i_travel_timer)
-    {
+    { 
+ 		       float x, y, z;
+ 		       owner.GetRespawnCoord(x, y, z);
+ 		       float myx, myy, myz;
+ 		       owner.GetPosition(myx, myy, myz);
+ 		       if (x != myx || y != myy || z != myz)
+ 		       { 
+ 		           Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+ 		           uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ); 
+ 		           modifyTravelTime(travel_time);
+		           return true;
+ 		        }
+
         owner.AddUnitMovementFlag(MOVEMENTFLAG_WALK_MODE);
 
         // restore orientation of not moving creature at returning to home

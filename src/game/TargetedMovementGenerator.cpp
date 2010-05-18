@@ -25,6 +25,7 @@
 #include "CreatureAI.h"
 #include "DestinationHolderImp.h"
 #include "World.h"
+#include "Unit.h"
 
 #define SMALL_ALPHA 0.05f
 
@@ -60,8 +61,8 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
     if (owner.hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED | UNIT_STAT_DISTRACTED))
         return false;
 
-    float x, y, z;
     Traveller<T> traveller(owner);
+    float x, y, z;
     if (i_destinationHolder.HasDestination())
     {
         if (i_destinationHolder.HasArrived())
@@ -99,8 +100,12 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 
             if (stop)
             {
-                owner.GetPosition(x, y, z);
-                i_destinationHolder.SetDestination(traveller, x, y, z);
+			float myx,myy,myz;
+	        owner.GetPosition(myx,myy,myz);
+	        Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+	        i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+	        sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+					
                 i_destinationHolder.StartTravel(traveller, false);
                 owner.StopMoving();
                 return false;
@@ -143,7 +148,11 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
         if (i_destinationHolder.HasDestination() && i_destinationHolder.GetDestinationDiff(x,y,z) < bothObjectSize)
             return;
     */
-    i_destinationHolder.SetDestination(traveller, x, y, z);
+	    float myx,myy,myz;
+	    owner.GetPosition(myx,myy,myz);
+	    Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+	    i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+	    sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
     owner.addUnitState(UNIT_STAT_CHASE);
     i_destinationHolder.StartTravel(traveller);
     return true;

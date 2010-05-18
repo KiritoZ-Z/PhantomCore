@@ -374,6 +374,8 @@ struct Position
 
     void Relocate(float x, float y)
         { m_positionX = x; m_positionY = y;}
+	void travelto(float x, float y, float z)
+		{ m_positionX = x; m_positionY = y; m_positionZ = z; }
     void Relocate(float x, float y, float z)
         { m_positionX = x; m_positionY = y; m_positionZ = z; }
     void Relocate(float x, float y, float z, float orientation)

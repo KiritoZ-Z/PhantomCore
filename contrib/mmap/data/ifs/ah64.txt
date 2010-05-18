@@ -1,0 +1,68 @@
+Apache Helicopter by Allen Hastings:
+
+                                                7 October 1988
+
+    This disk contains twelve VideoScape 3D objects that I created in 1987
+for the movies "Apocalypse Real Soon Now", "Iceberg", and "Halloween 3D".
+The object files on this disk are in their original 3DG1 text format and
+are exactly as used in the films mentioned.  Since Aegis Modeler 3D was
+still under development back then, I used a text editor and the EGG and OCT
+utilities to create the objects.  Following the VideoScape convention, all
+coordinates are specified in meters, so different objects can be used in
+the same scene without scale problems.  Many of these objects depend on
+VideoScape 3D's surface detail capability, so they may not work well with
+other animation programs.  If these objects are to be used with version 2.0
+or greater of VideoScape, I recommend converting them into 3DB1 binary
+format to reduce disk space and loading time.  Have fun with these!
+
+                                                - Allen Hastings
+
+
+
+OBJECT NAME    FILM            COMMENTS
+
+AH64Body       Apocalypse RSN  This is an AH-64 Apache attack helicopter
+                               with a full weapons load, but no main rotor.  This
+                               This object was featured on the cover of
+                               Amazing Computing (volume 3 number 5).
+
+AH64Rotor      Apocalypse RSN  This is the main rotor for the Apache.  See
+                               the instructions below to animate it.
+
+AratiBuilding  Apocalypse RSN  This object is designed to fit into the
+                               space in the "Arati Lot" object.
+
+AratiLot       Apocalypse RSN  This is the parking lot and landscaping for
+                               the "Arati Building".
+
+RightTurnSign  Apocalypse RSN  These are some of the signs seen by the
+LeftTurnSign   Apocalypse RSN  Lotus driver before striking the unicycle.
+
+StopSign       Apocalypse RSN  This was created for the film but didn't
+                               actually appear in it.
+
+Iceberg1       Iceberg         These fractal objects have built-in blue
+Iceberg2       Iceberg         reflections.  For best results, use side
+                               lighting, light blue sky, and dark blue
+                               ground colors.
+
+Pumpkin        Halloween 3D    This is a smiling jack-o-lantern.  Use a
+                               custom palette to change red into orange.
+                               The candle can be lit by making the black
+                               polygons yellow.
+
+HauntedHouse   Halloween 3D    These objects were easily created by joining
+Graveyard      Halloween 3D    a few simple building blocks with the OCT
+                               utility.
+
+    The best way to animate the AH64 main rotor is to use hierarchical
+motion (available in version 2.0 or greater of VideoScape).  Load the
+"AH64Body" object and its motion first, then load "AH64Rotor" and specify
+"AH64Body" as its parent object.  This ensures that the rotor will stay
+attached to the helicopter no matter what the helicopter's motion may be.
+Then set the rotor's X, Y, Z, and heading to zero, and set its pitch to 96
+degrees (this gives it a forward tilt).  To make the rotor spin, increase
+its bank angle during the scene.  For example, if the rotor spins 30
+degrees per frame, then during a 60 frame scene its bank angle would vary
+from zero to 1800 degrees.
+

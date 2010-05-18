@@ -2,6 +2,7 @@ add_subdirectory(vmap)
 add_subdirectory(Auth)
 add_subdirectory(Config)
 add_subdirectory(Database)
+add_subdirectory(pathfinding)
 
 ########### next target ###############
 
