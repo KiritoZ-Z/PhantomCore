@@ -126,11 +126,11 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
         // caster chase
         i_target->GetContactPoint(&owner, x, y, z, i_offset * urand(80, 95) * 0.01f);
     }
-    else
-    {
+ //   else
+ //   {
         // to at i_offset distance from target and i_angle from target facing
-        i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
-    }
+ //       i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
+ //   }
 
     /*
         We MUST not check the distance difference and avoid setting the new location for smaller distances.

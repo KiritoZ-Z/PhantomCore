@@ -45,6 +45,13 @@
 #include "MapInstanced.h"
 #include "InstanceSaveMgr.h"
 #include "VMapFactory.h"
+#include "pathfinding/InputGeom.h"
+#include "pathfinding/Recast/Recast.h"
+#include "pathfinding/Detour/DetourNavMesh.h"
+#include "pathfinding/Detour/DetourNavMeshBuilder.h"
+
+#include <fstream>
+#include <search.h>
 
 #define DEFAULT_GRID_EXPIRY     300
 #define MAX_GRID_LOAD_TIME      50

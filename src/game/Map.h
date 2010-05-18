@@ -512,7 +512,7 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
         Map* m_parentMap;
 		
         dtNavMesh *m_navMesh[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
-        NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
+		NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
         GridMap *GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
         std::bitset<TOTAL_NUMBER_OF_CELLS_PER_MAP*TOTAL_NUMBER_OF_CELLS_PER_MAP> marked_cells;
 
