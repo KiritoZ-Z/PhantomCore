@@ -170,7 +170,7 @@ void Bag::StoreItem(uint8 slot, Item *pItem, bool /*update*/)
         pItem->SetContainer(this);
         pItem->SetSlot(slot);
     }
-	if (slot=0)
+	if (slot==0)
 		slot++;
 }
 
