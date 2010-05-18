@@ -349,8 +349,8 @@ void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
 void AddSC_instance_icecrown_citadel();
 void AddSC_boss_Marrowgar();
 void AddSC_LowerSpireTrash();
-void AddSC_boss_Deathwhisper();
-void AddSC_boss_festergut();
+void AddSC_boss_Deathwhisper(); //ICC
+void AddSC_Boss_Festergut(); //ICC
 void AddSC_boss_the_lich_king();
 void AddSC_boss_deathbringer_saurfang();
 void AddSC_boss_anubrekhan();            //Naxxramas
@@ -860,8 +860,8 @@ void AddScripts()
     AddSC_instance_icecrown_citadel();
     AddSC_boss_Marrowgar();
     AddSC_LowerSpireTrash();
-    AddSC_boss_Deathwhisper();
-    AddSC_boss_festergut();
+    AddSC_boss_Deathwhisper(); //ICC
+    AddSC_Boss_Festergut(); //ICC
     AddSC_boss_the_lich_king();
     AddSC_boss_deathbringer_saurfang();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
