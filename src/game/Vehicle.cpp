@@ -114,8 +114,6 @@ void Vehicle::Uninstall()
 void Vehicle::Die()
 {
     sLog.outDebug("Vehicle::Die %u", me->GetEntry());
-	if(!this)
-		return;
     for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if (Unit *passenger = itr->second.passenger)
             if (passenger->HasUnitTypeMask(UNIT_MASK_ACCESSORY))
