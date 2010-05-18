@@ -1629,7 +1629,7 @@ void Spell::EffectDummy(uint32 i)
                 // Bloodthirst
                 case 23881:
                 {
-                    m_caster->CastCustomSpell(unitTarget, 23885, &damage, NULL, NULL, true, NULL);
+					m_caster->CastCustomSpell(unitTarget, 55970, &damage, NULL, NULL, true, NULL);
                     return;
                 }
             }
