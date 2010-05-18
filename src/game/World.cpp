@@ -91,12 +91,6 @@ int32 World::m_visibility_notify_periodOnContinents = DEFAULT_VISIBILITY_NOTIFY_
 int32 World::m_visibility_notify_periodInInstances  = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 int32 World::m_visibility_notify_periodInBGArenas   = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 
-// movement anticheat
-bool World::m_EnableMvAnticheat = true;
-uint32 World::m_TeleportToPlaneAlarms = 50;
-uint32 World::m_MistimingAlarms = 200;
-uint32 World::m_MistimingDelta = 15000;
-
 /// World constructor
 World::World()
 {
