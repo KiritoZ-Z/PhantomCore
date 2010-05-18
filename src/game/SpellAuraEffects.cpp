@@ -2063,7 +2063,7 @@ Unit* AuraEffect::GetTriggerTarget(Unit * target) const
 
 void AuraEffect::TriggerSpell(Unit * target, Unit * caster) const
 {
-    if (!caster || !target)
+    if(!caster || !target || !triggerTarget || !this)
         return;
 
     Unit* triggerTarget = GetTriggerTarget(target);
