@@ -176,3 +176,4 @@ void AddSC_Boss_Festergut()
     NewScript->Name = "Boss_Festergut";
     NewScript->GetAI = &GetAI_Boss_Festergut;
     NewScript->RegisterSelf();
+}
