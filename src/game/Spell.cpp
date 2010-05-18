@@ -7039,13 +7039,14 @@ void Spell::FillRaidOrPartyHealthPriorityTargets(UnitList &TagUnitMap, Unit* tar
         healthQueue.pop();
     }
 }
+
 void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial)
 {
     if (!target || target->GetTypeId() != TYPEID_PLAYER)
         return;
 
     // Prevent stacking of mounts
-    target->RemoveMovementImpairingAuras(SPELL_AURA_MOUNTED);
+    target->RemoveAurasByType(SPELL_AURA_MOUNTED);
     uint16 skillval = ((Player*)target)->GetSkillValue(SKILL_RIDING);
     if (!skillval)
         return;
@@ -7065,14 +7066,14 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
         {
             for (PlayerSpellMap::const_iterator iter = ((Player*)target)->GetSpellMap().begin(); iter != ((Player*)target)->GetSpellMap().end(); ++iter)
             {
-                if (iter->second.state != PLAYERSPELL_REMOVED)
+                if (iter->second->state != PLAYERSPELL_REMOVED)
                 {
                     SpellEntry const *spellInfo = sSpellStore.LookupEntry(iter->first);
-                    for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
+                    for(int i = 0; i < 3; ++i)
                     {
-                        if(spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED)
+                        if(spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED)
                         {
-                            int32 mountSpeed = spellInfo->CalculateSimpleValue(SpellEffectIndex(i));
+                            int32 mountSpeed = spellInfo->CalculateSimpleValue(i);
 
                             // speed higher than 280 replace it
                             if (mountSpeed > 280)
