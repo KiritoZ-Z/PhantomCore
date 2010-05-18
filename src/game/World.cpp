@@ -594,41 +594,6 @@ void World::LoadConfigSettings(bool reload)
         sLog.outError("DurabilityLossChance.Block (%f) must be >=0. Using 0.0 instead.",rate_values[RATE_DURABILITY_LOSS_BLOCK]);
         rate_values[RATE_DURABILITY_LOSS_BLOCK] = 0.0f;
     }
-    // movement anticheat
-    m_EnableMvAnticheat = sConfig.GetBoolDefault("Anticheat.Movement.Enable", true);
-    m_TeleportToPlaneAlarms = sConfig.GetIntDefault("Anticheat.Movement.TeleportToPlaneAlarms", 50);
-    if (m_TeleportToPlaneAlarms < 20)
-    {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be >= 20. Using 20 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 20;
-    }
-    if (m_TeleportToPlaneAlarms > 100)
-    {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be <= 100. Using 100 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 100;
-    }
-    m_MistimingDelta = sConfig.GetIntDefault("Anticheat.Movement.MistimingDelta", 15000);
-    if (m_MistimingDelta < 5000)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingDelta (%d) must be >= 5000ms. Using 5000ms instead.", m_MistimingDelta);
-        m_MistimingDelta = 5000;
-    }
-    if (m_MistimingDelta > 50000)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingDelta (%d) must be <= 50000ms. Using 50000ms instead.", m_MistimingDelta);
-        m_MistimingDelta = 50000;
-    }
-    m_MistimingAlarms = sConfig.GetIntDefault("Anticheat.Movement.MistimingAlarms", 200);
-    if (m_MistimingAlarms < 100)
-    {
-        sLog.outError("Anticheat.Movement.MistimingAlarms (%d) must be >= 100. Using 100 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 100;
-    }
-    if (m_MistimingAlarms > 500)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingAlarms (%d) must be <= 500. Using 500 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 500;
-    }
     ///- Read other configuration items from the config file
 
     m_configs[CONFIG_DURABILITY_LOSS_IN_PVP] = sConfig.GetBoolDefault("DurabilityLoss.InPvP", false);
