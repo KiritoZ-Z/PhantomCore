@@ -2063,10 +2063,10 @@ Unit* AuraEffect::GetTriggerTarget(Unit * target) const
 
 void AuraEffect::TriggerSpell(Unit * target, Unit * caster) const
 {
+   Unit* triggerTarget = GetTriggerTarget(target);
+
     if(!caster || !target || !triggerTarget || !this)
         return;
-
-    Unit* triggerTarget = GetTriggerTarget(target);
 
     // generic casting code with custom spells and target/caster customs
     uint32 triggerSpellId = GetSpellProto()->EffectTriggerSpell[GetEffIndex()];

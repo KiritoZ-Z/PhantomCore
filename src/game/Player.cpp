@@ -8955,7 +8955,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             break;
     }
     GetSession()->SendPacket(&data);
-    
+	SendBGWeekendWorldStates();    
 }
 
 void Player::SendBGWeekendWorldStates()
@@ -8971,8 +8971,6 @@ void Player::SendBGWeekendWorldStates()
                 SendUpdateWorldState(bl->HolidayWorldStateId,0);
         }
     }
-
-	SendBGWeekendWorldStates();
 }
 
 uint32 Player::GetXPRestBonus(uint32 xp)
