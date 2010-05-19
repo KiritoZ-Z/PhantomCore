@@ -91,7 +91,7 @@ bool GOSelect_icecrown_teleporter( Player *pPlayer, GameObject *pGO, uint32 send
         pPlayer->TeleportTo(631, -549.073486, 2211.289307, 539.223450, 6.275452);
         pPlayer->CLOSE_GOSSIP_MENU(); break;
     case PLAGUEWORKS:
-        pPlayer->TeleportTo(631, 4357.033691, 2864.192627, 439.336090, 1.583007);
+        pPlayer->TeleportTo(631, 4357.033691, 2864.192627, 349.336090, 1.583007);
         pPlayer->CLOSE_GOSSIP_MENU(); break;
     case CRIMSONHALL:
         pPlayer->TeleportTo(631, 4452.79785, 2769.291504, 349.350342, 0.023817);

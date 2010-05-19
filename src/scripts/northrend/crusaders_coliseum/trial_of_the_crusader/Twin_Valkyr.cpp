@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2008 - 2010 Trinity <http://www.trinitycore.org/>
- *
+/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -8,18 +6,18 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 /* ScriptData
 SDName: trial_of_the_crusader
 SD%Complete: 0
-SDComment:
+SDComment: by /dev/rsa
 SDCategory: Crusader Coliseum
 EndScriptData */
 
@@ -34,7 +32,7 @@ INSERT INTO spell_script_target values (65875, 1, 34497), (65876, 1, 34496);
 SQL End */
 
 #include "ScriptedPch.h"
-#include "trial_of_the_crussader.h"
+#include "trial_of_the_crusader.h"
 
 #define ROOM_CENTER_X   564.04f
 #define ROOM_CENTER_Y   139.98f
@@ -51,27 +49,27 @@ SQL End */
 
 enum Yells
 {
-	SAY_AGGRO		=	-1600252,	 // 16272 In the name of our dark master. For the Lich King. You. Will. Die.
-	SAY_COLOR		=	-1600253,	 // 16274 CHAOS!
-	SAY_DEATH		=	-1600254,	 // 16275 The Scourge cannot be stopped...
-	SAY_SLAY_1		=	-1600255,	 // 16276 UNWORTHY!
-	SAY_SLAY_2		=	-1600256,	 // 16277 You have been measured, and found wanting!
-	SAY_BLACK		=	-1600257,	 // 16278 Let the dark consume you!
-	SAY_WHITE		=	-1600258,	 // 16279 Let the light consume you!
-	//SAY_BERSERK		=	-1600259,	 // 16273 Berserk 
-}; 
+        SAY_AGGRO               =       -1600252,        // 16272 In the name of our dark master. For the Lich King. You. Will. Die.
+        SAY_COLOR               =       -1600253,        // 16274 CHAOS!
+        SAY_DEATH               =       -1600254,        // 16275 The Scourge cannot be stopped...
+        SAY_SLAY_1              =       -1600255,        // 16276 UNWORTHY!
+        SAY_SLAY_2              =       -1600256,        // 16277 You have been measured, and found wanting!
+        SAY_BLACK               =       -1600257,        // 16278 Let the dark consume you!
+        SAY_WHITE               =       -1600258,        // 16279 Let the light consume you!
+        //SAY_BERSERK           =       -1600259,        // 16273 Berserk
+};
 
 enum ConcentratedSpells
 {
-	N_10_SPELL_UNLEASHED_DARK = 65808,
-	N_25_SPELL_UNLEASHED_DARK = 67172,
-	H_10_SPELL_UNLEASHED_DARK = 67173,
-	H_25_SPELL_UNLEASHED_DARK = 67174,
+        N_10_SPELL_UNLEASHED_DARK = 65808,
+        N_25_SPELL_UNLEASHED_DARK = 67172,
+        H_10_SPELL_UNLEASHED_DARK = 67173,
+        H_25_SPELL_UNLEASHED_DARK = 67174,
 
-	N_10_SPELL_UNLEASHED_LIGHT = 65795,
-	N_25_SPELL_UNLEASHED_LIGHT = 67238,
-	H_10_SPELL_UNLEASHED_LIGHT = 67239,
-	H_25_SPELL_UNLEASHED_LIGHT = 67240,
+        N_10_SPELL_UNLEASHED_LIGHT = 65795,
+        N_25_SPELL_UNLEASHED_LIGHT = 67238,
+        H_10_SPELL_UNLEASHED_LIGHT = 67239,
+        H_25_SPELL_UNLEASHED_LIGHT = 67240,
 };
 
 #define SP_POWER_OF_THE_TWINS 65916
@@ -79,62 +77,62 @@ enum ConcentratedSpells
 
 enum ValkyrSpells
 {
-	 //Darkbane Spells
-	 N_10_SPELL_SURGE_OF_DARKNESS = 65768,
-	 N_25_SPELL_SURGE_OF_DARKNESS = 67262,
-	 H_10_SPELL_SURGE_OF_DARKNESS = 67263,
-	 H_25_SPELL_SURGE_OF_DARKNESS = 67264,
+         //Darkbane Spells
+         N_10_SPELL_SURGE_OF_DARKNESS = 65768,
+         N_25_SPELL_SURGE_OF_DARKNESS = 67262,
+         H_10_SPELL_SURGE_OF_DARKNESS = 67263,
+         H_25_SPELL_SURGE_OF_DARKNESS = 67264,
 
-	 N_10_SPELL_SHIELD_OF_DARKNESS = 65874, //175k damage
-	 N_25_SPELL_SHIELD_OF_DARKNESS = 67256, //700k damage
-	 H_10_SPELL_SHIELD_OF_DARKNESS = 67257, //300K damage
-	 H_25_SPELL_SHIELD_OF_DARKNESS = 67258, //1,2 Millionen damage
+         N_10_SPELL_SHIELD_OF_DARKNESS = 65874, //175k damage
+         N_25_SPELL_SHIELD_OF_DARKNESS = 67256, //700k damage
+         H_10_SPELL_SHIELD_OF_DARKNESS = 67257, //300K damage
+         H_25_SPELL_SHIELD_OF_DARKNESS = 67258, //1,2 Millionen damage
 
-	 N_10_SPELL_DARK_VORTEX = 66058,
-	 N_25_SPELL_DARK_VORTEX = 67182,
-	 H_10_SPELL_DARK_VORTEX = 67183,
-	 H_25_SPELL_DARK_VORTEX = 67184,
+         N_10_SPELL_DARK_VORTEX = 66058,
+         N_25_SPELL_DARK_VORTEX = 67182,
+         H_10_SPELL_DARK_VORTEX = 67183,
+         H_25_SPELL_DARK_VORTEX = 67184,
 
-	 N_10_SPELL_TWIN_SPIKE_N = 66069,
-	 N_25_SPELL_TWIN_SPIKE_N = 67309,
-	 H_10_SPELL_TWIN_SPIKE_N = 67310,
-	 H_25_SPELL_TWIN_SPIKE_N = 67311,
+         N_10_SPELL_TWIN_SPIKE_N = 66069,
+         N_25_SPELL_TWIN_SPIKE_N = 67309,
+         H_10_SPELL_TWIN_SPIKE_N = 67310,
+         H_25_SPELL_TWIN_SPIKE_N = 67311,
 
-	 N_10_SPELL_TWINS_PACT_N = 65875,
-	 N_25_SPELL_TWINS_PACT_N = 67303,
-	 H_10_SPELL_TWINS_PACT_N = 67304,
-	 H_25_SPELL_TWINS_PACT_N = 67305,
+         N_10_SPELL_TWINS_PACT_N = 65875,
+         N_25_SPELL_TWINS_PACT_N = 67303,
+         H_10_SPELL_TWINS_PACT_N = 67304,
+         H_25_SPELL_TWINS_PACT_N = 67305,
 
-	//Lightbane Spells
-	 N_10_SPELL_SURGE_OF_LIGHT = 65766,
-	 N_25_SPELL_SURGE_OF_LIGHT = 67270,
-	 H_10_SPELL_SURGE_OF_LIGHT = 67271,
-	 H_25_SPELL_SURGE_OF_LIGHT = 67272,
+        //Lightbane Spells
+         N_10_SPELL_SURGE_OF_LIGHT = 65766,
+         N_25_SPELL_SURGE_OF_LIGHT = 67270,
+         H_10_SPELL_SURGE_OF_LIGHT = 67271,
+         H_25_SPELL_SURGE_OF_LIGHT = 67272,
 
-	 N_10_SPELL_TWIN_SPIKE			=	66075,
-	 N_25_SPELL_TWIN_SPIKE			=	67312,
-	 H_10_SPELL_TWIN_SPIKE			=	67313,
-	 H_25_SPELL_TWIN_SPIKE			=	67314,
+         N_10_SPELL_TWIN_SPIKE                  =       66075,
+         N_25_SPELL_TWIN_SPIKE                  =       67312,
+         H_10_SPELL_TWIN_SPIKE                  =       67313,
+         H_25_SPELL_TWIN_SPIKE                  =       67314,
 
-	 N_10_SPELL_SHIELD_OF_LIGHTS	=	65858,
-	 N_25_SPELL_SHIELD_OF_LIGHTS	=	67259,
-	 H_10_SPELL_SHIELD_OF_LIGHTS	=	67260,
-	 H_25_SPELL_SHIELD_OF_LIGHTS	=	67261,
+         N_10_SPELL_SHIELD_OF_LIGHTS    =       65858,
+         N_25_SPELL_SHIELD_OF_LIGHTS    =       67259,
+         H_10_SPELL_SHIELD_OF_LIGHTS    =       67260,
+         H_25_SPELL_SHIELD_OF_LIGHTS    =       67261,
 
-	 N_10_SPELL_LIGHT_VORTEX		=	66046,
-	 N_25_SPELL_LIGHT_VORTEX		=	67206,
-	 H_10_SPELL_LIGHT_VORTEX		=	67207,
-	 H_25_SPELL_LIGHT_VORTEX		=	67208,
+         N_10_SPELL_LIGHT_VORTEX                =       66046,
+         N_25_SPELL_LIGHT_VORTEX                =       67206,
+         H_10_SPELL_LIGHT_VORTEX                =       67207,
+         H_25_SPELL_LIGHT_VORTEX                =       67208,
 
-	 N_10_SPELL_TWINS_PACT_L		=	65876,
-	 N_25_SPELL_TWINS_PACT_L		=	67306,
-	 H_10_SPELL_TWINS_PACT_L		=	67307,
-	 H_25_SPELL_TWINS_PACT_L		=	67308,
+         N_10_SPELL_TWINS_PACT_L                =       65876,
+         N_25_SPELL_TWINS_PACT_L                =       67306,
+         H_10_SPELL_TWINS_PACT_L                =       67307,
+         H_25_SPELL_TWINS_PACT_L                =       67308,
 
-	 SP_SHIELD_OF_LIGHTS = 67259,
-	 H_SP_SHIELD_OF_LIGHTS = 65858,
-	 SP_LIGHT_VORTEX = 66046,
-	 SP_TWINS_PACT_L = 65876,
+         SP_SHIELD_OF_LIGHTS = 67259,
+         H_SP_SHIELD_OF_LIGHTS = 65858,
+         SP_LIGHT_VORTEX = 66046,
+         SP_TWINS_PACT_L = 65876,
 };
 
 #define ROOM_RADIUS 55.0f
@@ -148,7 +146,7 @@ struct boss_fjolaAI : public ScriptedAI
     boss_fjolaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance *) pCreature->GetInstanceData();
-		me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
+                me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
     }
 
     ScriptedInstance* m_pInstance;
@@ -180,10 +178,10 @@ struct boss_fjolaAI : public ScriptedAI
 
         DoCast(me, RAID_MODE(N_10_SPELL_SURGE_OF_LIGHT, N_25_SPELL_SURGE_OF_LIGHT, H_10_SPELL_SURGE_OF_LIGHT, H_25_SPELL_SURGE_OF_LIGHT));
 
-		DoScriptText(SAY_AGGRO, me);
+                DoScriptText(SAY_AGGRO, me);
     }
 
-	void KilledUnit(Unit *victim)
+        void KilledUnit(Unit *victim)
     {
         if (victim == me)
             return;
@@ -200,7 +198,7 @@ struct boss_fjolaAI : public ScriptedAI
                     eydis->DealDamage(eydis, eydis->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
             m_pInstance->SetData(PHASE_6, DONE);
         }
-		DoScriptText(SAY_DEATH, me);
+                DoScriptText(SAY_DEATH, me);
     }
 
     void JustReachedHome()
@@ -213,7 +211,7 @@ struct boss_fjolaAI : public ScriptedAI
     {
         if(who->GetGUID() == me->GetGUID())
             return;
- 
+
         if(who->GetTypeId() == TYPEID_PLAYER)
         {
             if(who->HasAura(SP_LIGHT_ESSENCE))
@@ -249,7 +247,7 @@ struct boss_fjolaAI : public ScriptedAI
         }
         else
             OrbTimer -= uiDiff;
-        
+
         if(SpecialAbilityTimer < uiDiff)
         {
             if(urand(0,1))
@@ -308,7 +306,7 @@ struct boss_eydisAI : public ScriptedAI
     boss_eydisAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance *) pCreature->GetInstanceData();
-		me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
+                me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
     }
 
     ScriptedInstance *m_pInstance;
@@ -329,10 +327,10 @@ struct boss_eydisAI : public ScriptedAI
         SpikeTimer = 15000;
         mLightbaneGUID = 0;
     }
-    
+
     void EnterCombat(Unit* pWho)
     {
-		DoScriptText(SAY_AGGRO, me);
+                DoScriptText(SAY_AGGRO, me);
 
         if(m_pInstance)
         {
@@ -344,7 +342,7 @@ struct boss_eydisAI : public ScriptedAI
         DoCast(me, RAID_MODE(N_10_SPELL_SURGE_OF_DARKNESS, N_25_SPELL_SURGE_OF_DARKNESS, H_10_SPELL_SURGE_OF_DARKNESS, H_25_SPELL_SURGE_OF_DARKNESS));
     }
 
-	void KilledUnit(Unit *victim)
+        void KilledUnit(Unit *victim)
     {
         if (victim == me)
             return;
@@ -361,7 +359,7 @@ struct boss_eydisAI : public ScriptedAI
                     fjola->DealDamage(fjola, fjola->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
             m_pInstance->SetData(PHASE_6, DONE);
         }
-		DoScriptText(SAY_DEATH, me);
+                DoScriptText(SAY_DEATH, me);
     }
 
     void JustReachedHome()
@@ -373,7 +371,7 @@ struct boss_eydisAI : public ScriptedAI
     void DamageTaken(Unit *who, uint32 &dmg)
     {
         if(who->GetGUID() == me->GetGUID()) return;
-        
+
         if(who->GetTypeId() == TYPEID_PLAYER)
         {
             if(who->HasAura(SP_DARK_ESSENCE))
@@ -426,7 +424,7 @@ struct boss_eydisAI : public ScriptedAI
                 if(Creature *fjola = m_pInstance->instance->GetCreature(mLightbaneGUID))
                 {
                     fjola->CastSpell(fjola, SP_POWER_OF_THE_TWINS, true);
-					//fjola->CastSpell(fjola, RAID_MODE(N_10_SPELL_TWINS_PACT_N, N_25_SPELL_TWINS_PACT_N, H_10_SPELL_TWINS_PACT_N, H_25_SPELL_TWINS_PACT_N), true);
+                                        //fjola->CastSpell(fjola, RAID_MODE(N_10_SPELL_TWINS_PACT_N, N_25_SPELL_TWINS_PACT_N, H_10_SPELL_TWINS_PACT_N, H_25_SPELL_TWINS_PACT_N), true);
                 }
             }
             SpecialAbilityTimer = 120000;
@@ -540,4 +538,3 @@ void AddSC_twin_valkyr()
     newscript->GetAI = &GetAI_mob_valkyr_orb;
     newscript->RegisterSelf();
 }
-

@@ -49,15 +49,12 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
     if (owner.hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED | UNIT_STAT_DISTRACTED))
         return;
 
-    float x, y, z;
-    owner.GetHomePosition(x, y, z, ori);
-
     CreatureTraveller traveller(owner);
 
     float myx,myy,myz;
-	owner.GetPosition(myx,myy,myz);
-	Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-	uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+    owner.GetPosition(myx,myy,myz);
+    Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+    uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
     modifyTravelTime(travel_time);
     owner.clearUnitState(UNIT_STAT_ALL_STATE);
 }
@@ -70,17 +67,17 @@ HomeMovementGenerator<Creature>::Update(Creature &owner, const uint32& time_diff
 
     if (time_diff > i_travel_timer)
     { 
- 		       float x, y, z;
- 		       owner.GetRespawnCoord(x, y, z);
- 		       float myx, myy, myz;
- 		       owner.GetPosition(myx, myy, myz);
- 		       if (x != myx || y != myy || z != myz)
- 		       { 
- 		           Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
- 		           uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ); 
- 		           modifyTravelTime(travel_time);
-		           return true;
- 		        }
+	       float x, y, z;
+	       owner.GetRespawnCoord(x, y, z);
+	       float myx, myy, myz;
+	       owner.GetPosition(myx, myy, myz);
+	       if (x != myx || y != myy || z != myz)
+	       {
+	           Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+	           uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	           modifyTravelTime(travel_time);
+	           return true;
+	        }
 
         owner.AddUnitMovementFlag(MOVEMENTFLAG_WALK_MODE);
 

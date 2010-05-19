@@ -61,7 +61,7 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
     if (owner.hasUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED | UNIT_STAT_DISTRACTED))
         return false;
 
-    Traveller<T> traveller(owner);
+	Traveller<T> traveller(owner);
     float x, y, z;
     if (i_destinationHolder.HasDestination())
     {
@@ -100,11 +100,12 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 
             if (stop)
             {
-			float myx,myy,myz;
-	        owner.GetPosition(myx,myy,myz);
-	        Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-	        i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
-	        sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+                float myx,myy,myz;
+                owner.GetPosition(myx,myy,myz);
+
+                Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+                i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+                sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 					
                 i_destinationHolder.StartTravel(traveller, false);
                 owner.StopMoving();
@@ -148,11 +149,11 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
         if (i_destinationHolder.HasDestination() && i_destinationHolder.GetDestinationDiff(x,y,z) < bothObjectSize)
             return;
     */
-	    float myx,myy,myz;
-	    owner.GetPosition(myx,myy,myz);
-	    Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-	    i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
-	    sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+    float myx,myy,myz;
+    owner.GetPosition(myx,myy,myz);
+    Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+    i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+    sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
     owner.addUnitState(UNIT_STAT_CHASE);
     i_destinationHolder.StartTravel(traveller);
     return true;
