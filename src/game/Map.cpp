@@ -143,88 +143,88 @@ bool Map::ExistVMap(uint32 mapid,int gx,int gy)
 }
 void Map::LoadNavMesh(int gx, int gy)
 {
-	    if (m_navMesh[gx][gy])
-	        return;
-	    // map file name
-	    int len = sWorld.GetDataPath().length()+strlen("mmaps/%03u%02u%02u.mmap")+1;
-	    char *tmp = new char[len];
-	    snprintf(tmp, len, (char *)(sWorld.GetDataPath()+"mmaps/%03u%02u%02u.mmap").c_str(),GetId(),gx,gy);
-	    sLog.outDetail("Loading mmap %s",tmp);
-	
-	    // woot no need for generation here: lets just load navmesh itself!
-	
-	    ifstream inf( tmp, ofstream::binary );
-	    if( inf )
-	    {
-	            inf.seekg(0,std::ifstream::end);
-	            int navDataSize = inf.tellg();
-	            inf.seekg(0);
-	            printf("DataSize is %i\n", navDataSize);
-	            unsigned char *navData = new unsigned char[navDataSize];
-	            inf.read((char*) (navData),navDataSize);
-	            inf.close();
-	            m_navMesh[gx][gy] = new dtNavMesh;
-	            if (!m_navMesh)
-	            {
-	                    delete [] navData;
-	                    return;
-	            }
-	            printf("Created navMesh\n");
-	            if (!m_navMesh[gx][gy]->init(navData, navDataSize, true, 2048))
-	            {
-	                delete [] navData;
-	                return;
-	            }
-	            sLog.outDetail("Loaded %s (%i kbyte)!", tmp, navDataSize);
-	    }
-	    else
-	    {
-	        sLog.outError("No MoveMap for [%i][%i][%i]",GetId(),gx,gy);
-	    }
-	    delete[] tmp;
+    if (m_navMesh[gx][gy])
+        return;
+    // map file name
+    int len = sWorld.GetDataPath().length()+strlen("mmaps/%03u%02u%02u.mmap")+1;
+    char *tmp = new char[len];
+    snprintf(tmp, len, (char *)(sWorld.GetDataPath()+"mmaps/%03u%02u%02u.mmap").c_str(),GetId(),gx,gy);
+    sLog.outDetail("Loading mmap %s",tmp);
+
+    // woot no need for generation here: lets just load navmesh itself!
+
+    ifstream inf(tmp, ofstream::binary);
+    if (inf)
+    {
+            inf.seekg(0,std::ifstream::end);
+            int navDataSize = inf.tellg();
+            inf.seekg(0);
+            printf("DataSize is %i\n", navDataSize);
+            unsigned char *navData = new unsigned char[navDataSize];
+            inf.read((char*) (navData),navDataSize);
+            inf.close();
+            m_navMesh[gx][gy] = new dtNavMesh;
+            if (!m_navMesh)
+            {
+                    delete [] navData;
+                    return;
+            }
+            printf("Created navMesh\n");
+            if (!m_navMesh[gx][gy]->init(navData, navDataSize, true, 2048))
+            {
+                delete [] navData;
+                return;
+            }
+            sLog.outDetail("Loaded %s (%i kbyte)!", tmp, navDataSize);
+    }
+    else
+    {
+        sLog.outError("No MoveMap for [%i][%i][%i]",GetId(),gx,gy);
+    }
+    delete[] tmp;
 }
-	
+
 Position Map::getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz)
 {
-	    //convert to nav coords.
-	    float startPos[3]               = { starty, startz, startx };
-	    float endPos[3]                 = { endy, endz, endx };
-	    float mPolyPickingExtents[3]    = { 2.00f, 4.00f, 2.00f };
-	    dtQueryFilter* mPathFilter = new dtQueryFilter();
-	    int gx = 32 - (startx/533.333333f);
-	    int gy = 32 - (starty/533.333333f);
-	    Position pos = Position();
-	    pos.m_positionX = endx;
-	    pos.m_positionY = endy;
-	    pos.m_positionZ = endz;
-	    dtNavMesh* myNavMesh = m_navMesh[gx][gy];
-	    if (myNavMesh) {
-	
-	        dtPolyRef mStartRef = myNavMesh->findNearestPoly(startPos,mPolyPickingExtents,mPathFilter,0); // this maybe should be saved on mob for later
-	        dtPolyRef mEndRef   = myNavMesh->findNearestPoly(endPos,mPolyPickingExtents,mPathFilter,0); // saved on player? probably waste since player moves to much
-	        if (mStartRef != 0 && mEndRef != 0)
-	        {
-	
-	            dtPolyRef mPathResults[50];
-	
-	            int mNumPathResults = myNavMesh->findPath(mStartRef,
-	mEndRef,startPos, endPos, mPathFilter ,mPathResults,50);//TODO: CHANGE ME
-	            if(mNumPathResults <= 0) {
-	                return pos;
-	            }
-	            float actualpath[3*20];
-	            unsigned char* flags = 0;
-	            dtPolyRef* polyrefs = 0;
-	            int mNumPathPoints = m_navMesh[gx][gy]->findStraightPath(startPos, endPos,mPathResults, mNumPathResults, actualpath, flags, polyrefs,20);
-	            if (mNumPathPoints < 3)
-	                return pos;
-	            pos.m_positionX = actualpath[5]; //0 3 6
-	            pos.m_positionY = actualpath[3]; //1 4 7
-	            pos.m_positionZ = actualpath[4]; //2 5 8
-	            return pos;
-	        }
-	    }
-	    return pos;
+    //convert to nav coords.
+    float startPos[3]               = { starty, startz, startx };
+    float endPos[3]                 = { endy, endz, endx };
+    float mPolyPickingExtents[3]    = { 2.00f, 4.00f, 2.00f };
+    dtQueryFilter* mPathFilter = new dtQueryFilter();
+    int gx = 32 - (startx/533.333333f);
+    int gy = 32 - (starty/533.333333f);
+    Position pos = Position();
+    pos.m_positionX = endx;
+    pos.m_positionY = endy;
+    pos.m_positionZ = endz;
+    dtNavMesh* myNavMesh = m_navMesh[gx][gy];
+    if (myNavMesh) {
+
+        dtPolyRef mStartRef = myNavMesh->findNearestPoly(startPos,mPolyPickingExtents,mPathFilter,0); // this maybe should be saved on mob for later
+        dtPolyRef mEndRef   = myNavMesh->findNearestPoly(endPos,mPolyPickingExtents,mPathFilter,0); // saved on player? probably waste since player moves to much
+        if (mStartRef != 0 && mEndRef != 0)
+        {
+
+            dtPolyRef mPathResults[50];
+
+            int mNumPathResults = myNavMesh->findPath(mStartRef,
+mEndRef,startPos, endPos, mPathFilter ,mPathResults,50);//TODO: CHANGE ME
+            if (mNumPathResults <= 0) {
+                return pos;
+            }
+            float actualpath[3*20];
+            unsigned char* flags = 0;
+            dtPolyRef* polyrefs = 0;
+            int mNumPathPoints = m_navMesh[gx][gy]->findStraightPath(startPos, endPos,mPathResults, mNumPathResults, actualpath, flags, polyrefs,20);
+            if (mNumPathPoints < 3)
+                return pos;
+            pos.m_positionX = actualpath[5]; //0 3 6
+            pos.m_positionY = actualpath[3]; //1 4 7
+            pos.m_positionZ = actualpath[4]; //2 5 8
+            return pos;
+        }
+    }
+    return pos;
 }
 void Map::LoadVMap(int gx,int gy)
 {

@@ -2065,7 +2065,7 @@ void Spell::EffectDummy(uint32 i)
             }
 			else if (m_spellInfo->Id == 45524)
 			{
-			if (unitTarget = m_caster)
+			if (unitTarget == m_caster)
 				return ;			
 				m_caster->CastCustomSpell(unitTarget, 55095, &bp, NULL, NULL, true);
 				return;
