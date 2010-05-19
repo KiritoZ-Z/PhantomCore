@@ -7093,6 +7093,34 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 64930;            // Electrified
                     break;
                 }
+                 // Shaman T9 Elemental 4P Bonus
+                 case 67228:
+                 {
+                     basepoints0 = int32(basepoints0 / 3); // basepoints is for 1 tick, not the entire DoT amount
+                     triggered_spell_id = 67228;
+                     break;
+                 }
+				 
+                 // Item - Shaman T10 Restoration 4P Bonus
+                 case 70808:
+                {
+                     basepoints0 = int32( triggerAmount * damage / 100 );
+                     basepoints0 = int32( basepoints0 / 3); // basepoints is for 1 tick, not all DoT amount
+                     triggered_spell_id = 70809;
+                     break;
+                 }
+                 // Item - Shaman T10 Elemental 4P Bonus
+                 case 70817:
+                 {
+                     if (AuraEffect const * aura = pVictim->GetAuraEffect(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_SHAMAN, 0x10000000, 0, 0))
+                     {
+                         int32 amount = aura->GetBase()->GetDuration() + triggerAmount * IN_MILISECONDS;
+                         aura->GetBase()->SetDuration(amount);
+                         //aura->SendAuraUpdate(false);
+                         return true;
+                     }
+                     return false;
+                 }
             }
             // Frozen Power
             if (dummySpell->SpellIconID == 3780)
