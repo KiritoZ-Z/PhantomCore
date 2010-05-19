@@ -333,14 +333,12 @@ void AddSC_boss_black_knight();
 void AddSC_boss_grand_champions();
 void AddSC_instance_trial_of_the_champion();
 void AddSC_trial_of_the_champion();
-void AddSC_boss_tc_alliance_champions(); //Trial of the Crusader
-void AddSC_boss_tc_horde_champions();
+void AddSC_Raid_Anubarak();			//Trial of the Crusader
+void AddSC_boss_northrend_beasts();
+void AddSC_twin_valkyr();
 void AddSC_instance_trial_of_the_crussader();
 void AddSC_trial_of_the_crussader();
-void AddSC_twin_valkyr();
-void AddSC_Raid_Anubarak();
-void AddSC_boss_lord_jaraxxus();
-void AddSC_boss_northrend_beasts();       
+void AddSC_boss_lord_jaraxxus(); 
 void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
 void AddSC_instance_icecrown_citadel();
 void AddSC_boss_Marrowgar();

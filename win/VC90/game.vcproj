@@ -3845,10 +3845,6 @@
 					Name="Trial of the crusader"
 					>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\alliance_champions.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\Anubarak.cpp"
 						>
 					</File>
@@ -3858,10 +3854,6 @@
 					</File>
 					<File
 						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_northrend_beasts.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\horde_champions.cpp"
 						>
 					</File>
 					<File

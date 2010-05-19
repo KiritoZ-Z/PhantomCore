@@ -345,11 +345,9 @@ SET(scripts_STAT_SRCS
    northrend/crusaders_coliseum/trial_of_the_champion/instance_trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.h
-   northrend/crusaders_coliseum/trial_of_the_crusader/alliance_champions.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/Anubarak.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/boss_lord_jaraxxus.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/boss_northrend_beasts.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/horde_champions.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/instance_trial_of_the_crussader.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crussader.h
