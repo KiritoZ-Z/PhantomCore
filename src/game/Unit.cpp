@@ -1789,7 +1789,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim, SpellSchoolMask schoolMask, DamageEff
                 if (spellProto->SpellIconID == 3006)
                 {
                     // You have a chance equal to your Parry chance
-                    if (damagetype == DIRECT_DAMAGE &&                   // Only for direct damage
+                    if (damagetype == SPELL_DIRECT_DAMAGE &&                   // Only for direct damage
                         roll_chance_f(pVictim->GetUnitParryChance()))    // Roll chance
                         RemainingDamage -= RemainingDamage * currentAbsorb / 100;
                     continue;
