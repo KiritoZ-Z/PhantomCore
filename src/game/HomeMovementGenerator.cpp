@@ -51,7 +51,7 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
 
     CreatureTraveller traveller(owner);
 
-    float myx,myy,myz;
+    float myx,myy,myz,x,y,z;
     owner.GetPosition(myx,myy,myz);
     Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
     uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
