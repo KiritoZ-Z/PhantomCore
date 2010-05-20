@@ -3864,6 +3864,11 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->AttributesEx5 |= SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY;
             count++;
             break;
+		// spellsteal
+		case 30449:
+			spellInfo->AttributesEx7 |= SPELL_ATTR_EX7_DISPEL_CHARGES;
+			count++;
+			break;
         case 41013:     // Parasitic Shadowfiend Passive
             spellInfo->EffectApplyAuraName[0] = 4; // proc debuff, and summon infinite fiends
             count++;
