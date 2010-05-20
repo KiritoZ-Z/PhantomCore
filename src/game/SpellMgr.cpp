@@ -3285,7 +3285,7 @@ bool IsDispelableBySpell(SpellEntry const * dispelSpell, uint32 spellId, bool de
         return false;
 
     if (dispelSpell->Attributes & SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY)
-        return true;
+        return false;
 
     return def;
 }
