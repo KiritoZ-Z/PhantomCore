@@ -1,8 +1,8 @@
-= TrinityCore -- General information =
+= PhantomCore -- General information =
 
-Copyright (C) TrinityCore (http://www.trinitycore.org)
+Copyright (C) PhantomCore (http://phantom-project.org)
 
-  Trinity Core is free software; you can redistribute it and/or modify
+  Phantom Core is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
@@ -16,8 +16,8 @@ Copyright (C) TrinityCore (http://www.trinitycore.org)
   along with this program; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-  In addition, as a special exception, the Trinity Core project
-  gives permission to link the code of its release of Trinity Core with
+  In addition, as a special exception, the Phantom Core project
+  gives permission to link the code of its release of Phantom Core with
   the OpenSSL project's "OpenSSL" library (or with modified versions of
   it that use the same license as the "OpenSSL" library), and distribute
   the linked executables.  You must obey the GNU General Public License
@@ -26,12 +26,12 @@ Copyright (C) TrinityCore (http://www.trinitycore.org)
   file, but you are not obligated to do so.  If you do not wish to do
   so, delete this exception statement from your version.
 
-TrinityCore is a World of Warcraft game server emulator. It is derived
-from MaNGOS, the Massive Network Game Object Server, and is based on the
-code of that project.
+PhantomCore is a World of Warcraft game server emulator. It is derived
+from TrinityCore and MaNGOS, the Massive Network Game Object Server, and is based on the
+code of thats projects.
 
-For further information on the TrinityCore project, please visit our
-project website at http://www.trinitycore.org.
+For further information on the PhantomCore project, please visit our
+project website at http://phantom-project.org.
 
 API documentation can be obtained by running the "make doc" command inside
 the doc directory.
