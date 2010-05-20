@@ -6037,8 +6037,8 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     if (!target)
                         return false;
 
-                    basepoints[0] = damage;
-                    target->CastCustomSpell(target, 62379, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura);
+                    basepoints0 = damage;
+                    target->CastCustomSpell(target, 62379, &basepoints0, NULL, NULL, true, NULL, triggeredByAura);
                     return true;
                 }
                 // Nightfall
