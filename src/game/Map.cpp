@@ -39,6 +39,7 @@
 #include "WaypointManager.h"
 #include "DBCEnums.h"
 #include "ScriptMgr.h"
+#include "ScriptedCreature.h"
 #include "OutdoorPvPMgr.h"
 #include "GossipDef.h"
 
@@ -2848,7 +2849,7 @@ void InstanceMap::SetResetSchedule(bool on)
     }
 }
 
-MapDifficulty const* InstanceMap::GetMapDifficulty() const
+MapDifficulty const* Map::GetMapDifficulty() const
 {
     return GetMapDifficultyData(GetId(),GetDifficulty());
 }
@@ -3617,7 +3618,21 @@ void Map::ScriptsProcess()
                     break;
                 }
 
-                Object* cmdTarget = step.script->datalong2 & 0x01 ? source : target;
+                Object* cmdTarget = NULL;
+                Object* cmdSource = NULL;
+                Unit* spellTarget = NULL;
+
+                if (step.script->datalong2 == 4)
+                {
+                    Unit* pTarget = (Unit*)target;
+                    if (Creature* victim = GetClosestCreatureWithEntry(pTarget,step.script->dataint,step.script->x))
+                        Unit* spellTarget = (Unit*)victim->GetGUID();
+                }
+                else
+                {
+                    Object* cmdTarget = step.script->datalong2 & 0x01 ? source : target;
+                    Unit* spellTarget = (Unit*)cmdTarget;
+                }
 
                 if (cmdTarget && !cmdTarget->isType(TYPEMASK_UNIT))
                 {
@@ -3625,9 +3640,10 @@ void Map::ScriptsProcess()
                     break;
                 }
 
-                Unit* spellTarget = (Unit*)cmdTarget;
-
-                Object* cmdSource = step.script->datalong2 & 0x02 ? target : source;
+                if (step.script->datalong2 == 4)
+                    Object* cmdSource = target;
+                else
+                    Object* cmdSource = step.script->datalong2 & 0x02 ? target : source;
 
                 if (!cmdSource)
                 {
@@ -3805,10 +3821,14 @@ void Map::ScriptsProcess()
                     sLog.outError("SCRIPT_COMMAND_ORIENTATION call for NULL creature.");
                     break;
                 }
+                Unit* uSource = (Unit*)source;
+                Unit* uTarget = (Unit*)target;
+                if (step.script->datalong)
+                    uSource->SetInFront(uTarget);
+                else
+                    uSource->SetOrientation(step.script->o);
 
-                source->ToCreature()->SetOrientation(step.script->o);
-                source->ToCreature()->SendMovementFlagUpdate();
-
+                uSource->SendMovementFlagUpdate();
                 break;
             }
             case SCRIPT_COMMAND_EQUIP:

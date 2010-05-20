@@ -77,6 +77,7 @@ struct AccountData
 enum PartyOperation
 {
     PARTY_OP_INVITE = 0,
+    PARTY_OP_UNINVITE = 1,
     PARTY_OP_LEAVE = 2,
     PARTY_OP_SWAP = 4
 };
@@ -287,16 +288,20 @@ class WorldSession
         uint32 getDialogStatus(Player *pPlayer, Object* questgiver, uint32 defstatus);
         
         time_t m_timeOutTime;
-        void UpdateTimeOutTime(bool b)
+        void UpdateTimeOutTime(uint32 diff)
         {
-            if (b)
-                m_timeOutTime = time(NULL) + sWorld.getConfig(CONFIG_SOCKET_TIMEOUTTIME) / IN_MILISECONDS;
-            else
+            if (diff > m_timeOutTime)
                 m_timeOutTime = 0;
+            else
+                m_timeOutTime -= diff;
+        }
+        void ResetTimeOutTime()
+        {
+            m_timeOutTime = sWorld.getConfig(CONFIG_SOCKET_TIMEOUTTIME);
         }
         bool IsConnectionIdle() const
         {
-            if (m_timeOutTime && m_timeOutTime <= time(NULL))
+            if (m_timeOutTime <= 0 && !m_inQueue)
                 return true;
             return false;
         }

@@ -31,11 +31,13 @@
 #include "Log.h"
 #include "SystemConfig.h"
 #include "Util.h"
+#include "SignalHandler.h"
 #include "RealmList.h"
 #include "RealmAcceptor.h"
 
 #include <ace/Dev_Poll_Reactor.h>
 #include <ace/ACE.h>
+#include <ace/Sig_Handler.h>
 
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
@@ -59,13 +61,35 @@ int m_ServiceStatus = -1;
 #endif
 
 bool StartDB();
-void UnhookSignals();
-void HookSignals();
+
 
 bool stopEvent = false;                                     ///< Setting it to true stops the server
 
 
-DatabaseType LoginDatabase;                                 ///< Accessor to the realm server database
+DatabaseType LoginDatabase;     
+
+/// Handle realmd's termination signals
+class RealmdSignalHandler : public Trinity::SignalHandler
+{
+    public:
+        virtual void HandleSignal(int SigNum)
+        {
+            switch (SigNum)
+            {
+                case SIGINT:
+                case SIGTERM:
+                    stopEvent = true;
+                    break;
+                #ifdef _WIN32
+                case SIGBREAK:
+                    if (m_ServiceStatus != 1)
+                        stopEvent = true;
+                    break;
+                #endif /* _WIN32 */
+            }
+        }
+};
+                            ///< Accessor to the realm server database
 
 /// Print out the usage string for this program on the console.
 void usage(const char *prog)
@@ -227,8 +251,19 @@ extern int main(int argc, char **argv)
         return 1;
     }
 
-    ///- Catch termination signals
-    HookSignals();
+    // Initialise the signal handlers
+    RealmdSignalHandler SignalINT, SignalTERM;
+    #ifdef _WIN32
+    RealmdSignalHandler SignalBREAK;
+    #endif /* _WIN32 */
+
+    // Register realmd's signal handlers
+    ACE_Sig_Handler Handler;
+    Handler.register_handler(SIGINT, &SignalINT);
+    Handler.register_handler(SIGTERM, &SignalTERM);
+    #ifdef _WIN32
+    Handler.register_handler(SIGBREAK, &SignalBREAK);
+    #endif /* _WIN32 */();
 
     ///- Handle affinity for multiple processors and process priority on Windows
     #ifdef WIN32
@@ -316,32 +351,8 @@ extern int main(int argc, char **argv)
     LoginDatabase.ThreadEnd();
     LoginDatabase.HaltDelayThread();
 
-    ///- Remove signal handling before leaving
-    UnhookSignals();
-
     sLog.outString("Halting process...");
     return 0;
-}
-
-/// Handle termination signals
-/** Put the global variable stopEvent to 'true' if a termination signal is caught **/
-void OnSignal(int s)
-{
-    switch (s)
-    {
-        case SIGINT:
-        case SIGTERM:
-            stopEvent = true;
-            break;
-        #ifdef _WIN32
-        case SIGBREAK:
-            if (m_ServiceStatus != 1)
-                stopEvent = true;
-            break;
-        #endif
-    }
-
-    signal(s, OnSignal);
 }
 
 /// Initialize connection to the database
@@ -362,28 +373,6 @@ bool StartDB()
     LoginDatabase.ThreadStart();
 
     return true;
-}
-
-/// Define hook 'OnSignal' for all termination signals
-void HookSignals()
-{
-    signal(SIGINT, OnSignal);
-    signal(SIGTERM, OnSignal);
-    #ifdef _WIN32
-    if (m_ServiceStatus != 1)
-        signal(SIGBREAK, OnSignal);
-    #endif
-}
-
-/// Unhook the signals before leaving
-void UnhookSignals()
-{
-    signal(SIGINT, 0);
-    signal(SIGTERM, 0);
-    #ifdef _WIN32
-    if (m_ServiceStatus != 1)
-        signal(SIGBREAK, 0);
-    #endif
 }
 
 /// @}

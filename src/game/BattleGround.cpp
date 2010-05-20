@@ -1419,7 +1419,7 @@ bool BattleGround::HasFreeSlots() const
     return GetPlayersSize() < GetMaxPlayers();
 }
 
-void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
+void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value, bool doAddHonor)
 {
     //this procedure is called from virtual function implemented in bg subclass
     BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
@@ -1443,8 +1443,10 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             if (isBattleGround())
             {
                 // reward honor instantly
-                if (Source->RewardHonor(NULL, 1, value))
-                    itr->second->BonusHonor += value;
+                if (doAddHonor)
+                {
+                    Source->RewardHonor(NULL, 1, value);//RewardHonor calls UpdatePlayerScore with doAddHonor = false
+                }else itr->second->BonusHonor += value;
             }
             break;
             //used only in EY, but in MSG_PVP_LOG_DATA opcode

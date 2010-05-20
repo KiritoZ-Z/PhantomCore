@@ -5693,6 +5693,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     pVictim->RemoveAurasWithMechanic(1<<MECHANIC_STUN, AURA_REMOVE_BY_ENEMY_SPELL);
                     return true;
                 }
+                // Glyph of Life Tap
+                case 63320:
+                {
+                    triggered_spell_id = 63321; // Life Tap
+                    break;
+                }
             }
             break;
         }
@@ -6034,12 +6040,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     basepoints[0] = damage;
                     target->CastCustomSpell(target, 62379, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura);
                     return true;
-                }
-                // Glyph of Life Tap
-                case 63320:
-                {
-                    triggered_spell_id = 63321;
-                    break;
                 }
                 // Nightfall
                 case 18094:

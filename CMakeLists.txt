@@ -1,4 +1,4 @@
-PROJECT(Phantom)
+project(Phantom)
 cmake_minimum_required(VERSION 2.6)
 cmake_policy(SET CMP0005 OLD)
 
@@ -7,33 +7,48 @@ include(cmake/FindAce.cmake)
 include(cmake/FindMySql.cmake)
 include(cmake/FindReadline.cmake)
 include(cmake/FindTermcap.cmake)
+include(cmake/PCH.cmake)
+
+# Force out-of-source build
+string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" BUILDING_IN_SOURCE)
+if(BUILDING_IN_SOURCE)
+   message(FATAL_ERROR "This project requires an out of source build. Remove the file 'CMakeCache.txt' found in this directory before continuing, and create a separate build directory and run 'cmake path_to_project [options]' from there.")    
+endif(BUILDING_IN_SOURCE)
+
+# Select the Release build configuration by default.
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release")
+endif(NOT CMAKE_BUILD_TYPE)
+
 CONFIGURE_FILE(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-  IMMEDIATE @ONLY)
-ADD_CUSTOM_TARGET(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
+add_custom_target(uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
 
-OPTION(DO_MYSQL "With MySQL support" 1)
-OPTION(DO_SCRIPTS "With phantomscripts" 1)
-OPTION(DO_CLI "With CLI" 1)
-OPTION(DO_RA "With RA" 0)
-OPTION(DO_DEBUG "Debug mode" 0)
-OPTION(DO_WARN "Enable all compile warnings" 0)
-OPTION(CENTOS "CENTOS" 0)
-OPTION(DO_SQL "Copy SQL files" 0)
+option(DO_MYSQL "With MySQL support" 1)
+option(DO_SCRIPTS "With trinityscripts" 1)
+option(DO_CLI "With CLI" 1)
+option(DO_RA "With RA" 0)
+option(DO_DEBUG "Debug mode" 0)
+option(DO_WARN "Enable all compile warnings" 0)
+option(DO_WARN "Enable all compile warnings" 0)
+option(CENTOS "CENTOS" 0)
+option(DO_SQL "Copy SQL files" 0)
+option(DO_PCH "Use precompiled headers" 1)
 
-SET(GENREV_SRC
+set(GENREV_SRC
 src/tools/genrevision/genrevision.cpp
 )
 
-if (DO_DEBUG)
-    ADD_EXECUTABLE(genrev
+if(DO_DEBUG)
+    add_executable(genrev
     ${GENREV_SRC}
     )
-    ADD_CUSTOM_TARGET("revision.h" ALL
-        COMMAND "${Phantom_BINARY_DIR}/genrev"
-        ${Phantom_SOURCE_DIR}
-        WORKING_DIRECTORY "${Phantom_SOURCE_DIR}/src/shared"
+    add_custom_target("revision.h" ALL
+        COMMAND "${CMAKE_BINARY_DIR}/genrev"
+        ${CMAKE_SOURCE_DIR}
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/src/shared"
         DEPENDS genrev
     )
 else (DO_DEBUG)
@@ -46,7 +61,7 @@ else (DO_DEBUG)
         WORKING_DIRECTORY "${Phantom_SOURCE_DIR}/src/shared"
         DEPENDS genrev
     )
-endif (DO_DEBUG)
+endif(DO_DEBUG)
 
 
 EXECUTE_PROCESS(

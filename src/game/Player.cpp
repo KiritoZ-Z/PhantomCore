@@ -6626,6 +6626,14 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
 
     ApplyModUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, uint32(honor), true);
 
+    if (InBattleGround() && honor > 0)
+    {
+        if (BattleGround *bg = GetBattleGround())
+        {
+            bg->UpdatePlayerScore(this, SCORE_BONUS_HONOR, uint32(honor), false);//false: prevent looping
+        }
+    }
+
     if (sWorld.getConfig(CONFIG_PVP_TOKEN_ENABLE) && pvptoken)
     {
         if (!uVictim || uVictim == this || uVictim->HasAuraType(SPELL_AURA_NO_PVP_CREDIT))
@@ -14443,11 +14451,11 @@ void Player::FailQuest(uint32 questId)
 
 bool Player::SatisfyQuestSkillOrClass(Quest const* qInfo, bool msg)
 {
-    int32 zoneOrSort   = qInfo->GetZoneOrSort();
-    int32 skillOrClass = qInfo->GetSkillOrClass();
+    int32 zoneOrSort = qInfo->GetZoneOrSort();
+    int32 skillOrClassMask = qInfo->GetSkillOrClassMask();
 
     // skip zone zoneOrSort and 0 case skillOrClass
-    if (zoneOrSort >= 0 && skillOrClass == 0)
+    if (zoneOrSort >= 0 && skillOrClassMask == 0)
         return true;
 
     int32 questSort = -zoneOrSort;
@@ -14462,10 +14470,10 @@ bool Player::SatisfyQuestSkillOrClass(Quest const* qInfo, bool msg)
     }
 
     // check class
-    if (skillOrClass < 0)
+    if (skillOrClassMask < 0)
     {
-        uint8 reqClass = -int32(skillOrClass);
-        if (getClass() != reqClass)
+        uint8 reqClassMask = -int32(skillOrClassMask);
+        if (!(reqClassMask & getClassMask()))
         {
             if (msg)
                 SendCanTakeQuestResponse(INVALIDREASON_DONT_HAVE_REQ);
@@ -14473,9 +14481,9 @@ bool Player::SatisfyQuestSkillOrClass(Quest const* qInfo, bool msg)
         }
     }
     // check skill
-    else if (skillOrClass > 0)
+    else if (skillOrClassMask > 0)
     {
-        uint32 reqSkill = skillOrClass;
+        uint32 reqSkill = skillOrClassMask;
         if (GetSkillValue(reqSkill) < qInfo->GetRequiredSkillValue())
         {
             if (msg)
@@ -20821,6 +20829,10 @@ void Player::SendInitialPacketsBeforeAddToMap()
     SendTalentsInfoData(false);
 
     // SMSG_INSTANCE_DIFFICULTY
+    data.Initialize(SMSG_INSTANCE_DIFFICULTY, 4+4);
+    data << uint32(GetMap()->GetDifficulty());
+    data << uint32(0);
+    GetSession()->SendPacket(&data);
 
     SendInitialSpells();
 

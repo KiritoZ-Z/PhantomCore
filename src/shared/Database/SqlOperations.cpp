@@ -33,28 +33,34 @@ void SqlStatement::Execute(Database *db)
 
 void SqlTransaction::Execute(Database *db)
 {
+    const char* sql;
+
     if (m_queue.empty())
         return;
 
     db->DirectExecute("START TRANSACTION");
     while (!m_queue.empty())
     {
-        char const *sql = m_queue.front();
-        m_queue.pop();
-
+        sql = m_queue.peek();
+        m_queue.unlock();
         if (!db->DirectExecute(sql))
         {
             free((void*)const_cast<char*>(sql));
+            m_queue.pop_front();
             db->DirectExecute("ROLLBACK");
             while (!m_queue.empty())
             {
-                free((void*)const_cast<char*>(m_queue.front()));
-                m_queue.pop();
+                sql = m_queue.peek();
+                m_queue.unlock();
+                free((void*)const_cast<char*>(sql));
+                m_queue.pop_front();
             }
+            
             return;
         }
 
         free((void*)const_cast<char*>(sql));
+        m_queue.pop_front();
     }
 
     db->DirectExecute("COMMIT");

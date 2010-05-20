@@ -784,7 +784,7 @@ void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
     BattleGround::HandleKillPlayer(player, killer);
 }
 
-void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
+void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value, bool doAddHonor)
 {
 
     BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
@@ -800,7 +800,7 @@ void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
             ((BattleGroundWGScore*)itr->second)->FlagReturns += value;
             break;
         default:
-            BattleGround::UpdatePlayerScore(Source, type, value);
+            BattleGround::UpdatePlayerScore(Source, type, value, doAddHonor);
             break;
     }
 }

@@ -380,7 +380,7 @@ void ObjectMgr::LoadCreatureLocales()
     sLog.outString(">> Loaded %lu creature locale strings", (unsigned long)mCreatureLocaleMap.size());
 }
 
-void ObjectMgr::LoadNpcOptionLocales()
+void ObjectMgr::LoadGossipMenuItemsLocales()
 {
     mGossipMenuItemsLocaleMap.clear();                              // need for reload case
 
@@ -408,7 +408,7 @@ void ObjectMgr::LoadNpcOptionLocales()
 
         for (uint8 i = 1; i < MAX_LOCALE; ++i)
         {
-            std::string str = fields[1+2*(i-1)].GetCppString();
+            std::string str = fields[2+2*(i-1)].GetCppString();
             if (!str.empty())
             {
                 int idx = GetOrNewIndexForLocale(LocaleConstant(i));
@@ -420,7 +420,7 @@ void ObjectMgr::LoadNpcOptionLocales()
                     data.OptionText[idx] = str;
                 }
             }
-            str = fields[1+2*(i-1)+1].GetCppString();
+            str = fields[2+2*(i-1)+1].GetCppString();
             if (!str.empty())
             {
                 int idx = GetOrNewIndexForLocale(LocaleConstant(i));
@@ -497,307 +497,307 @@ void ObjectMgr::LoadCreatureTemplates()
     sLog.outString(">> Loaded %u creature definitions", sCreatureStorage.RecordCount);
     sLog.outString();
 
-    std::set<uint32> difficultyEntries[MAX_DIFFICULTY - 1]; // already loaded difficulty 1 value in creatures
-    std::set<uint32> hasDifficultyEntries[MAX_DIFFICULTY - 1]; // already loaded creatures with difficulty 1  values
-
     // check data correctness
     for (uint32 i = 1; i < sCreatureStorage.MaxEntry; ++i)
     {
         CreatureInfo const* cInfo = sCreatureStorage.LookupEntry<CreatureInfo>(i);
-        if (!cInfo)
-            continue;
-
-        bool ok = true;                                     // bool to allow continue outside this loop
-        for (uint32 diff = 0; diff < MAX_DIFFICULTY - 1 && ok; ++diff)
-        {
-            if (!cInfo->DifficultyEntry[diff])
-                continue;
-            ok = false;                                     // will be set to true at the end of this loop again
-
-            CreatureInfo const* difficultyInfo = GetCreatureTemplate(cInfo->DifficultyEntry[diff]);
-            if (!difficultyInfo)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u not exist.",
-                    i, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (difficultyEntries[diff].find(i) != difficultyEntries[diff].end())
-            {
-                sLog.outErrorDb("Creature (Entry: %u) listed as difficulty %u but have value in `difficulty_entry_1`.", i, diff + 1);
-                continue;
-            }
-
-            bool ok2 = true;
-            for (uint32 diff2 = 0; diff2 < MAX_DIFFICULTY - 1 && ok2; ++diff2)
-            {
-                ok2 = false;
-                if (difficultyEntries[diff2].find(cInfo->DifficultyEntry[diff]) != difficultyEntries[diff2].end())
-                {
-                    sLog.outErrorDb("Creature (Entry: %u) already listed as difficulty %u for another entry.", cInfo->DifficultyEntry[diff], diff2 + 1);
-                    continue;
-                }
-
-                if (hasDifficultyEntries[diff2].find(cInfo->DifficultyEntry[diff]) != hasDifficultyEntries[diff2].end())
-                {
-                    sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u have difficulty %u entry also.",
-                        i, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff], diff2 + 1);
-                    continue;
-                }
-                ok2 = true;
-            }
-            if (!ok2)
-                continue;
-
-            if (cInfo->unit_class != difficultyInfo->unit_class)
-            {
-                sLog.outErrorDb("Creature (Entry: %u, class %u) has different `unit_class` in difficulty %u mode (Entry: %u, class %u).",
-                    i, cInfo->unit_class, diff + 1, cInfo->DifficultyEntry[diff], difficultyInfo->unit_class);
-                continue;
-            }
-
-            if (cInfo->npcflag != difficultyInfo->npcflag)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has different `npcflag` in difficulty %u mode (Entry: %u).", i, diff + 1, cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (cInfo->trainer_class != difficultyInfo->trainer_class)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has different `trainer_class` in difficulty %u mode (Entry: %u).", i, diff + 1, cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (cInfo->trainer_race != difficultyInfo->trainer_race)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has different `trainer_race` in difficulty %u mode (Entry: %u).", i, diff + 1, cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (cInfo->trainer_type != difficultyInfo->trainer_type)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has different `trainer_type` in difficulty %u mode (Entry: %u).", i, diff + 1, cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (cInfo->trainer_spell != difficultyInfo->trainer_spell)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has different `trainer_spell` in difficulty %u mode (Entry: %u).", i, diff + 1, cInfo->DifficultyEntry[diff]);
-                continue;
-            }
-
-            if (difficultyInfo->AIName && *difficultyInfo->AIName)
-            {
-                sLog.outErrorDb("Difficulty %u mode creature (Entry: %u) has `AIName`, but in any case will used difficulty 0 mode creature (Entry: %u) AIName.",
-                    diff, cInfo->DifficultyEntry[diff], i);
-                continue;
-            }
-
-            if (difficultyInfo->ScriptID)
-            {
-                sLog.outErrorDb("Difficulty %u mode creature (Entry: %u) has `ScriptName`, but in any case will used difficulty 0 mode creature (Entry: %u) ScriptName.",
-                    diff, cInfo->DifficultyEntry[diff], i);
-                continue;
-            }
-
-            hasDifficultyEntries[diff].insert(i);
-            difficultyEntries[diff].insert(cInfo->DifficultyEntry[diff]);
-            ok = true;
-        }
-        if (!ok)
-            continue;
-
-        FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_A);
-        if (!factionTemplate)
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_A template (%u)", cInfo->Entry, cInfo->faction_A);
-
-        factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_H);
-        if (!factionTemplate)
-            sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_H template (%u)", cInfo->Entry, cInfo->faction_H);
-
-        // used later for scale
-        CreatureDisplayInfoEntry const* displayScaleEntry = NULL;
-
-        if (cInfo->Modelid1)
-        {
-            CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid1);
-            if (!displayEntry)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid1 id (%u), can crash client", cInfo->Entry, cInfo->Modelid1);
-                const_cast<CreatureInfo*>(cInfo)->Modelid1 = 0;
-            }
-            else if (!displayScaleEntry)
-                displayScaleEntry = displayEntry;
-
-            CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid1);
-            if (!minfo)
-                sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid1 (%u)", cInfo->Entry, cInfo->Modelid1);
-        }
-
-        if (cInfo->Modelid2)
-        {
-            CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid2);
-            if (!displayEntry)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid2 id (%u), can crash client", cInfo->Entry, cInfo->Modelid2);
-                const_cast<CreatureInfo*>(cInfo)->Modelid2 = 0;
-            }
-            else if (!displayScaleEntry)
-                displayScaleEntry = displayEntry;
-
-            CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid2);
-            if (!minfo)
-                sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid2 (%u)", cInfo->Entry, cInfo->Modelid2);
-        }
-
-        if (cInfo->Modelid3)
-        {
-            CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid3);
-            if (!displayEntry)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid3 id (%u), can crash client", cInfo->Entry, cInfo->Modelid3);
-                const_cast<CreatureInfo*>(cInfo)->Modelid3 = 0;
-            }
-            else if (!displayScaleEntry)
-                displayScaleEntry = displayEntry;
-
-            CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid3);
-            if (!minfo)
-                sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid3 (%u)", cInfo->Entry, cInfo->Modelid3);
-        }
-
-        if (cInfo->Modelid4)
-        {
-            CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid4);
-            if (!displayEntry)
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid4 id (%u), can crash client", cInfo->Entry, cInfo->Modelid4);
-                const_cast<CreatureInfo*>(cInfo)->Modelid4 = 0;
-            }
-            else if (!displayScaleEntry)
-                displayScaleEntry = displayEntry;
-
-            CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid4);
-            if (!minfo)
-                sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid4 (%u)", cInfo->Entry, cInfo->Modelid4);
-        }
-
-        if (!displayScaleEntry)
-            sLog.outErrorDb("Creature (Entry: %u) not has any existed display id in Modelid1/Modelid2/Modelid3/Modelid4", cInfo->Entry);
-
-        for (int k = 0; k < MAX_KILL_CREDIT; ++k)
-        {
-            if (cInfo->KillCredit[k])
-            {
-                if (!GetCreatureTemplate(cInfo->KillCredit[k]))
-                {
-                    sLog.outErrorDb("Creature (Entry: %u) has not existed creature entry in `KillCredit%d` (%u)",cInfo->Entry,k+1,cInfo->KillCredit[k]);
-                    const_cast<CreatureInfo*>(cInfo)->KillCredit[k] = 0;
-                }
-            }
-        }
-
-        if (!cInfo->unit_class || ((1 << (cInfo->unit_class-1)) & CLASSMASK_ALL_CREATURES) == 0)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has invalid unit_class(%u) for creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", cInfo->Entry, cInfo->unit_class);
-            const_cast<CreatureInfo*>(cInfo)->unit_class = UNIT_CLASS_WARRIOR;
-        }
-
-        if (cInfo->dmgschool >= MAX_SPELL_SCHOOL)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has invalid spell school value (%u) in `dmgschool`",cInfo->Entry,cInfo->dmgschool);
-            const_cast<CreatureInfo*>(cInfo)->dmgschool = SPELL_SCHOOL_NORMAL;
-        }
-
-        if (cInfo->baseattacktime == 0)
-            const_cast<CreatureInfo*>(cInfo)->baseattacktime  = BASE_ATTACK_TIME;
-
-        if (cInfo->rangeattacktime == 0)
-            const_cast<CreatureInfo*>(cInfo)->rangeattacktime = BASE_ATTACK_TIME;
-
-        if (cInfo->npcflag & UNIT_NPC_FLAG_SPELLCLICK)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has dynamic flag UNIT_NPC_FLAG_SPELLCLICK (%u) set, it expect to be set by code base at `npc_spellclick_spells` content.",cInfo->Entry,UNIT_NPC_FLAG_SPELLCLICK);
-            const_cast<CreatureInfo*>(cInfo)->npcflag &= ~UNIT_NPC_FLAG_SPELLCLICK;
-        }
-
-        if ((cInfo->npcflag & UNIT_NPC_FLAG_TRAINER) && cInfo->trainer_type >= MAX_TRAINER_TYPE)
-            sLog.outErrorDb("Creature (Entry: %u) has wrong trainer type %u",cInfo->Entry,cInfo->trainer_type);
-
-        if (cInfo->type && !sCreatureTypeStore.LookupEntry(cInfo->type))
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has invalid creature type (%u) in `type`",cInfo->Entry,cInfo->type);
-            const_cast<CreatureInfo*>(cInfo)->type = CREATURE_TYPE_HUMANOID;
-        }
-
-        // must exist or used hidden but used in data horse case
-        if (cInfo->family && !sCreatureFamilyStore.LookupEntry(cInfo->family) && cInfo->family != CREATURE_FAMILY_HORSE_CUSTOM)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has invalid creature family (%u) in `family`",cInfo->Entry,cInfo->family);
-            const_cast<CreatureInfo*>(cInfo)->family = 0;
-        }
-
-        if (cInfo->InhabitType <= 0 || cInfo->InhabitType > INHABIT_ANYWHERE)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has wrong value (%u) in `InhabitType`, creature will not correctly walk/swim/fly",cInfo->Entry,cInfo->InhabitType);
-            const_cast<CreatureInfo*>(cInfo)->InhabitType = INHABIT_ANYWHERE;
-        }
-
-        if (cInfo->VehicleId)
-        {
-            VehicleEntry const* vehId = sVehicleStore.LookupEntry(cInfo->VehicleId);
-            if (!vehId)
-                 sLog.outErrorDb("Creature (Entry: %u) has a non-existing VehicleId (%u). This *WILL* cause the client to freeze!", cInfo->Entry, cInfo->VehicleId);
-        }
-
-        if (cInfo->PetSpellDataId)
-        {
-            CreatureSpellDataEntry const* spellDataId = sCreatureSpellDataStore.LookupEntry(cInfo->PetSpellDataId);
-            if (!spellDataId)
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing PetSpellDataId (%u)", cInfo->Entry, cInfo->PetSpellDataId);
-        }
-
-        for (uint8 j = 0; j < CREATURE_MAX_SPELLS; ++j)
-        {
-            if (cInfo->spells[j] && !sSpellStore.LookupEntry(cInfo->spells[j]))
-            {
-                sLog.outErrorDb("Creature (Entry: %u) has non-existing Spell%d (%u), set to 0", cInfo->Entry, j+1,cInfo->spells[j]);
-                const_cast<CreatureInfo*>(cInfo)->spells[j] = 0;
-            }
-        }
-
-        if (cInfo->MovementType >= MAX_DB_MOTION_TYPE)
-        {
-            sLog.outErrorDb("Creature (Entry: %u) has wrong movement generator type (%u), ignore and set to IDLE.",cInfo->Entry,cInfo->MovementType);
-            const_cast<CreatureInfo*>(cInfo)->MovementType = IDLE_MOTION_TYPE;
-        }
-
-        if (cInfo->equipmentId > 0)                          // 0 no equipment
-        {
-            if (!GetEquipmentInfo(cInfo->equipmentId))
-            {
-                sLog.outErrorDb("Table `creature_template` have creature (Entry: %u) with equipment_id %u not found in table `creature_equip_template`, set to no equipment.", cInfo->Entry, cInfo->equipmentId);
-                const_cast<CreatureInfo*>(cInfo)->equipmentId = 0;
-            }
-        }
-
-        /// if not set custom creature scale then load scale from CreatureDisplayInfo.dbc
-        if (cInfo->scale <= 0.0f)
-        {
-            if (displayScaleEntry)
-                const_cast<CreatureInfo*>(cInfo)->scale = displayScaleEntry->scale;
-            else
-                const_cast<CreatureInfo*>(cInfo)->scale = 1.0f;
-        }
-
-        if (cInfo->expansion > (MAX_CREATURE_BASE_HP - 1))
-        {
-            sLog.outErrorDb("Table `creature_template` have creature (Entry: %u) with expansion %u ignore and set to NULL.", cInfo->expansion);
-            const_cast<CreatureInfo*>(cInfo)->expansion = 0;
-        }
-
-        const_cast<CreatureInfo*>(cInfo)->dmg_multiplier *= Creature::_GetDamageMod(cInfo->rank);
+        CheckCreatureTemplate(cInfo);
     }
+}
+
+void ObjectMgr::CheckCreatureTemplate(CreatureInfo const* cInfo)
+{
+    if (!cInfo)
+        return;
+
+    bool ok = true;                                     // bool to allow continue outside this loop
+    for (uint32 diff = 0; diff < MAX_DIFFICULTY - 1 && ok; ++diff)
+    {
+        if (!cInfo->DifficultyEntry[diff])
+            continue;
+        ok = false;                                     // will be set to true at the end of this loop again
+
+        CreatureInfo const* difficultyInfo = GetCreatureTemplate(cInfo->DifficultyEntry[diff]);
+        if (!difficultyInfo)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u not exist.",
+                cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (difficultyEntries[diff].find(cInfo->Entry) != difficultyEntries[diff].end())
+        {
+            sLog.outErrorDb("Creature (Entry: %u) listed as difficulty %u but have value in `difficulty_entry_1`.", cInfo->Entry, diff + 1);
+            continue;
+        }
+
+        bool ok2 = true;
+        for (uint32 diff2 = 0; diff2 < MAX_DIFFICULTY - 1 && ok2; ++diff2)
+        {
+            ok2 = false;
+            if (difficultyEntries[diff2].find(cInfo->DifficultyEntry[diff]) != difficultyEntries[diff2].end())
+            {
+                sLog.outErrorDb("Creature (Entry: %u) already listed as difficulty %u for another entry.", cInfo->DifficultyEntry[diff], diff2 + 1);
+                continue;
+            }
+
+            if (hasDifficultyEntries[diff2].find(cInfo->DifficultyEntry[diff]) != hasDifficultyEntries[diff2].end())
+            {
+                sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u have difficulty %u entry also.",
+                    cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff], diff2 + 1);
+                continue;
+            }
+            ok2 = true;
+        }
+        if (!ok2)
+            continue;
+
+        if (cInfo->unit_class != difficultyInfo->unit_class)
+        {
+            sLog.outErrorDb("Creature (Entry: %u, class %u) has different `unit_class` in difficulty %u mode (Entry: %u, class %u).",
+                cInfo->Entry, cInfo->unit_class, diff + 1, cInfo->DifficultyEntry[diff], difficultyInfo->unit_class);
+            continue;
+        }
+
+        if (cInfo->npcflag != difficultyInfo->npcflag)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has different `npcflag` in difficulty %u mode (Entry: %u).", cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (cInfo->trainer_class != difficultyInfo->trainer_class)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has different `trainer_class` in difficulty %u mode (Entry: %u).", cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (cInfo->trainer_race != difficultyInfo->trainer_race)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has different `trainer_race` in difficulty %u mode (Entry: %u).", cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (cInfo->trainer_type != difficultyInfo->trainer_type)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has different `trainer_type` in difficulty %u mode (Entry: %u).", cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (cInfo->trainer_spell != difficultyInfo->trainer_spell)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has different `trainer_spell` in difficulty %u mode (Entry: %u).", cInfo->Entry, diff + 1, cInfo->DifficultyEntry[diff]);
+            continue;
+        }
+
+        if (difficultyInfo->AIName && *difficultyInfo->AIName)
+        {
+            sLog.outErrorDb("Difficulty %u mode creature (Entry: %u) has `AIName`, but in any case will used difficulty 0 mode creature (Entry: %u) AIName.",
+                diff, cInfo->DifficultyEntry[diff], cInfo->Entry);
+            continue;
+        }
+
+        if (difficultyInfo->ScriptID)
+        {
+            sLog.outErrorDb("Difficulty %u mode creature (Entry: %u) has `ScriptName`, but in any case will used difficulty 0 mode creature (Entry: %u) ScriptName.",
+                diff, cInfo->DifficultyEntry[diff], cInfo->Entry);
+            continue;
+        }
+
+        hasDifficultyEntries[diff].insert(cInfo->Entry);
+        difficultyEntries[diff].insert(cInfo->DifficultyEntry[diff]);
+        ok = true;
+    }
+
+    FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_A);
+    if (!factionTemplate)
+        sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_A template (%u)", cInfo->Entry, cInfo->faction_A);
+
+    factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_H);
+    if (!factionTemplate)
+        sLog.outErrorDb("Creature (Entry: %u) has non-existing faction_H template (%u)", cInfo->Entry, cInfo->faction_H);
+
+    // used later for scale
+    CreatureDisplayInfoEntry const* displayScaleEntry = NULL;
+
+    if (cInfo->Modelid1)
+    {
+        CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid1);
+        if (!displayEntry)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid1 id (%u), can crash client", cInfo->Entry, cInfo->Modelid1);
+            const_cast<CreatureInfo*>(cInfo)->Modelid1 = 0;
+        }
+        else if (!displayScaleEntry)
+            displayScaleEntry = displayEntry;
+
+        CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid1);
+        if (!minfo)
+            sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid1 (%u)", cInfo->Entry, cInfo->Modelid1);
+    }
+
+    if (cInfo->Modelid2)
+    {
+        CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid2);
+        if (!displayEntry)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid2 id (%u), can crash client", cInfo->Entry, cInfo->Modelid2);
+            const_cast<CreatureInfo*>(cInfo)->Modelid2 = 0;
+        }
+        else if (!displayScaleEntry)
+            displayScaleEntry = displayEntry;
+
+        CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid2);
+        if (!minfo)
+            sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid2 (%u)", cInfo->Entry, cInfo->Modelid2);
+    }
+
+    if (cInfo->Modelid3)
+    {
+        CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid3);
+        if (!displayEntry)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid3 id (%u), can crash client", cInfo->Entry, cInfo->Modelid3);
+            const_cast<CreatureInfo*>(cInfo)->Modelid3 = 0;
+        }
+        else if (!displayScaleEntry)
+            displayScaleEntry = displayEntry;
+
+        CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid3);
+        if (!minfo)
+            sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid3 (%u)", cInfo->Entry, cInfo->Modelid3);
+    }
+
+    if (cInfo->Modelid4)
+    {
+        CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->Modelid4);
+        if (!displayEntry)
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing Modelid4 id (%u), can crash client", cInfo->Entry, cInfo->Modelid4);
+            const_cast<CreatureInfo*>(cInfo)->Modelid4 = 0;
+        }
+        else if (!displayScaleEntry)
+            displayScaleEntry = displayEntry;
+
+        CreatureModelInfo const* minfo = sCreatureModelStorage.LookupEntry<CreatureModelInfo>(cInfo->Modelid4);
+        if (!minfo)
+            sLog.outErrorDb("Creature (Entry: %u) not has model data for Modelid4 (%u)", cInfo->Entry, cInfo->Modelid4);
+    }
+
+    if (!displayScaleEntry)
+        sLog.outErrorDb("Creature (Entry: %u) not has any existed display id in Modelid1/Modelid2/Modelid3/Modelid4", cInfo->Entry);
+
+    for (int k = 0; k < MAX_KILL_CREDIT; ++k)
+    {
+        if (cInfo->KillCredit[k])
+        {
+            if (!GetCreatureTemplate(cInfo->KillCredit[k]))
+            {
+                sLog.outErrorDb("Creature (Entry: %u) has not existed creature entry in `KillCredit%d` (%u)",cInfo->Entry,k+1,cInfo->KillCredit[k]);
+                const_cast<CreatureInfo*>(cInfo)->KillCredit[k] = 0;
+            }
+        }
+    }
+
+    if (!cInfo->unit_class || ((1 << (cInfo->unit_class-1)) & CLASSMASK_ALL_CREATURES) == 0)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has invalid unit_class(%u) for creature_template. Set to 1 (UNIT_CLASS_WARRIOR).", cInfo->Entry, cInfo->unit_class);
+        const_cast<CreatureInfo*>(cInfo)->unit_class = UNIT_CLASS_WARRIOR;
+    }
+
+    if (cInfo->dmgschool >= MAX_SPELL_SCHOOL)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has invalid spell school value (%u) in `dmgschool`",cInfo->Entry,cInfo->dmgschool);
+        const_cast<CreatureInfo*>(cInfo)->dmgschool = SPELL_SCHOOL_NORMAL;
+    }
+
+    if (cInfo->baseattacktime == 0)
+        const_cast<CreatureInfo*>(cInfo)->baseattacktime  = BASE_ATTACK_TIME;
+
+    if (cInfo->rangeattacktime == 0)
+        const_cast<CreatureInfo*>(cInfo)->rangeattacktime = BASE_ATTACK_TIME;
+
+    if (cInfo->npcflag & UNIT_NPC_FLAG_SPELLCLICK)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has dynamic flag UNIT_NPC_FLAG_SPELLCLICK (%u) set, it expect to be set by code base at `npc_spellclick_spells` content.",cInfo->Entry,UNIT_NPC_FLAG_SPELLCLICK);
+        const_cast<CreatureInfo*>(cInfo)->npcflag &= ~UNIT_NPC_FLAG_SPELLCLICK;
+    }
+
+    if ((cInfo->npcflag & UNIT_NPC_FLAG_TRAINER) && cInfo->trainer_type >= MAX_TRAINER_TYPE)
+        sLog.outErrorDb("Creature (Entry: %u) has wrong trainer type %u",cInfo->Entry,cInfo->trainer_type);
+
+    if (cInfo->type && !sCreatureTypeStore.LookupEntry(cInfo->type))
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has invalid creature type (%u) in `type`",cInfo->Entry,cInfo->type);
+        const_cast<CreatureInfo*>(cInfo)->type = CREATURE_TYPE_HUMANOID;
+    }
+
+    // must exist or used hidden but used in data horse case
+    if (cInfo->family && !sCreatureFamilyStore.LookupEntry(cInfo->family) && cInfo->family != CREATURE_FAMILY_HORSE_CUSTOM)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has invalid creature family (%u) in `family`",cInfo->Entry,cInfo->family);
+        const_cast<CreatureInfo*>(cInfo)->family = 0;
+    }
+
+    if (cInfo->InhabitType <= 0 || cInfo->InhabitType > INHABIT_ANYWHERE)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has wrong value (%u) in `InhabitType`, creature will not correctly walk/swim/fly",cInfo->Entry,cInfo->InhabitType);
+        const_cast<CreatureInfo*>(cInfo)->InhabitType = INHABIT_ANYWHERE;
+    }
+
+    if (cInfo->VehicleId)
+    {
+        VehicleEntry const* vehId = sVehicleStore.LookupEntry(cInfo->VehicleId);
+        if (!vehId)
+             sLog.outErrorDb("Creature (Entry: %u) has a non-existing VehicleId (%u). This *WILL* cause the client to freeze!", cInfo->Entry, cInfo->VehicleId);
+    }
+
+    if (cInfo->PetSpellDataId)
+    {
+        CreatureSpellDataEntry const* spellDataId = sCreatureSpellDataStore.LookupEntry(cInfo->PetSpellDataId);
+        if (!spellDataId)
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing PetSpellDataId (%u)", cInfo->Entry, cInfo->PetSpellDataId);
+    }
+
+    for (uint8 j = 0; j < CREATURE_MAX_SPELLS; ++j)
+    {
+        if (cInfo->spells[j] && !sSpellStore.LookupEntry(cInfo->spells[j]))
+        {
+            sLog.outErrorDb("Creature (Entry: %u) has non-existing Spell%d (%u), set to 0", cInfo->Entry, j+1,cInfo->spells[j]);
+            const_cast<CreatureInfo*>(cInfo)->spells[j] = 0;
+        }
+    }
+
+    if (cInfo->MovementType >= MAX_DB_MOTION_TYPE)
+    {
+        sLog.outErrorDb("Creature (Entry: %u) has wrong movement generator type (%u), ignore and set to IDLE.",cInfo->Entry,cInfo->MovementType);
+        const_cast<CreatureInfo*>(cInfo)->MovementType = IDLE_MOTION_TYPE;
+    }
+
+    if (cInfo->equipmentId > 0)                          // 0 no equipment
+    {
+        if (!GetEquipmentInfo(cInfo->equipmentId))
+        {
+            sLog.outErrorDb("Table `creature_template` have creature (Entry: %u) with equipment_id %u not found in table `creature_equip_template`, set to no equipment.", cInfo->Entry, cInfo->equipmentId);
+            const_cast<CreatureInfo*>(cInfo)->equipmentId = 0;
+        }
+    }
+
+    /// if not set custom creature scale then load scale from CreatureDisplayInfo.dbc
+    if (cInfo->scale <= 0.0f)
+    {
+        if (displayScaleEntry)
+            const_cast<CreatureInfo*>(cInfo)->scale = displayScaleEntry->scale;
+        else
+            const_cast<CreatureInfo*>(cInfo)->scale = 1.0f;
+    }
+
+    if (cInfo->expansion > (MAX_CREATURE_BASE_HP - 1))
+    {
+        sLog.outErrorDb("Table `creature_template` have creature (Entry: %u) with expansion %u ignore and set to NULL.", cInfo->expansion);
+        const_cast<CreatureInfo*>(cInfo)->expansion = 0;
+    }
+
+    const_cast<CreatureInfo*>(cInfo)->dmg_multiplier *= Creature::_GetDamageMod(cInfo->rank);
 }
 
 void ObjectMgr::ConvertCreatureAddonAuras(CreatureDataAddon* addon, char const* table, char const* guidEntryStr)
@@ -3565,8 +3565,8 @@ void ObjectMgr::LoadQuests()
 
     mExclusiveQuestGroups.clear();
 
-    //                                                       0      1       2           3             4         5         6           7     8              9
-    QueryResult_AutoPtr result = WorldDatabase.Query("SELECT entry, Method, ZoneOrSort, SkillOrClass, MinLevel, MaxLevel, QuestLevel, Type, RequiredRaces, RequiredSkillValue,"
+    //                                                       0      1       2           3                 4         5         6           7     8              9
+    QueryResult_AutoPtr result = WorldDatabase.Query("SELECT entry, Method, ZoneOrSort, SkillOrClassMask, MinLevel, MaxLevel, QuestLevel, Type, RequiredRaces, RequiredSkillValue,"
     //   10                   11                 12                    13                  14                     15                   16                     17                   18                19
         "RepObjectiveFaction, RepObjectiveValue, RepObjectiveFaction2, RepObjectiveValue2, RequiredMinRepFaction, RequiredMinRepValue, RequiredMaxRepFaction, RequiredMaxRepValue, SuggestedPlayers, LimitTime,"
     //   20          21            22           23            24            25                  26           27          28              29                30       31         32            33
@@ -3709,41 +3709,41 @@ void ObjectMgr::LoadQuests()
             if (ClassByQuestSort(-int32(qinfo->ZoneOrSort)))
             {
                 // SkillOrClass should not have class case when class case already set in ZoneOrSort.
-                if (qinfo->SkillOrClass < 0)
+                if (qinfo->SkillOrClassMask < 0)
                 {
-                    sLog.outErrorDb("Quest %u has `ZoneOrSort` = %i (class sort case) and `SkillOrClass` = %i (class case), redundant.",
-                        qinfo->GetQuestId(),qinfo->ZoneOrSort,qinfo->SkillOrClass);
+                    sLog.outErrorDb("Quest %u has `ZoneOrSort` = %i (class sort case) and `SkillOrClassMask` = %i (class case), redundant.",
+                        qinfo->GetQuestId(),qinfo->ZoneOrSort,qinfo->SkillOrClassMask);
                 }
             }
             //check for proper SkillOrClass value (skill case)
             if (int32 skill_id =  SkillByQuestSort(-int32(qinfo->ZoneOrSort)))
             {
                 // skill is positive value in SkillOrClass
-                if (qinfo->SkillOrClass != skill_id)
+                if (qinfo->SkillOrClassMask != skill_id)
                 {
-                    sLog.outErrorDb("Quest %u has `ZoneOrSort` = %i (skill sort case) but `SkillOrClass` does not have a corresponding value (%i).",
+                    sLog.outErrorDb("Quest %u has `ZoneOrSort` = %i (skill sort case) but `SkillOrClassMask` does not have a corresponding value (%i).",
                         qinfo->GetQuestId(),qinfo->ZoneOrSort,skill_id);
                     //override, and force proper value here?
                 }
             }
         }
 
-        // SkillOrClass (class case)
-        if (qinfo->SkillOrClass < 0)
+        // SkillOrClassMask (class case)
+        if (qinfo->SkillOrClassMask < 0)
         {
-            if (!sChrClassesStore.LookupEntry(-int32(qinfo->SkillOrClass)))
+            if (!(-int32(qinfo->SkillOrClassMask) & CLASSMASK_ALL_PLAYABLE))
             {
-                sLog.outErrorDb("Quest %u has `SkillOrClass` = %i (class case) but class (%i) does not exist",
-                    qinfo->GetQuestId(),qinfo->SkillOrClass,-qinfo->SkillOrClass);
+                sLog.outErrorDb("Quest %u has `SkillOrClassMask` = %i (class case) but classmask does not have valid class",
+                    qinfo->GetQuestId(),qinfo->SkillOrClassMask);
             }
         }
-        // SkillOrClass (skill case)
-        if (qinfo->SkillOrClass > 0)
+        // SkillOrClassMask (skill case)
+        if (qinfo->SkillOrClassMask > 0)
         {
-            if (!sSkillLineStore.LookupEntry(qinfo->SkillOrClass))
+            if (!sSkillLineStore.LookupEntry(qinfo->SkillOrClassMask))
             {
                 sLog.outErrorDb("Quest %u has `SkillOrClass` = %u (skill case) but skill (%i) does not exist",
-                    qinfo->GetQuestId(),qinfo->SkillOrClass,qinfo->SkillOrClass);
+                    qinfo->GetQuestId(),qinfo->SkillOrClassMask,qinfo->SkillOrClassMask);
             }
         }
 
@@ -3756,10 +3756,10 @@ void ObjectMgr::LoadQuests()
                 // no changes, quest can't be done for this requirement
             }
 
-            if (qinfo->SkillOrClass <= 0)
+            if (qinfo->SkillOrClassMask <= 0)
             {
                 sLog.outErrorDb("Quest %u has `RequiredSkillValue` = %u but `SkillOrClass` = %i (class case), value ignored.",
-                    qinfo->GetQuestId(),qinfo->RequiredSkillValue,qinfo->SkillOrClass);
+                    qinfo->GetQuestId(),qinfo->RequiredSkillValue,qinfo->SkillOrClassMask);
                 // no changes, quest can't be done for this requirement (fail at wrong skill id)
             }
         }

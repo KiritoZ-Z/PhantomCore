@@ -692,6 +692,7 @@ class WorldObject : public Object, public WorldLocation
 #endif
 
         bool m_isWorldObject;
+        uint32  LastUsedScriptID;
     protected:
         explicit WorldObject();
         std::string m_name;
