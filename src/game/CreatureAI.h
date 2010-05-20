@@ -30,6 +30,28 @@ class Creature;
 class Player;
 struct SpellEntry;
 
+enum CanCastResult
+{
+    CAST_OK                     = 0,
+    CAST_FAIL_IS_CASTING        = 1,
+    CAST_FAIL_OTHER             = 2,
+    CAST_FAIL_TOO_FAR           = 3,
+    CAST_FAIL_TOO_CLOSE         = 4,
+    CAST_FAIL_POWER             = 5,
+    CAST_FAIL_STATE             = 6,
+    CAST_FAIL_TARGET_AURA       = 7
+};
+
+enum CastFlags
+{
+    CAST_INTERRUPT_PREVIOUS     = 0x01,                     //Interrupt any spell casting
+    CAST_TRIGGERED              = 0x02,                     //Triggered (this makes spell cost zero mana and have no cast time)
+    CAST_FORCE_CAST             = 0x04,                     //Forces cast even if creature is out of mana or out of range
+    CAST_NO_MELEE_IF_OOM        = 0x08,                     //Prevents creature from entering melee if out of mana or out of range
+    CAST_FORCE_TARGET_SELF      = 0x10,                     //Forces the target to cast this spell on itself
+    CAST_AURA_NOT_PRESENT       = 0x20,                     //Only casts the spell if the target does not have an aura from the spell
+};    
+
 #define TIME_INTERVAL_LOOK   5000
 #define VISIBILITY_RANGE    10000
 

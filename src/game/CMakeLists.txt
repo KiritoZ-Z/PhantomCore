@@ -343,6 +343,8 @@ if(NOT DO_SCRIPTS)
       ScriptedInstance.h
       ScriptedSimpleAI.cpp
       ScriptedSimpleAI.h
+      sc_boss_spell_worker.h
+      sc_boss_spell_worker.cpp
    )
    message("-- Added Script Engine to GAME lib")
 endif(NOT DO_SCRIPTS)
