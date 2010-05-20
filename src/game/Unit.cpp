@@ -5347,6 +5347,24 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
 					}
                     break;
                 }
+				//Item - Coliseum 25 Heroic Caster Trinket
+				case 67758:
+				{
+					if(!pVictim || !pVictim->isAlive())
+						return false;
+					// counting
+						Aura *aur = GetAura(67759, 0); 
+					if (aur && aur->GetStackAmount() + 1 >= aur->GetSpellProto()->StackAmount)
+					{
+						RemoveAurasDueToSpell(67759);
+						CastSpell(pVictim, 67760, true);       // Pillar of Flame
+						return true;
+					}
+					// stacking
+					else
+						triggered_spell_id = 67759;              // Shard of Flame
+					break;
+				}
                 // Restless Strength
                 case 24661:
                 {
