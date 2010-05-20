@@ -3885,6 +3885,10 @@ void SpellMgr::LoadSpellCustomAttr()
 			spellInfo->AttributesEx &= ~SPELL_ATTR_EX_CANT_TARGET_SELF;
 			count++;
 			break;
+        case 13810:     // Frost Trap Aura
+            spellInfo->Effect[1] = 0;
+            count++;
+            break;
         // target allys instead of enemies, target A is src_caster, spells with effect like that have ally target
         // this is the only known exception, probably just wrong data
         case 29214: // Wrath of the Plaguebringer
