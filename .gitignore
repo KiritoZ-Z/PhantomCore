@@ -1,0 +1,14 @@
+*.ncb
+
+*.suo
+
+*.orig
+
+*.rej
+
+*.user
+
+bin/
+win/VC90//
+dep/lib/win32
+src/shared/revision.h
