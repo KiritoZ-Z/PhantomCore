@@ -337,12 +337,15 @@ void AddSC_boss_black_knight();
 void AddSC_boss_grand_champions();
 void AddSC_instance_trial_of_the_champion();
 void AddSC_trial_of_the_champion();
-void AddSC_Raid_Anubarak();			//Trial of the Crusader
-void AddSC_boss_northrend_beasts();
-void AddSC_twin_valkyr();
-void AddSC_instance_trial_of_the_crussader();
-void AddSC_trial_of_the_crussader();
-void AddSC_boss_lord_jaraxxus(); 
+void AddSC_boss_gormok();		//Trial of the Crusader
+void AddSC_the_two_jormungar();
+void AddSC_boss_icehowl();
+void AddSC_boss_anub_arak_crusader();
+void AddSC_npc_toc6_announcer();
+void AddSC_instance_trial_of_the_crusader();
+void AddSC_boss_lord_jaraksus();
+void AddSC_boss_champions();
+void AddSC_boss_twin_fjola();
 void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
 void AddSC_instance_icecrown_citadel();
 void AddSC_boss_Marrowgar();
@@ -846,12 +849,15 @@ void AddScripts()
     AddSC_boss_grand_champions();
     AddSC_instance_trial_of_the_champion();
     AddSC_trial_of_the_champion();
-    AddSC_instance_trial_of_the_crussader(); //Trial of the Crusader
-    AddSC_trial_of_the_crussader();
-    AddSC_twin_valkyr();
-    AddSC_Raid_Anubarak();
-    AddSC_boss_lord_jaraxxus();
-    AddSC_boss_northrend_beasts();
+    AddSC_boss_gormok();		//Trial of the crusader
+    AddSC_the_two_jormungar();
+    AddSC_boss_icehowl();
+    AddSC_boss_anub_arak_crusader();
+    AddSC_npc_toc6_announcer();
+    AddSC_instance_trial_of_the_crusader();
+    AddSC_boss_lord_jaraksus();
+    AddSC_boss_champions();
+    AddSC_boss_twin_fjola();
     AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
     AddSC_instance_icecrown_citadel();
     AddSC_boss_Marrowgar();
