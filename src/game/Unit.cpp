@@ -6024,6 +6024,17 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 63311;
                     break;
                 }
+                // Petrified Bark
+                case 62337:
+                case 62933:
+                {
+                    if (!target)
+                        return false;
+
+                    basepoints[0] = damage;
+                    target->CastCustomSpell(target, 62379, &basepoints[0], NULL, NULL, true, NULL, triggeredByAura);
+                    return true;
+                }
                 // Glyph of Life Tap
                 case 63320:
                 {
