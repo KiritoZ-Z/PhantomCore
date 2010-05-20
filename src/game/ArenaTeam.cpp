@@ -617,7 +617,8 @@ int32 ArenaTeam::LostAgainst(uint32 againstRating)
         FinishGame(0);
         return 0;
     }
-
+    else
+    {
     float K = 32.0f;
     int32 mod = (int32)ceil(K * (0.0f - chance));
     // modify the team stats accordingly
@@ -625,6 +626,7 @@ int32 ArenaTeam::LostAgainst(uint32 againstRating)
 
     // return the rating change, used to display it on the results screen
     return mod;
+	}
 }
 
 void ArenaTeam::MemberLost(Player * plr, uint32 againstRating)
