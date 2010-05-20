@@ -7107,7 +7107,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 // Shaman T8 Elemental 4P Bonus
                 case 64928:
                 {
-                    basepoints0 = int32(triggerAmount * damage / 100);
+                    basepoints0 = int32(basepoints0 / 2);
                     triggered_spell_id = 64930;            // Electrified
                     break;
                 }

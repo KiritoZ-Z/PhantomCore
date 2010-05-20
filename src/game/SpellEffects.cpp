@@ -1685,6 +1685,11 @@ void Spell::EffectDummy(uint32 i)
                     SendCastResult(SPELL_FAILED_FIZZLE);
                 return;
             }
+            // Item - Warrior T10 Melee 4P Bonus
+            if (m_spellInfo->Id == 46916 || m_spellInfo->Id == 52437)
+                if (Aura * aur = m_caster->GetAura(70847))
+                    if (roll_chance_i(20))
+                        m_caster->CastSpell(m_caster, 70849, true);
             break;
         case SPELLFAMILY_PRIEST:
             // Penance
