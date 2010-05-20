@@ -846,9 +846,7 @@ void AddScripts()
     AddSC_boss_grand_champions();
     AddSC_instance_trial_of_the_champion();
     AddSC_trial_of_the_champion();
-    AddSC_boss_tc_alliance_champions(); //Trial of the Crusader
-    AddSC_boss_tc_horde_champions();
-    AddSC_instance_trial_of_the_crussader();
+    AddSC_instance_trial_of_the_crussader(); //Trial of the Crusader
     AddSC_trial_of_the_crussader();
     AddSC_twin_valkyr();
     AddSC_Raid_Anubarak();
