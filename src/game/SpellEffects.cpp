@@ -4886,7 +4886,7 @@ void Spell::EffectInterruptCast(uint32 /*i*/)
             {
                 if (m_originalCaster)
                 {
-                    int32 duration = m_originalCaster->ModSpellDuration(m_spellInfo, unitTarget->CalcSpellDuration(m_spellInfo), false);
+                    int32 duration = m_originalCaster->ModSpellDuration(m_spellInfo, unitTarget, unitTarget->CalcSpellDuration(m_spellInfo), false);
                     unitTarget->ProhibitSpellScholl(GetSpellSchoolMask(curSpellInfo), duration/*GetSpellDuration(m_spellInfo)*/);
                 }
                 unitTarget->InterruptSpell(CurrentSpellTypes(i), false);
