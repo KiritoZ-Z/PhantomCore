@@ -16126,7 +16126,7 @@ bool Unit::CheckPlayerCondition(Player* pPlayer)
 void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 {
     if (!isAlive() || GetVehicleKit() == vehicle)
-        return;ek
+        return;
 
     if (m_vehicle)
     {
