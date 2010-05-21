@@ -100,14 +100,20 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 
             if (stop)
             {
-                float myx,myy,myz;
-                owner.GetPosition(myx,myy,myz);
-
-                Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-                i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
-                sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
-					
-                i_destinationHolder.StartTravel(traveller, false);
+				if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
+				{
+					float myx,myy,myz;
+					owner.GetPosition(myx,myy,myz);
+					Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+					i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+					sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+				}
+				else
+				{
+					owner.GetPosition(x, y, z);
+					i_destinationHolder.SetDestination(traveller, x, y, z);
+				}
+				i_destinationHolder.StartTravel(traveller, false);
                 owner.StopMoving();
                 return false;
             }
@@ -127,11 +133,12 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
         // caster chase
         i_target->GetContactPoint(&owner, x, y, z, i_offset * urand(80, 95) * 0.01f);
     }
- //   else
- //   {
+    else
+    {
         // to at i_offset distance from target and i_angle from target facing
- //       i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
- //   }
+		if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 0)
+        i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
+    }
 
     /*
         We MUST not check the distance difference and avoid setting the new location for smaller distances.
@@ -149,11 +156,18 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
         if (i_destinationHolder.HasDestination() && i_destinationHolder.GetDestinationDiff(x,y,z) < bothObjectSize)
             return;
     */
-    float myx,myy,myz;
-    owner.GetPosition(myx,myy,myz);
-    Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-    i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
-    sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
+	{
+		float myx,myy,myz;
+		owner.GetPosition(myx,myy,myz);
+		Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+		i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+		sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	}
+	else
+	{
+		i_destinationHolder.SetDestination(traveller, x, y, z);
+	}
     owner.addUnitState(UNIT_STAT_CHASE);
     i_destinationHolder.StartTravel(traveller);
     return true;

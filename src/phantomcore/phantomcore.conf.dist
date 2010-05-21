@@ -220,6 +220,10 @@ EAIErrorLevel = 2
 #	Number of threads to update maps.
 #	Default: 1
 #
+#    Movemap.Enable
+#	Enable or disable movemaps
+#	Default: 0
+#
 ###############################################################################
 
 UseProcessors = 0
@@ -251,6 +255,7 @@ LogDB.Opt.ClearTime = 1209600
 MaxCoreStuckTime = 0
 AddonChannel = 1
 MapUpdate.Threads = 1
+Movemap.Enable = 0
 
 ###############################################################################
 # SERVER LOGGING

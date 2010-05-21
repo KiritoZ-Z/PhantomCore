@@ -50,11 +50,18 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
         return;
 
     CreatureTraveller traveller(owner);
-
-    float myx,myy,myz,x,y,z;
-    owner.GetPosition(myx,myy,myz);
-    Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
-    uint32 travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	
+	uint32 travel_time;
+	if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
+	{
+		float myx,myy,myz,x,y,z;
+		owner.GetPosition(myx,myy,myz);
+		Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
+		travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	}
+	else
+	travel_time = i_destinationHolder.SetDestination(traveller, x, y, z);
+		
     modifyTravelTime(travel_time);
     owner.clearUnitState(UNIT_STAT_ALL_STATE);
 }
