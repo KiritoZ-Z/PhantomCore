@@ -16126,13 +16126,13 @@ bool Unit::CheckPlayerCondition(Player* pPlayer)
 void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 {
     if (!isAlive() || GetVehicleKit() == vehicle)
-        return;
-
-    if (!IsFriendlyTo(vehicle))
-        return;
+        return;ek
 
     if (m_vehicle)
     {
+		//TODO:can make crash need rewrite
+		//if (!IsFriendlyTo(m_vehicle->GetBase()))
+			//return;
         if (m_vehicle == vehicle)
         {
             if (seatId >= 0)
