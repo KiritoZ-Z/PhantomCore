@@ -80,6 +80,7 @@ class BattleGroundDS : public BattleGround
     private:
         uint32 m_waterTimer;
         bool m_waterfallActive;
+		uint32 m_uiKnockback;
     protected:
         bool isWaterFallActive() { return m_waterfallActive; };
         void setWaterFallActive(bool active) { m_waterfallActive = active; };

@@ -129,6 +129,7 @@ class BattleGroundRV : public BattleGround
     private:
         uint32 Timer;
         uint32 State;
+		uint32 m_uiTeleport;
 
     protected:
         uint32 getTimer() { return Timer; };

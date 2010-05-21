@@ -23,6 +23,7 @@
 #include "ObjectAccessor.h"
 #include "Language.h"
 #include "Player.h"
+#include "ObjectMgr.h"
 #include "WorldPacket.h"
 #include "GameObject.h"
 
@@ -49,6 +50,24 @@ BattleGroundRV::~BattleGroundRV()
 void BattleGroundRV::Update(uint32 diff)
 {
     BattleGround::Update(diff);
+	if (GetStatus() == STATUS_IN_PROGRESS)
+	{
+		// teleport buggers
+		if(m_uiTeleport < diff)
+		{
+			for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+			{
+				Player * plr = objmgr.GetPlayer(itr->first);
+				if (plr && plr->GetPositionZ() < 27)
+					plr->TeleportTo(618, plr->GetPositionX(), plr->GetPositionY(), 29, plr->GetOrientation(), false);
+				if (plr && plr->GetPositionZ() < 27)
+					plr->TeleportTo(618, plr->GetPositionX(), plr->GetPositionY(), 29, plr->GetOrientation(), false);
+			}
+			m_uiTeleport = 1000;
+		}
+		else
+			m_uiTeleport -= diff;
+	}
 
     if (getTimer() < diff)
     {
