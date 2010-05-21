@@ -667,9 +667,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         {
             pVictim->setDeathState(JUST_DIED);
 
-            CreatureInfo const* cInfo = pVictim->ToCreature()->GetCreatureInfo();
-            if (cInfo && cInfo->lootid)
-                pVictim->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+            ((Creature*)pVictim)->PrepareBodyLootState();
 
             // some critters required for quests (need normal entry instead possible heroic in any cases)
             if (GetTypeId() == TYPEID_PLAYER)
@@ -14966,9 +14964,7 @@ void Unit::Kill(Unit *pVictim, bool durabilityLoss)
         if (!creature->isPet())
         {
             creature->DeleteThreatList();
-            CreatureInfo const* cInfo = creature->GetCreatureInfo();
-            if (cInfo && (cInfo->lootid || cInfo->maxgold > 0))
-                creature->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+            this->ToCreature()->pVictim->PrepareBodyLootState();
         }
 
         // Call KilledUnit for creatures, this needs to be called after the lootable flag is set
@@ -16103,8 +16099,25 @@ bool Unit::CheckPlayerCondition(Player* pPlayer)
     {
             case 35644: //Argent Warhorse
             case 36558: //Argent Battleworg
+			case 33870: // Stabled Argent Warhorse
                 if (!pPlayer->HasItemOrGemWithIdEquipped(46106,1)) //Check item Argent Lance
                     return false;
+            case 33843: // Stabled Quel'dorei Steed
+	            case 33794: // Stabled Darnassian Nightsaber
+	            case 33800: // Stabled Stormwind Steed
+	            case 33793: // Stabled Gnomeregan Mechanostrider
+	            case 33795: // Stabled Ironfoge Ram
+	            case 33790: // Stabled Azuremyst Elekk
+	                if (!pPlayer->HasItemOrGemWithIdEquipped(46069,1)) // Check item Alliance Lance
+	                    return false;
+	            case 33842: // Stabled Sunreaver Hawkstrider
+	            case 33796: // Stabled Darkspear Raptor
+	            case 33798: // Stabled Forsaken Warhorse
+	            case 33799: // Stabled Orgrimmar Wolf
+	            case 33791: // Stabled Silvermoon Hawksrider
+	            case 33792: // Stabled Thunder Bluff Kodo
+	                if (!pPlayer->HasItemOrGemWithIdEquipped(46070,1)) // Check item Horde Lance
+	                    return false;
             default:
                 return true;
     }
@@ -16117,6 +16130,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
     if (m_vehicle)
     {
+		//TODO:can make crash need rewrite
+		//if (!IsFriendlyTo(m_vehicle->GetBase()))
+			//return;
         if (m_vehicle == vehicle)
         {
             if (seatId >= 0)

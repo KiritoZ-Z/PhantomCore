@@ -527,6 +527,8 @@ class Creature : public Unit, public GridObject<Creature>
         Loot loot;
         bool lootForPickPocketed;
         bool lootForBody;
+		bool lootForSkin;
+		void PrepareBodyLootState();
         Player *GetLootRecipient() const;
         bool hasLootRecipient() const { return m_lootRecipient != 0; }
         bool isTappedBy(Player *player) const;                          // return true if the creature is tapped by the player or a member of his party.
