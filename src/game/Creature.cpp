@@ -957,6 +957,37 @@ void Creature::AI_SendMoveToPacket(float x, float y, float z, uint32 time, uint3
     SendMonsterMove(x, y, z, time);
 }
 
+void Creature::PrepareBodyLootState()
+{
+    loot.clear();
+
+    // if have normal loot then prepare it access
+    if (!isAlive() && GetCreatureInfo()->lootid && !lootForBody)
+    {
+        SetUInt32Value(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+        return;
+    }
+
+    // if not have normal loot allow skinning if need
+    if (!isAlive() && !lootForSkin)
+    {
+        lootForBody = true;                                 // pass this loot mode
+
+        if (GetCreatureInfo()->SkinLootId)
+        {
+            if (LootTemplates_Skinning.HaveLootFor(GetCreatureInfo()->SkinLootId))
+            {
+                RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+                SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+                return;
+            }
+        }
+    }
+
+    RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+}
+
 Player *Creature::GetLootRecipient() const
 {
     if (!m_lootRecipient) return NULL;
@@ -1488,10 +1519,6 @@ void Creature::setDeathState(DeathState s)
 
         setActive(false);
 
-        if (!isPet() && GetCreatureInfo()->SkinLootId)
-            if (LootTemplates_Skinning.HaveLootFor(GetCreatureInfo()->SkinLootId))
-                SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
-
         if (HasSearchedAssistance())
         {
             SetNoSearchAssistance(false);
@@ -1572,6 +1599,7 @@ void Creature::Respawn(bool force)
         m_respawnTime = 0;
         lootForPickPocketed = false;
         lootForBody         = false;
+		lootForSkin         = false;
 
         if (m_originalEntry != GetEntry())
             UpdateEntry(m_originalEntry);
