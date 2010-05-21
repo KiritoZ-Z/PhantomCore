@@ -14964,7 +14964,7 @@ void Unit::Kill(Unit *pVictim, bool durabilityLoss)
         if (!creature->isPet())
         {
             creature->DeleteThreatList();
-            cVictim->PrepareBodyLootState();
+            this->ToCreature()->pVictim->PrepareBodyLootState();
         }
 
         // Call KilledUnit for creatures, this needs to be called after the lootable flag is set
