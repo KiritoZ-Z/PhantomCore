@@ -225,6 +225,25 @@ enum LevelRequirementVsMode
     LEVELREQUIREMENT_HEROIC = 70
 };
 
+struct PositionM
+{
+	PositionM() : m_positionX(0.0f), m_positionY(0.0f), m_positionZ(0.0f), m_positionO(0.0f) {}
+	float m_positionX, m_positionY, m_positionZ, m_positionO;
+};
+
+struct PathInfo
+{
+	PathInfo() : Length(0), CurrentIndex(-1), Start(), End(), NextDestination() {}
+	
+	dtPolyRef pathPolyRefs[50];
+	int Length;                 // Length 0 == unreachable location
+	int CurrentIndex;           // probably don't need this
+	PositionM Start;
+	PositionM End;
+	PositionM NextDestination;   // this can end up being (0,0,0), which means no path
+	dtNavMesh* navMesh;
+};
+
 #if defined(__GNUC__)
 #pragma pack()
 #else
@@ -319,6 +338,9 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
         bool IsInWater(float x, float y, float z, float min_depth = 2.0f) const;
 		
 		Position getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz);
+		void getNextPositionOnPathToLocation(PathInfo* path);
+		PathInfo GetPath(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz);
+		void UpdatePath(PathInfo* oldPath);
 
         ZLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, LiquidData *data = 0) const;
 

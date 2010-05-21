@@ -227,6 +227,277 @@ mEndRef,startPos, endPos, mPathFilter ,mPathResults,50);//TODO: CHANGE ME
     }
     return pos;
 }
+
+PathInfo Map::GetPath(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz)
+{
+	sLog.outError("entered GetPath");
+	PathInfo path = PathInfo();
+	
+	float startPos[3] = {starty, startz, startx};
+	float endPos[3] = {endy, endz, endx};
+	float mPolyPickingExtents[3] = {2.0f, 4.0f, 2.0f};
+	dtQueryFilter* mPathFilter = new dtQueryFilter();
+	int gx = 32 - (startx/533.333333f);
+	int gy = 32 - (starty/533.333333f);
+	
+	dtNavMesh* navMesh = m_navMesh[gx][gy];
+	
+	if(!navMesh)
+	{
+		sLog.outError("navmesh is bad");
+		// pathfinding not possible
+		return path;
+	}
+	
+	dtPolyRef startPoly = navMesh->findNearestPoly(startPos, mPolyPickingExtents, mPathFilter, 0);
+	dtPolyRef endPoly = navMesh->findNearestPoly(endPos, mPolyPickingExtents, mPathFilter, 0);
+	
+	if(startPoly == 0 || endPoly == 0)
+	{
+		sLog.outError("start or end poly is bad");
+		// one or both positions not in navmesh?
+		return path;
+	}
+	
+	dtPolyRef pathPolys[50];
+	int pathPolyCount = navMesh->findPath(startPoly, endPoly, startPos, endPos, mPathFilter, pathPolys, 50);
+	
+	if(pathPolyCount == 0)
+	{
+		sLog.outError("no path existed, leaving GetPath");
+		// no path exists
+		return path;
+	}
+	
+	/*float actualpath[3*20];
+	unsigned char* flags = 0;
+	dtPolyRef* polyrefs = 0;
+	
+	int mNumPathPoints = m_navMesh[gx][gy]->findStraightPath(startPos, endPos,mPathResults, mNumPathResults, actualpath, flags, polyrefs, 20);
+	
+	if (mNumPathPoints < 3)
+	    // no path exists
+	    return newPath;*/
+		
+	int i;
+	for(i = 0; i < pathPolyCount; ++i)	
+	path.pathPolyRefs[i] = pathPolys[i];    // copy path polygons
+	path.Length = pathPolyCount;                // set length
+	path.CurrentIndex = 0;
+	path.Start.m_positionX = startx;                      // store start location
+	path.Start.m_positionY = starty;
+	path.Start.m_positionZ = startz;
+	path.End.m_positionX = endx;                          // store end location
+	path.End.m_positionY = endy;
+	path.End.m_positionZ = endz;
+	path.navMesh = navMesh;                     // store the navmesh used to get this path info
+	
+	getNextPositionOnPathToLocation(&path);
+	
+	return path;
+}
+
+void Map::getNextPositionOnPathToLocation(PathInfo* path)
+{
+	float startPos[3] = {path->Start.m_positionY, path->Start.m_positionZ, path->Start.m_positionX};
+	float endPos[3] = {path->End.m_positionY, path->End.m_positionZ, path->End.m_positionX};
+	float* actualpath = new float[3*50];
+	unsigned char* flags = 0;
+	dtPolyRef* polyrefs = 0;
+	
+	// get vertices of path
+	int mNumPathPoints = path->navMesh->findStraightPath(startPos,  // start position
+											endPos,                 // end position
+											path->pathPolyRefs,     // path polygons
+											path->Length,           // path length
+											actualpath,             // short path vertices (out)
+											flags,                  // search flags (optional)
+											polyrefs,               // short path polygons (optional, out)
+											50);                    // max path length
+											
+	PositionM pos = PositionM();
+	
+	if (mNumPathPoints == 0)
+	{
+		sLog.outDebug("can't do path - findStraightPath returned 0");
+		// only happens when path data is bad
+		path->Length = 0;
+	}
+	if (mNumPathPoints == 1)
+	{
+		// startPos == endPos ?
+		// or couldn't find path to endPos ?
+		// either way, there's a point and we can use it
+		pos.m_positionX = actualpath[2]; //0 3  y
+		pos.m_positionY = actualpath[0]; //1 4  z
+		pos.m_positionZ = actualpath[1]; //2 5  x
+	}
+	else if (mNumPathPoints >= 2)
+	{
+		// mNumPathPoints == 2 : straightPos, endPos are colinear
+		// mNumPathPoints > 2 : multi-point path
+		pos.m_positionX = actualpath[5]; //0 3  y
+		pos.m_positionY = actualpath[3]; //1 4  z
+		pos.m_positionZ = actualpath[4]; //2 5  x
+	}
+	
+	// this is all we really wanted, the destination position
+	path->NextDestination = pos;
+	
+	// clean up
+	delete [] actualpath;
+}
+
+void Map::UpdatePath(PathInfo* oldPath)
+{
+	sLog.outError("Entered UpdatePath");
+	if(!oldPath)
+	{
+		sLog.outError("oldPath is null");
+		// no way to build path without start/end info
+		return;
+	}
+	
+	int pathStartIndex, pathEndIndex, i, j;
+	dtPolyRef startPoly, endPoly;
+	
+	float startPos[3] = {oldPath->Start.m_positionY, oldPath->Start.m_positionZ, oldPath->Start.m_positionX};
+	float endPos[3] = {oldPath->End.m_positionY, oldPath->End.m_positionZ, oldPath->End.m_positionX};
+	float mPolyPickingExtents[3] = {2.0f, 4.0f, 2.0f};
+	dtQueryFilter* mPathFilter = new dtQueryFilter();
+	
+	dtNavMesh* navMesh = oldPath->navMesh;
+	
+	if(!navMesh)
+	{
+		int gx = 32 - (oldPath->Start.m_positionX/533.333333f);
+		int gy = 32 - (oldPath->Start.m_positionY/533.333333f);
+		
+		if(gx > 0 && gy > 0)
+		{
+			navMesh = m_navMesh[gx][gy];
+			oldPath->navMesh = navMesh;
+		}
+		
+		if(!navMesh)
+		{
+			sLog.outError("navmesh is null!");
+			// pathfinding not possible
+			return;
+		}
+	}
+	
+	startPoly = navMesh->findNearestPoly(startPos, mPolyPickingExtents, mPathFilter, 0);
+	endPoly = navMesh->findNearestPoly(endPos, mPolyPickingExtents, mPathFilter, 0);
+	
+	if(startPoly == 0 || endPoly == 0)
+	{
+		sLog.outError("didn't find the start or end poly");
+		// one or both positions not in navmesh?
+		return;
+	}
+	
+	if(startPoly == endPoly)
+	{
+		sLog.outError("start and end poly are the same");
+		// they're on the same polygon, path should just be a straight line
+		
+		oldPath->pathPolyRefs[0] = startPoly;
+		oldPath->Length = 1;
+		oldPath->NextDestination = oldPath->End;                    // end is next destination
+		return;
+	}
+	
+	if(!oldPath->pathPolyRefs)
+	{
+		// don't have a path yet (this shouldn't happen uner normal circumstances)
+		PathInfo newPath = GetPath(oldPath->Start.m_positionX, oldPath->Start.m_positionY, oldPath->Start.m_positionZ, oldPath->End.m_positionX, oldPath->End.m_positionY, oldPath->End.m_positionZ);
+		(*oldPath) = newPath;
+		getNextPositionOnPathToLocation(oldPath);
+	}
+	else
+	{
+		// we have a path, can analyse it to try and optimize it!
+		
+		// find if start node is on the existing path
+		for(pathStartIndex = 0; pathStartIndex < oldPath->Length; ++pathStartIndex)
+			if(oldPath->pathPolyRefs[pathStartIndex] == startPoly)
+				break;
+				
+		// find if end node is on the existing path
+		for(pathEndIndex = pathStartIndex; pathEndIndex < oldPath->Length; ++pathEndIndex)
+			if(oldPath->pathPolyRefs[pathEndIndex] == endPoly)
+				break;
+				
+		if(pathStartIndex == 0 && pathEndIndex == (oldPath->Length - 1))
+		{
+			// old path hasn't changed, just need to update NextDestination
+			
+			if(oldPath->NextDestination.m_positionX != 0 && oldPath->NextDestination.m_positionY != 0 && oldPath->NextDestination.m_positionZ != 0)
+				// NextDestination is (0,0,0), which is the default value
+				getNextPositionOnPathToLocation(oldPath);
+			/*following should be handled by startPoly == endPoly condition above
+			else if((oldPath->End is on endPoly) && (oldPath->NextDestination is on endPoly))
+			    getNextPositionOnPathToLocation(oldPath)*/
+		}
+		else if(pathStartIndex < oldPath->Length && pathEndIndex < oldPath->Length)
+		{
+			// path data is valid, we just need to trim off the excess start and end portions
+			
+			oldPath->Length = pathEndIndex - pathStartIndex;            // new path length
+			dtPolyRef newPolyRefs[50];   // allocate space for new path
+			for(i = pathStartIndex, j = 0; i < pathEndIndex; ++i, ++j)  // copy shortened path data
+				newPolyRefs[j] = oldPath->pathPolyRefs[i];
+			
+			for(i = 0; i < oldPath->Length; ++i)
+				oldPath->pathPolyRefs[i] = newPolyRefs[i];              // store new path
+				
+			getNextPositionOnPathToLocation(oldPath);                   // get NextDestination
+		}
+		else if(pathStartIndex < oldPath->Length && pathEndIndex >= oldPath->Length)
+		{
+			/* start node is still on old path, but end node moved off of path
+			
+			able to do some simple optimization
+			more complicated checks might just waste time in the long run?
+			find out if endPoly is adjacent to the path*/
+			bool adjacent = false;
+			int i;
+			for(i = 0; i < DT_VERTS_PER_POLYGON; ++i)
+				if(endPoly == oldPath->navMesh->getPolyByRef(oldPath->pathPolyRefs[oldPath->Length - 1])->neis[i])
+				{
+					adjacent = true;
+					break;
+				}
+				
+			if(adjacent && oldPath->Length < 50)
+			{
+				// endPoly is adjacent to the path, we can add it to the end of the path
+				oldPath->pathPolyRefs[oldPath->Length] = endPoly;
+				oldPath->Length++;
+			}
+			else
+			{
+				// can't optimize, just find brand new path
+				PathInfo newPath = GetPath(oldPath->Start.m_positionX, oldPath->Start.m_positionY, oldPath->Start.m_positionZ, oldPath->End.m_positionX, oldPath->End.m_positionY, oldPath->End.m_positionZ);
+				(*oldPath) = newPath;
+			}
+			
+			getNextPositionOnPathToLocation(oldPath);
+		}
+		else
+		{
+			/* again, start or end poly might be adjacent to oldPath
+			so we might be able to optimize a bit to avoid expensive pathfinding
+			
+			old path is junk, need to redo it*/
+			PathInfo newPath = GetPath(oldPath->Start.m_positionX, oldPath->Start.m_positionY, oldPath->Start.m_positionZ, oldPath->End.m_positionX, oldPath->End.m_positionY, oldPath->End.m_positionZ);
+			(*oldPath) = newPath;
+			getNextPositionOnPathToLocation(oldPath);
+		}
+	}
+}
+
 void Map::LoadVMap(int gx,int gy)
 {
                                                             // x and y are swapped !!
