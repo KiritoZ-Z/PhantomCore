@@ -34,7 +34,6 @@ SET(game_STAT_SRCS
    BattleGroundEY.cpp
    BattleGroundIC.cpp
    BattleGroundNA.cpp
-   BattleGroundRB.cpp
    BattleGroundRL.cpp
    BattleGroundRV.cpp
    BattleGroundSA.cpp
