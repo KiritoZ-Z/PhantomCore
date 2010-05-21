@@ -5468,6 +5468,62 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     target = this;
                     break;
                 }
+		// Item - Deathbringer's Will
+                // Item - Icecrown 25 Heroic Melee Trinket
+                // =====================================================
+		// 71485 - Agility of the Vrykul 600/700 agility   -
+		// 71492 - Speed of the Vrykul 600/700 600/700 haste -
+		// 71486 - Power of the Taunka 1200/1400 attack power -
+		// 71484 - Strength of the Taunka 600/700 strength -
+		// 71491 - Aim of the Iron Dwarves 600/700 critical strike rating  -
+		// 71487 - Precision of the Iron Dwarves 600/700 armor penetration -
+
+		//* Paladin - +600 Strength, +600 Haste, or +600 Crit Rating ok
+		//* Death Knight - +600 Strength, +600 Haste, or +600 Crit Rating ok
+		//* Druid - +600 Agility, +600 Haste, or +600 Strength ok
+		//* Hunter - +600 Agility, +600 Crit Rating, or +1200 Attack Power ok
+		//* Rogue - +600 Agility, +600 Haste, or +1200 Attack Power ok
+		//* Warrior - +600 Strength, +600 Haste, or +600 Crit Rating ok
+                //  Item - Icecrown 25 Heroic Melee Trinket
+                case 71562:
+                {
+                    if(ToPlayer()->HasSpellCooldown(71562))
+                        return true;
+                    switch(getClass())
+                    {
+                        case CLASS_WARRIOR:
+                        case CLASS_PALADIN:
+                        case CLASS_DEATH_KNIGHT:
+                        {
+                            uint32 spells[3]={71561, 71560, 71559};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_DRUID:
+                        {
+                            uint32 spells[3]={71561, 71556, 71560};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_ROGUE:
+                        case CLASS_SHAMAN:
+                        {
+                            uint32 spells[3]={71558, 71556, 71560};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_HUNTER:
+                        {
+                            uint32 spells[3]={71558, 71556, 71559};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        default: return true;
+                    }
+                    ToPlayer()->AddSpellCooldown(71562, 0, time(NULL) + 90);
+                    CastSpell(this, triggered_spell_id, true);
+                    return true;
+                }
                 // Aura of Madness (Darkmoon Card: Madness trinket)
                 //=====================================================
                 // 39511 Sociopath: +35 strength (Paladin, Rogue, Druid, Warrior)
