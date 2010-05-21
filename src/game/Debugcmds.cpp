@@ -39,6 +39,10 @@
 #include "SpellMgr.h"
 #include "ScriptMgr.h"
 
+#include "CellImpl.h"  
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+
 bool ChatHandler::HandleDebugSendSpellFailCommand(const char* args)
 {
     if (!*args)
@@ -269,6 +273,62 @@ bool ChatHandler::HandleDebugUpdateWorldStateCommand(const char* args)
     uint32 state = (uint32)atoi(s);
     m_session->GetPlayer()->SendUpdateWorldState(world, state);
     return true;
+}
+
+bool ChatHandler::HandleDebugMoveMapCommand(const char* args)
+{
+	float range;
+	char* w = strtok((char*)args, " ");
+	if (!w) {
+		SendSysMessage("Syntax is .debug movemap range");
+		return false;
+	}
+	range = atof(w);
+	PSendSysMessage("Generating MoveMap Path for all creatures around player In range:%.2f", range);
+	// Iterate for all slave masters
+	CellPair pair(Trinity::ComputeCellPair( m_session->GetPlayer()->GetPositionX(), m_session->GetPlayer()->GetPositionY()) );
+	Cell cell(pair);
+	cell.data.Part.reserved = ALL_DISTRICT;
+	cell.SetNoCreate();
+	
+	std::list<Creature*> creatureList;
+	
+	Trinity::AnyUnitInObjectRangeCheck go_check(m_session->GetPlayer(), range); // 25 yards check
+	Trinity::CreatureListSearcher<Trinity::AnyUnitInObjectRangeCheck> go_search(m_session->GetPlayer(), creatureList, go_check);
+	TypeContainerVisitor<Trinity::CreatureListSearcher<Trinity::AnyUnitInObjectRangeCheck>, GridTypeMapContainer> go_visit(go_search);
+	
+	// Get Creatures
+	cell.Visit(pair, go_visit, *(m_session->GetPlayer()->GetMap()), *(m_session->GetPlayer()), range);
+	
+	if (!creatureList.empty())
+	{
+		// Do what You want with these creatures
+		PSendSysMessage("Found %i Creatures.", creatureList.size());
+		std::list<Creature*>::iterator aCreature = creatureList.begin();
+		uint32 pathes = 0;
+		uint32 uStartTime = getMSTime();
+		
+		float x,y,z;
+		float gx,gy,gz;
+		m_session->GetPlayer()->GetPosition(gx,gy,gz);
+		Map *theMap = m_session->GetPlayer()->GetMap();
+		while (aCreature != creatureList.end()) {
+			(*aCreature)->GetPosition(x,y,z);
+			theMap->GetPath(x,y,z,gx,gy,gz);
+			++pathes;
+			aCreature++;
+		}
+		
+		uint32 uPathLoadTime = getMSTimeDiff(uStartTime, getMSTime());
+		sLog.outDetail("Generated %i pathes in %i seconds %i ms", pathes,(uPathLoadTime % 60000) / 1000, uPathLoadTime);
+		PSendSysMessage("Generated %i pathes in %i seconds %i ms", pathes,(uPathLoadTime % 60000) / 1000, uPathLoadTime);
+		return true;
+	}
+	else 
+	{
+		SendSysMessage("No Creatures around player :(");
+		return false;
+	}
 }
 
 bool ChatHandler::HandleDebugPlayCinematicCommand(const char* args)
