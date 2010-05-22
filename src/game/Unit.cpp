@@ -667,7 +667,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         {
             pVictim->setDeathState(JUST_DIED);
 
-            ((Creature*)pVictim)->PrepareBodyLootState();
+            CreatureInfo const* cInfo = pVictim->ToCreature()->GetCreatureInfo();
+			if (cInfo && cInfo->lootid)
+			    pVictim->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
             // some critters required for quests (need normal entry instead possible heroic in any cases)
             if (GetTypeId() == TYPEID_PLAYER)
@@ -5467,6 +5469,62 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 31285;
                     target = this;
                     break;
+                }
+		// Item - Deathbringer's Will
+                // Item - Icecrown 25 Heroic Melee Trinket
+                // =====================================================
+		// 71485 - Agility of the Vrykul 600/700 agility   -
+		// 71492 - Speed of the Vrykul 600/700 600/700 haste -
+		// 71486 - Power of the Taunka 1200/1400 attack power -
+		// 71484 - Strength of the Taunka 600/700 strength -
+		// 71491 - Aim of the Iron Dwarves 600/700 critical strike rating  -
+		// 71487 - Precision of the Iron Dwarves 600/700 armor penetration -
+
+		//* Paladin - +600 Strength, +600 Haste, or +600 Crit Rating ok
+		//* Death Knight - +600 Strength, +600 Haste, or +600 Crit Rating ok
+		//* Druid - +600 Agility, +600 Haste, or +600 Strength ok
+		//* Hunter - +600 Agility, +600 Crit Rating, or +1200 Attack Power ok
+		//* Rogue - +600 Agility, +600 Haste, or +1200 Attack Power ok
+		//* Warrior - +600 Strength, +600 Haste, or +600 Crit Rating ok
+                //  Item - Icecrown 25 Heroic Melee Trinket
+                case 71562:
+                {
+                    if(ToPlayer()->HasSpellCooldown(71562))
+                        return true;
+                    switch(getClass())
+                    {
+                        case CLASS_WARRIOR:
+                        case CLASS_PALADIN:
+                        case CLASS_DEATH_KNIGHT:
+                        {
+                            uint32 spells[3]={71561, 71560, 71559};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_DRUID:
+                        {
+                            uint32 spells[3]={71561, 71556, 71560};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_ROGUE:
+                        case CLASS_SHAMAN:
+                        {
+                            uint32 spells[3]={71558, 71556, 71560};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        case CLASS_HUNTER:
+                        {
+                            uint32 spells[3]={71558, 71556, 71559};
+                            triggered_spell_id = spells[irand(0, 2)];
+                            break;
+                        }
+                        default: return true;
+                    }
+                    ToPlayer()->AddSpellCooldown(71562, 0, time(NULL) + 90);
+                    CastSpell(this, triggered_spell_id, true);
+                    return true;
                 }
                 // Aura of Madness (Darkmoon Card: Madness trinket)
                 //=====================================================
@@ -10457,7 +10515,7 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                 return false;
         case SPELL_DAMAGE_CLASS_MAGIC:
         {
-            if (schoolMask & SPELL_SCHOOL_MASK_NORMAL)
+            if (schoolMask & SPELL_SCHOOL_MASK_NORMAL && spellProto->SpellIconID != 284 && spellProto->SpellFamilyName != SPELLFAMILY_POTION)
                 crit_chance = 0.0f;
             // For other schools
             else if (GetTypeId() == TYPEID_PLAYER)
@@ -14960,12 +15018,13 @@ void Unit::Kill(Unit *pVictim, bool durabilityLoss)
     else                                                // creature died
     {
         DEBUG_LOG("DealDamageNotPlayer");
-        Creature *cVictim = (Creature*)pVictim;
 		
         if (!creature->isPet())
         {
             creature->DeleteThreatList();
-            cVictim->PrepareBodyLootState();
+            CreatureInfo const* cInfo = creature->GetCreatureInfo();
+			if (cInfo && (cInfo->lootid || cInfo->maxgold > 0))
+			    creature->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
         }
 
         // Call KilledUnit for creatures, this needs to be called after the lootable flag is set
