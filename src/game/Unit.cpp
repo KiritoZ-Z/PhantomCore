@@ -667,7 +667,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         {
             pVictim->setDeathState(JUST_DIED);
 
-            ((Creature*)pVictim)->PrepareBodyLootState();
+            CreatureInfo const* cInfo = pVictim->ToCreature()->GetCreatureInfo();
+			if (cInfo && cInfo->lootid)
+			    pVictim->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
             // some critters required for quests (need normal entry instead possible heroic in any cases)
             if (GetTypeId() == TYPEID_PLAYER)
@@ -15016,12 +15018,13 @@ void Unit::Kill(Unit *pVictim, bool durabilityLoss)
     else                                                // creature died
     {
         DEBUG_LOG("DealDamageNotPlayer");
-        Creature *cVictim = (Creature*)pVictim;
 		
         if (!creature->isPet())
         {
             creature->DeleteThreatList();
-            cVictim->PrepareBodyLootState();
+            CreatureInfo const* cInfo = creature->GetCreatureInfo();
+			if (cInfo && (cInfo->lootid || cInfo->maxgold > 0))
+			    creature->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
         }
 
         // Call KilledUnit for creatures, this needs to be called after the lootable flag is set
