@@ -319,7 +319,7 @@ void WorldSession::HandleItemQuerySingleOpcode(WorldPacket & recv_data)
         data << pProto->DisplayInfoID;
         data << pProto->Quality;
         data << pProto->Flags;
-        data << pProto->Faction;                            // 3.2 faction?
+        data << pProto->Flags2;
         data << pProto->BuyPrice;
         data << pProto->SellPrice;
         data << pProto->InventoryType;
@@ -583,7 +583,9 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recv_data)
                     _player->AddItemToBuyBackSlot(pItem);
                 }
 
-                _player->ModifyMoney(pProto->SellPrice * count);
+                uint32 money = pProto->SellPrice * count;
+                _player->ModifyMoney(money);
+                _player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_MONEY_FROM_VENDORS, money);
             }
             else
                 _player->SendSellError(SELL_ERR_CANT_SELL_ITEM, pCreature, itemguid, 0);
@@ -631,6 +633,7 @@ void WorldSession::HandleBuybackItem(WorldPacket & recv_data)
             _player->ModifyMoney(-(int32)price);
             _player->RemoveItemFromBuyBackSlot(slot, false);
             _player->ItemAddedQuestCheck(pItem->GetEntry(), pItem->GetCount());
+            _player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_RECEIVE_EPIC_ITEM, pItem->GetEntry(), pItem->GetCount());
             _player->StoreItem(dest, pItem, true);
         }
         else
@@ -764,7 +767,7 @@ void WorldSession::SendListInventory(uint64 vendorguid)
                 // `item_template`.`Faction` is actually `Team`.
                 // 1 == Horde / 2 == Alliance. Field will be renamed in later
                 // patch.
-                if (pProto->Faction == 1 && _player->GetTeam() == ALLIANCE || pProto->Faction == 2 && _player->GetTeam() == HORDE && !_player->isGameMaster())
+                if (pProto->Flags2 & ITEM_FLAGS_EXTRA_HORDE_ONLY && _player->GetTeam() == ALLIANCE || pProto->Flags2 == ITEM_FLAGS_EXTRA_ALLIANCE_ONLY && _player->GetTeam() == HORDE && !_player->isGameMaster())
                     continue;
                 ++count;
 

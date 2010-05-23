@@ -266,6 +266,7 @@ void AddSC_boss_landslide();
 void AddSC_boss_noxxion();
 void AddSC_boss_ptheradras();
 void AddSC_boss_onyxia();                    //Onyxia's Lair
+void AddSC_instance_onyxias_lair();
 void AddSC_boss_amnennar_the_coldbringer();  //Razorfen Downs
 void AddSC_razorfen_downs();
 void AddSC_instance_razorfen_downs();
@@ -434,6 +435,10 @@ void AddSC_pit_of_saron();
 void AddSC_boss_garfrost();
 void AddSC_boss_ick();
 void AddSC_boss_tyrannus();
+void AddSC_instance_halls_of_reflection();   // Halls of Reflection
+void AddSC_halls_of_reflection();
+void AddSC_boss_falric();
+void AddSC_boss_marwyn();
 
 void AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
@@ -779,6 +784,7 @@ void AddScripts()
     AddSC_boss_noxxion();
     AddSC_boss_ptheradras();
     AddSC_boss_onyxia();                    //Onyxia's Lair
+    AddSC_instance_onyxias_lair();
     AddSC_boss_amnennar_the_coldbringer();  //Razorfen Downs
     AddSC_razorfen_downs();
     AddSC_instance_razorfen_downs();
@@ -949,6 +955,10 @@ void AddScripts()
     AddSC_boss_garfrost();
     AddSC_boss_ick();
     AddSC_boss_tyrannus();
+    AddSC_instance_halls_of_reflection();   // Halls of Reflection
+    AddSC_halls_of_reflection();
+    AddSC_boss_falric();
+    AddSC_boss_marwyn();
 
 	AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
