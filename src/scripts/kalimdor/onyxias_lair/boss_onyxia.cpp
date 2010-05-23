@@ -4,7 +4,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, 
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
@@ -17,10 +17,10 @@
 /* ScriptData
 SDName: Boss_Onyxia
 SD%Complete: 95
-SDComment: <Known bugs> 
-               Ground visual for Deep Breath effect; 
-               Wing Buffet not ignoring armor; 
-               Not summoning whelps on phase 3 (lacks info) 
+SDComment: <Known bugs>
+               Ground visual for Deep Breath effect;
+               Wing Buffet not ignoring armor;
+               Not summoning whelps on phase 3 (lacks info)
            </Known bugs>
 SDCategory: Onyxia's Lair
 EndScriptData */
@@ -77,30 +77,37 @@ struct sOnyxMove
 
 static sOnyxMove aMoveData[]=
 {
-    {0, 1, SPELL_BREATH_WEST_TO_EAST,   -33.5561f, -182.682f, -60.9457f},//west
-    {1, 0, SPELL_BREATH_EAST_TO_WEST,   -31.4963f, -250.123f, -60.1278f},//east
-    {2, 4, SPELL_BREATH_NW_TO_SE,         6.8951f, -180.246f, -60.896f},//north-west
-    {3, 5, SPELL_BREATH_NE_TO_SW,        10.2191f, -247.912f, -60.896f},//north-east
-    {4, 2, SPELL_BREATH_SE_TO_NW,       -63.5156f, -240.096f, -60.477f},//south-east
-    {5, 3, SPELL_BREATH_SW_TO_NE,       -58.2509f, -189.020f, -60.790f},//south-west
-    {6, 7, SPELL_BREATH_SOUTH_TO_NORTH, -65.8444f, -213.809f, -60.2985f},//south
-    {7, 6, SPELL_BREATH_NORTH_TO_SOUTH,  22.8763f, -217.152f, -60.0548f},//north
+    {0, 1, SPELL_BREATH_WEST_TO_EAST,   -33.5561f, -182.682f, -56.9457f},//west
+    {1, 0, SPELL_BREATH_EAST_TO_WEST,   -31.4963f, -250.123f, -55.1278f},//east
+    {2, 4, SPELL_BREATH_NW_TO_SE,         6.8951f, -180.246f, -55.896f},//north-west
+    {3, 5, SPELL_BREATH_NE_TO_SW,        10.2191f, -247.912f, -55.896f},//north-east
+    {4, 2, SPELL_BREATH_SE_TO_NW,       -63.5156f, -240.096f, -55.477f},//south-east
+    {5, 3, SPELL_BREATH_SW_TO_NE,       -58.2509f, -189.020f, -55.790f},//south-west
+    {6, 7, SPELL_BREATH_SOUTH_TO_NORTH, -65.8444f, -213.809f, -55.2985f},//south
+    {7, 6, SPELL_BREATH_NORTH_TO_SOUTH,  22.8763f, -217.152f, -55.0548f},//north
 };
 
-static float afSpawnLocations[2][3]=
+const Position MiddleRoomLocation = {-23.6155, -215.357, -55.7344};
+
+static Position aSpawnLocations[3]=
 {
+    //Whelps
     {-30.127, -254.463, -89.440},
-    {-30.817, -177.106, -89.258}
+    {-30.817, -177.106, -89.258},
+    //Lair Guard
+    {-145.950, -212.831, -68.659}
 };
 
 struct boss_onyxiaAI : public ScriptedAI
 {
-    boss_onyxiaAI(Creature* pCreature) : ScriptedAI(pCreature) 
+    boss_onyxiaAI(Creature* pCreature) : ScriptedAI(pCreature), Summons(me)
     {
-        instance = me->GetInstanceData();
+        m_pInstance = pCreature->GetInstanceData();
+        Reset();
     }
 
-    InstanceData *instance;
+    ScriptedInstance* m_pInstance;
+    SummonList Summons;
 
     uint32 m_uiPhase;
 
@@ -113,21 +120,19 @@ struct boss_onyxiaAI : public ScriptedAI
     uint32 m_uiMovementTimer;
     sOnyxMove* m_pPointData;
 
-    uint32 m_uiEngulfingFlamesTimer;
-    uint32 m_uiSummonWhelpsTimer;
-    uint32 m_uiBellowingRoarTimer;
+    uint32 m_uiFireballTimer;
     uint32 m_uiWhelpTimer;
     uint32 m_uiLairGuardTimer;
+    uint32 m_uiDeepBreathTimer;
 
-    uint8 m_uiSummonCount;
-    bool m_bIsSummoningWhelps;
-    bool m_bIsSummoningLairGuards;
+    uint32 m_uiBellowingRoarTimer;
 
+    uint8 m_uiSummonWhelpCount;
+    uint8 m_uiSummonLairGuardCount;
+    bool m_bIsMoving;
+   
     void Reset()
     {
-	if (instance)
-            instance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
-
         if (!IsCombatMovement())
             SetCombatMovement(true);
 
@@ -142,40 +147,78 @@ struct boss_onyxiaAI : public ScriptedAI
         m_uiMovementTimer = 20000;
         m_pPointData = GetMoveData();
 
-        m_uiEngulfingFlamesTimer = 15000;
-        m_uiSummonWhelpsTimer = 45000;
-        m_uiBellowingRoarTimer = 30000;
+        m_uiFireballTimer = 15000;
         m_uiWhelpTimer = 1000;
-        m_uiLairGuardTimer = 1000;
+        m_uiLairGuardTimer = 15000;
+        m_uiDeepBreathTimer = 85000;
 
-        m_uiSummonCount = 0;
-        m_bIsSummoningWhelps = false;
-        m_bIsSummoningLairGuards = false;
+        m_uiBellowingRoarTimer = 30000;
+
+        Summons.DespawnAll();
+        m_uiSummonWhelpCount = 0;
+        m_uiSummonLairGuardCount = 0;
+        m_bIsMoving = false;
+       
+        if (m_pInstance)
+        {
+            m_pInstance->SetData(DATA_ONYXIA, NOT_STARTED);
+            m_pInstance->SetData(DATA_ONYXIA_PHASE, m_uiPhase);
+            m_pInstance->DoStopTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT,  ACHIEV_TIMED_START_EVENT);
+        }
     }
 
-    void EnterCombat(Unit* /*pWho*/)
+    void EnterCombat(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
         me->SetInCombatWithZone();
+       
+        if (m_pInstance)
+        {
+            m_pInstance->SetData(DATA_ONYXIA, IN_PROGRESS);
+            m_pInstance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT,  ACHIEV_TIMED_START_EVENT);
+            sLog.outBasic("[Onyxia] DoStartTimedAchievement(%u,%u)",ACHIEVEMENT_TIMED_TYPE_EVENT,  ACHIEV_TIMED_START_EVENT);
+        }
+    }
 
-	if (instance)
-            instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, ACHIEV_TIMED_START_EVENT);
+    void JustDied(Unit* killer)
+    {
+        if (m_pInstance)
+            m_pInstance->SetData(DATA_ONYXIA, DONE);
+
+        Summons.DespawnAll();
     }
 
     void JustSummoned(Creature *pSummoned)
     {
+        pSummoned->SetInCombatWithZone();
         if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
             pSummoned->AI()->AttackStart(pTarget);
-
-        ++m_uiSummonCount;
+       
+        switch (pSummoned->GetEntry())
+        {
+            case NPC_WHELP:
+                ++m_uiSummonWhelpCount;
+                break;
+            case NPC_LAIRGUARD:
+                pSummoned->setActive(true);
+                ++m_uiSummonLairGuardCount;
+                break;
+        }
+        Summons.Summon(pSummoned);
     }
 
-    void KilledUnit(Unit* /*pVictim*/)
+
+    void SummonedCreatureDespawn(Creature *summon)
+    {
+        Summons.Despawn(summon);
+    }
+
+    void KilledUnit(Unit* pVictim)
     {
         DoScriptText(SAY_KILL, me);
     }
 
-    void SpellHit(Unit * /*pCaster*/, const SpellEntry* pSpell)
+    void SpellHit(Unit *pCaster, const SpellEntry* pSpell)
     {
         if (pSpell->Id == SPELL_BREATH_EAST_TO_WEST ||
             pSpell->Id == SPELL_BREATH_WEST_TO_EAST ||
@@ -216,11 +259,11 @@ struct boss_onyxiaAI : public ScriptedAI
             }            
         }
     }
-    
-    void SpellHitTarget(Unit* target, const SpellEntry* pSpell) 
+   
+    void SpellHitTarget(Unit* target, const SpellEntry* pSpell)
     {
         //Workaround - Couldn't find a way to group this spells (All Eruption)
-        if (((pSpell->Id >= 17086 && pSpell->Id <= 17095) || 
+        if (((pSpell->Id >= 17086 && pSpell->Id <= 17095) ||
             (pSpell->Id == 17097) ||
             (pSpell->Id >= 18351 && pSpell->Id <= 18361) ||
             (pSpell->Id >= 18564 && pSpell->Id <= 18576) ||
@@ -279,7 +322,7 @@ struct boss_onyxiaAI : public ScriptedAI
                 if (me->GetHealth()*100 / me->GetMaxHealth() < 60)
                 {
                     m_uiPhase = PHASE_BREATH;
-                    
+                   
                     if (m_pInstance)
                         m_pInstance->SetData(DATA_ONYXIA_PHASE, m_uiPhase);
 
@@ -365,9 +408,10 @@ struct boss_onyxiaAI : public ScriptedAI
                 return;
             }
 
+
             if (m_uiDeepBreathTimer <= uiDiff)
             {
-                if (!m_bIsMoving) 
+                if (!m_bIsMoving)
                 {
                     if (me->IsNonMeleeSpellCasted(false))
                         me->InterruptNonMeleeSpells(false);
@@ -382,7 +426,7 @@ struct boss_onyxiaAI : public ScriptedAI
 
             if (m_uiMovementTimer <= uiDiff)
             {
-                if (!m_bIsMoving) 
+                if (!m_bIsMoving)
                 {
                     SetNextRandomPoint();
                     m_pPointData = GetMoveData();
@@ -433,7 +477,7 @@ struct boss_onyxiaAI : public ScriptedAI
                 {
                     m_uiSummonWhelpCount = 0;
                     m_uiWhelpTimer = 90000;    
-                } 
+                }
                 else
                     m_uiWhelpTimer = 500;
             }
@@ -456,3 +500,4 @@ void AddSC_boss_onyxia()
     newscript->GetAI = &GetAI_boss_onyxiaAI;
     newscript->RegisterSelf();
 }
+
