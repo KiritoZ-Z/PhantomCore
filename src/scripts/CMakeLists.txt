@@ -333,7 +333,7 @@ SET(scripts_STAT_SRCS
    northrend/icecrown_citadel/instance_icecrown_citadel.cpp
    northrend/icecrown_citadel/icecrown_citadel.h
    northrend/icecrown_citadel/icecrown_teleport.cpp
-   northrend/icecrown_citadel/blood-queen_lana'thel.cpp
+   northrend/icecrown_citadel/blood-queen_lanathel.cpp
    northrend/icecrown_citadel/deathbringer_saurfang.cpp
    northrend/icecrown_citadel/festergut.cpp
    northrend/icecrown_citadel/gunship_battle.cpp
