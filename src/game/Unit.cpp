@@ -11986,8 +11986,6 @@ bool Unit::canDetectStealthOf(Unit const* target, float distance) const
         return false;
     if (distance < 0.24f) //collision
         return true;
-    if (!HasInArc(M_PI, target)) //behind
-        return false;
     if (HasAuraType(SPELL_AURA_DETECT_STEALTH))
         return true;
 
@@ -11997,14 +11995,17 @@ bool Unit::canDetectStealthOf(Unit const* target, float distance) const
             return true;
 
     //Visible distance based on stealth value (stealth rank 4 300MOD, 10.5 - 3 = 7.5)
-    float visibleDistance = 7.5f;
+    float visibleDistance = 26.0f;
     //Visible distance is modified by -Level Diff (every level diff = 1.0f in visible distance)
     visibleDistance += (float(getLevel()) - float(getLevelForTarget(target))) * 2 - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH)/5.0f;
     //-Stealth Mod(positive like Master of Deception) and Stealth Detection(negative like paranoia)
     //based on wowwiki every 5 mod we have 1 more level diff in calculation
-    visibleDistance += GetTotalAuraModifier(SPELL_AURA_MOD_DETECT) / 2.5f - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH_LEVEL) / 2.5f;
+    visibleDistance += GetTotalAuraModifier(SPELL_AURA_MOD_DETECT) / 2.0f - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH_LEVEL) / 2.0f;
     visibleDistance = visibleDistance > MAX_PLAYER_STEALTH_DETECT_RANGE ? MAX_PLAYER_STEALTH_DETECT_RANGE : visibleDistance;
-
+	
+    if (!HasInArc(M_PI, target)) //behind
+    visibleDistance /= 3.0f;
+	
     return distance < visibleDistance;
 }
 
