@@ -3935,7 +3935,8 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->MaxAffectedTargets = 3;
             count++;
             break;
-        case 53651:
+        case 53651:     // BoL
+		case 30708:     // totem of wrath
             spellInfo->AttributesEx3 |= SPELL_ATTR_EX3_NO_INITIAL_AGGRO;
             count++;
             break;
