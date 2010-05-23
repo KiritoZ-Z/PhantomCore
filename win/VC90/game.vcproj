@@ -3312,71 +3312,71 @@
 						Name="Icecrown_Citadel"
 						>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\blood_queen_lanathel.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\blood_queen_lanathel.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\deathbringer_saurfang.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\deathbringer_saurfang.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\Festergut.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\festergut.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\gunship_battle.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\gunship_battle.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\icecrown_citadel.h"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\icecrown_citadel.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\icecrown_teleport.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\icecrown_teleport.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\instance_icecrown_citadel.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\instance_icecrown_citadel.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\lady_deathwhisper.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\lady_deathwhisper.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\lord_marrowgar.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\lord_marrowgar.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\professor_putricide.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\professor_putricide.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\rat_des_blutes.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\rat_des_blutes.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\rotface.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\rotface.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\sindragosa.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\sindragosa.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\the_lich_king.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\the_lich_king.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\valithria_dreamwalker.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\valithria_dreamwalker.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\src\scripts\northrend\Icecrown_Citadel\lower_spire_trash.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\lower_spire_trash.cpp"
 							>
 						</File>
 					</Filter>
-				</Filter>
+     				</Filter>
 				<Filter
 					Name="Gundrak"
 					>

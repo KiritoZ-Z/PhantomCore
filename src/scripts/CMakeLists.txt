@@ -330,22 +330,22 @@ SET(scripts_STAT_SRCS
    northrend/azjol_nerub/ahnkahet/boss_herald_volazj.cpp
    northrend/azjol_nerub/ahnkahet/boss_amanitar.cpp
    northrend/azjol_nerub/ahnkahet/ahnkahet.h
-   northrend/icecrown/instance_icecrown_citadel.cpp
-   northrend/icecrown/icecrown_citadel.h
-   northrend/icecrown/icecrown_teleport.cpp
-   northrend/icecrown/Blood-Queen Lana'thel.cpp
-   northrend/icecrown/Deathbringer_Saurfang.cpp
-   northrend/icecrown/Festergut.cpp
-   northrend/icecrown/gunship_battle.cpp
-   northrend/icecrown/Lady_Deathwhisper.cpp
-   northrend/icecrown/Lord_Marrowgar.cpp
-   northrend/icecrown/Professor_Putricide.cpp
-   northrend/icecrown/Rat_des_Blutes.cpp
-   northrend/icecrown/Rotface.cpp
-   northrend/icecrown/Sindragosa.cpp
-   northrend/icecrown/The_Lich_King.cpp
-   northrend/icecrown/Valithria_Dreamwalker.cpp
-   northrend/icecrown/lower_spire_trash.cpp
+   northrend/icecrown_citadel/instance_icecrown_citadel.cpp
+   northrend/icecrown_citadel/icecrown_citadel.h
+   northrend/icecrown_citadel/icecrown_teleport.cpp
+   northrend/icecrown_citadel/blood-queen_lana'thel.cpp
+   northrend/icecrown_citadel/deathbringer_saurfang.cpp
+   northrend/icecrown_citadel/festergut.cpp
+   northrend/icecrown_citadel/gunship_battle.cpp
+   northrend/icecrown_citadel/lady_deathwhisper.cpp
+   northrend/icecrown_citadel/lord_marrowgar.cpp
+   northrend/icecrown_citadel/professor_putricide.cpp
+   northrend/icecrown_citadel/rat_des_blutes.cpp
+   northrend/icecrown_citadel/rotface.cpp
+   northrend/icecrown_citadel/sindragosa.cpp
+   northrend/icecrown_citadel/the_lich_king.cpp
+   northrend/icecrown_citadel/valithria_dreamwalker.cpp
+   northrend/icecrown_citadel/lower_spire_trash.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_argent_challenge.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_black_knight.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_grand_champions.cpp

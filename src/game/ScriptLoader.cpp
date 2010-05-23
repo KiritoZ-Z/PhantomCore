@@ -359,6 +359,7 @@ void AddSC_icecrown_teleporter();
 void AddSC_boss_Rotface();
 void AddSC_boss_Rat_des_Blutes();
 void AddSC_LowerSpireTrash();
+void AddSC_Blood_Queen_Lanathel();
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
@@ -880,6 +881,7 @@ void AddScripts()
     AddSC_boss_Rotface();
     AddSC_boss_Rat_des_Blutes();
     AddSC_LowerSpireTrash();
+    AddSC_Blood_Queen_Lanathel();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();
