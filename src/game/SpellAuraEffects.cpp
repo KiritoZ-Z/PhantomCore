@@ -2533,9 +2533,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                 {
                     if ((*i)->GetSpellProto()->SpellIconID == 240 && (*i)->GetMiscValue() == 3)
                     {
-                        int32 HotWMod = (*i)->GetAmount();
-                        if (GetMiscValue() == FORM_CAT)
-                            HotWMod /= 2;
+						int32 HotWMod = (*i)->GetSpellProto()->EffectBasePoints[1] + 1;
 
                         target->CastCustomSpell(target, HotWSpellId, &HotWMod, NULL, NULL, true, NULL, this);
                         break;

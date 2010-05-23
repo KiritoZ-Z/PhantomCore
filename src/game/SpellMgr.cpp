@@ -3285,7 +3285,7 @@ bool IsDispelableBySpell(SpellEntry const * dispelSpell, uint32 spellId, bool de
         return false;
 
     if (dispelSpell->Attributes & SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY)
-        return true;
+        return false;
 
     return def;
 }
@@ -3676,6 +3676,7 @@ void SpellMgr::LoadSpellCustomAttr()
         case 42384:                             // Brutal Swipe
         case 45150:                             // Meteor Slash
         case 64422: case 64688:                 // Sonic Screech
+        case 72373:                             // Shared Suffering
             // ONLY SPELLS WITH SPELLFAMILY_GENERIC and EFFECT_SCHOOL_DAMAGE
             mSpellCustomAttr[i] |= SPELL_ATTR_CU_SHARE_DAMAGE;
             count++;
