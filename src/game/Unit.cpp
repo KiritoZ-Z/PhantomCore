@@ -10012,9 +10012,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             (*i)->GetSpellProto()->EquippedItemClass == -1 &&          // -1 == any item class (not wand)
             (*i)->GetSpellProto()->EquippedItemInventoryTypeMask == 0) // 0 == any inventory type (not wand)
             DoneTotalMod *= ((*i)->GetAmount()+100.0f)/100.0f;
-			if ((*i)->GetId() == 36032) // Arcane Blast debuff should not be removed here
-				continue;
-
+			
     uint32 creatureTypeMask = pVictim->GetCreatureTypeMask();
     // Add flat bonus from spell damage versus
     DoneTotal += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS, creatureTypeMask);
