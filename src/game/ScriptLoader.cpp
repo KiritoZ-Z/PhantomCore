@@ -346,14 +346,18 @@ void AddSC_instance_trial_of_the_crusader();
 void AddSC_boss_lord_jaraksus();
 void AddSC_boss_champions();
 void AddSC_boss_twin_fjola();
-void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
-void AddSC_instance_icecrown_citadel();
+void AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
+void AddSC_boss_saurfang();
+void AddSC_Boss_Festergut();
+void AddSC_boss_Deahtwisper();
 void AddSC_boss_Marrowgar();
+void AddSC_Boss_ProfessorPutricide();
+void AddSC_Boss_Sindragosa();
+void AddSC_boss_lichking();
+void AddSC_icecrown_teleporter();
+void AddSC_boss_Rotface();
+void AddSC_boss_Rat_des_Blutes();
 void AddSC_LowerSpireTrash();
-void AddSC_boss_Deathwhisper(); //ICC
-void AddSC_Boss_Festergut(); //ICC
-void AddSC_boss_the_lich_king();
-void AddSC_boss_deathbringer_saurfang();
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
@@ -858,14 +862,18 @@ void AddScripts()
     AddSC_boss_lord_jaraksus();
     AddSC_boss_champions();
     AddSC_boss_twin_fjola();
-    AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
-    AddSC_instance_icecrown_citadel();
+    AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
+    AddSC_boss_saurfang();
+    AddSC_Boss_Festergut();
+    AddSC_boss_Deahtwisper();
     AddSC_boss_Marrowgar();
+    AddSC_Boss_ProfessorPutricide();
+    AddSC_Boss_Sindragosa();
+    AddSC_boss_lichking();
+    AddSC_icecrown_teleporter();
+    AddSC_boss_Rotface();
+    AddSC_boss_Rat_des_Blutes();
     AddSC_LowerSpireTrash();
-    AddSC_boss_Deathwhisper(); //ICC
-    AddSC_Boss_Festergut(); //ICC
-    AddSC_boss_the_lich_king();
-    AddSC_boss_deathbringer_saurfang();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();
