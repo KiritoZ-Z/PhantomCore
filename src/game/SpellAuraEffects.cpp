@@ -4161,7 +4161,7 @@ void AuraEffect::HandleModStateImmunityMask(AuraApplication const * aurApp, uint
     std::list <AuraType> immunity_list;
     if (GetMiscValue() & (1<<10))
         immunity_list.push_back(SPELL_AURA_MOD_STUN);
-    if (GetMiscValue() & (1<<7))
+    if ((GetMiscValue() & (1<<7)) && !(apply && GetId() == 46924))
         immunity_list.push_back(SPELL_AURA_MOD_DISARM);
     if (GetMiscValue() & (1<<1))
         immunity_list.push_back(SPELL_AURA_TRANSFORM);
