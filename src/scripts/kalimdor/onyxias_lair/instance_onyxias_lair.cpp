@@ -22,7 +22,7 @@ SDCategory: Onyxia's Lair
 EndScriptData */
 
 #include "ScriptedPch.h"
-#include "onyxias_lair.h"
+#include "instance_onyxias_lair.h"
 
 struct instance_onyxias_lair : public ScriptedInstance
 {
