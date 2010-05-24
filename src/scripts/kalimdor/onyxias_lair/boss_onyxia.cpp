@@ -26,7 +26,7 @@ SDCategory: Onyxia's Lair
 EndScriptData */
 
 #include "ScriptedPch.h"
-#include "onyxias_lair.h"
+#include "instance_onyxias_lair.h"
 
 enum eYells
 {
