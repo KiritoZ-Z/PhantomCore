@@ -1054,16 +1054,6 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                     }
                 }
                 break;
-            case SPELLFAMILY_SHAMAN:
-                if (!caster)
-                    break;
-                //Glyph of Totem of Wrath
-                if (GetSpellProto()->SpellFamilyFlags[0] & 0x4000000 && GetSpellProto()->Attributes & 0x00000140)
-                {
-                    if (target->HasAura(63280))
-                        target->CastSpell(target,63283,true);
-                }
-                break;
         }
     }
     // mods at aura remove
