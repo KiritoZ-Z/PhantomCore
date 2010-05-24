@@ -472,7 +472,7 @@ struct instance_icecrown_citadel : public ScriptedInstance
 			            pChest->SetRespawnTime(pChest->GetRespawnDelay());
 			        }
  			    HandleGameObject(uiSaurfangDoor,true);
- 			    HandleGameObject(uiBlodwingDoor,true);
+ 			    HandleGameObject(uiBloodwingDoor,true);
  			    HandleGameObject(uiCitadelTp, true);
 			    if (GameObject* pCitadelTp = instance->GetGameObject(uiCitadelTp))
 			        if (pCitadelTp && pCitadelTp->isSpawned()) 
@@ -482,11 +482,11 @@ struct instance_icecrown_citadel : public ScriptedInstance
                         break;
             case NOT_STARTED:
                HandleGameObject(uiSaurfangDoor,false);
- 		   HandleGameObject(uiBlodwingDoor,false);
+ 		   HandleGameObject(uiBloodwingDoor,false);
 				break;
 			case IN_PROGRESS:
                 HandleGameObject(uiSaurfangDoor,false);
- 		   HandleGameObject(uiBlodwingDoor,false);
+ 		   HandleGameObject(uiBloodwingDoor,false);
 				break;
 			}
 				auiEncounter[3] = data;
