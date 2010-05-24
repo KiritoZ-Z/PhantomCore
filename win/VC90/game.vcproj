@@ -2937,7 +2937,7 @@
                                                 >
                                         </File>
                                         <File
-                                                RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\onyxias_lair.h"
+                                                RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\instance_onyxias_lair.h"
                                                 >
                                         </File>
 				</Filter>
