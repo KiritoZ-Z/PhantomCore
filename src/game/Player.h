@@ -1744,6 +1744,8 @@ class Player : public Unit, public GridObject<Player>
         inline void RecalculateRating(CombatRating cr) { ApplyRatingMod(cr, 0, true);}
         float GetMeleeCritFromAgility();
         float GetDodgeFromAgility();
+		float DodgeDiminishingReturn(float);
+		float GetBaseDodge();
         float GetSpellCritFromIntellect();
         float OCTRegenHPPerSpirit();
         float OCTRegenMPPerSpirit();

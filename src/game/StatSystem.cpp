@@ -516,6 +516,10 @@ void Player::UpdateBlockPercentage()
         value = 5.0f;
         // Modify value from defense skill
         value += (int32(GetDefenseSkillValue()) - int32(GetMaxSkillValueForLevel())) * 0.04f;
+		// Dodge from rating
+		value += GetRatingBonusValue(CR_DODGE);
+		// Dodge Diminishing Returns
+		value = DodgeDiminishingReturn(value);
         // Increase from SPELL_AURA_MOD_BLOCK_PERCENT aura
         value += GetTotalAuraModifier(SPELL_AURA_MOD_BLOCK_PERCENT);
         // Increase from rating
@@ -598,9 +602,9 @@ void Player::UpdateDodgePercentage()
     value += (int32(GetDefenseSkillValue()) - int32(GetMaxSkillValueForLevel())) * 0.04f;
     // Dodge from SPELL_AURA_MOD_DODGE_PERCENT aura
     value += GetTotalAuraModifier(SPELL_AURA_MOD_DODGE_PERCENT);
-    // Dodge from rating
-    value += GetRatingBonusValue(CR_DODGE);
-    value = value < 0.0f ? 0.0f : value;
+	// Base Dodge
+	value += GetBaseDodge();
+	value = value < 0.0f ? 0.0f : value;
     SetStatFloatValue(PLAYER_DODGE_PERCENTAGE, value);
 }
 
