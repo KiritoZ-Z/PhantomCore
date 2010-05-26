@@ -3312,7 +3312,7 @@
 						Name="Icecrown_Citadel"
 						>
 						<File
-							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\blood_queen_lanathel.cpp"
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\blood-queen_lanathel.cpp"
 							>
 						</File>
 						<File

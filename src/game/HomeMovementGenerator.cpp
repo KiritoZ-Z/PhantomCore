@@ -56,6 +56,7 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
 	if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
 	{
 		owner.GetPosition(myx,myy,myz);
+		owner.GetPosition(x,y,z);
 		Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 		travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 	}

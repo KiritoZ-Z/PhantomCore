@@ -7070,7 +7070,7 @@ void Spell::FillRaidOrPartyHealthPriorityTargets(UnitList &TagUnitMap, Unit* tar
     }
 }
 
-void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial)
+/*void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial)
 {
     if (!target || target->GetTypeId() != TYPEID_PLAYER)
         return;
@@ -7124,4 +7124,4 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
         target->CastSpell(target, spellId75, true);
 
     return;
-}
+}*/
