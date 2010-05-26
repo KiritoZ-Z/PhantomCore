@@ -107,6 +107,7 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 					owner.GetPosition(x,y,z);
 					Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 					i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+					if(sWorld.getConfig(CONFIG_MOVEMAP_LOGS_ENABLE) == 1)
 					sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 				}
 				else
@@ -163,6 +164,7 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 		owner.GetPosition(myx,myy,myz);
 		Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 		i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
+		if(sWorld.getConfig(CONFIG_MOVEMAP_LOGS_ENABLE) == 1)
 		sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 	}
 	else
