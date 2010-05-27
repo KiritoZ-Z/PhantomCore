@@ -505,7 +505,7 @@ struct AreaTableEntry
     uint32  flags;                                          // 4, unknown value but 312 for all cities
                                                             // 5-9 unused
     int32   area_level;                                     // 10
-    char*   area_name[16];                                  // 11-26
+    char*   area_name[1];                                  // 11-26
                                                             // 27, string flags, unused
     uint32  team;                                           // 28
 
@@ -525,7 +525,7 @@ struct AreaGroupEntry
     uint32  nextGroup;                                      // 7 index of next group
 };
 
-struct AreaPOIEntry
+/*struct AreaPOIEntry
 {
     uint32 id;              //0
     uint32 icon[11];        //1-11
@@ -541,7 +541,7 @@ struct AreaPOIEntry
     //uint32 name_flag2;    //51
     uint32 worldState;      //52
     //uint32 val2;          //53
-};
+};*/
 
 struct AreaTriggerEntry
 {
@@ -577,7 +577,7 @@ struct BarberShopStyleEntry
 {
     uint32  Id;                                             // 0
     uint32  type;                                           // 1 value 0 -> hair, value 2 -> facialhair
-    //char*   name[16];                                     // 2-17 name of hair style
+    //char*   name[1];                                     // 2-17 name of hair style
     //uint32  name_flags;                                   // 18
     //uint32  unk_name[16];                                 // 19-34, all empty
     //uint32  unk_flags;                                    // 35
@@ -726,7 +726,7 @@ struct CreatureFamilyEntry
     uint32  petFoodMask;                                    // 7        m_petFoodMask
     int32   petTalentType;                                  // 8        m_petTalentType
                                                             // 9        m_categoryEnumID
-    char*   Name[16];                                       // 10-25    m_name_lang
+    char*   Name[1];                                       // 10-25    m_name_lang
                                                             // 26 string flags
                                                             // 27       m_iconFile
 };
@@ -808,7 +808,7 @@ struct FactionEntry
     //float     unk2;                                       // 20
     //uint32    unk3                                        // 21
     //uint32    unk4;                                       // 22
-    char*       name[16];                                   // 23-38    m_name_lang
+    char*       name[1];                                   // 23-38    m_name_lang
                                                             // 39 string flags
     //char*     description[16];                            // 40-55    m_description_lang
                                                             // 56 string flags
@@ -909,36 +909,43 @@ struct GlyphSlotEntry
 
 struct GtBarberShopCostBaseEntry
 {
+	uint32  Id;
     float   cost;
 };
 
 struct GtCombatRatingsEntry
-{
+{	
+	uint32  Id;
     float    ratio;
 };
 
 struct GtChanceToMeleeCritBaseEntry
 {
+	uint32  Id;
     float    base;
 };
 
 struct GtChanceToMeleeCritEntry
 {
+	uint32  Id;
     float    ratio;
 };
 
 struct GtChanceToSpellCritBaseEntry
 {
+	uint32  Id;
     float    base;
 };
 
 struct GtChanceToSpellCritEntry
 {
+	uint32  Id;
     float    ratio;
 };
 
 struct GtOCTRegenHPEntry
 {
+	uint32  Id;
     float    ratio;
 };
 
@@ -949,11 +956,13 @@ struct GtOCTRegenHPEntry
 
 struct GtRegenHPPerSptEntry
 {
+	uint32  Id;
     float    ratio;
 };
 
 struct GtRegenMPPerSptEntry
 {
+	uint32  Id;
     float    ratio;
 };
 
@@ -1060,7 +1069,7 @@ struct ItemRandomPropertiesEntry
     uint32    ID;                                           // 0        m_ID
     //char*     internalName                                // 1        m_Name
     uint32    enchant_id[5];                                // 2-6      m_Enchantment
-    char*     nameSuffix[16];                              // 7-22     m_name_lang
+    char*     nameSuffix[1];                              // 7-22     m_name_lang
                                                             // 23 name flags
 };
 
@@ -1077,7 +1086,7 @@ struct ItemRandomSuffixEntry
 struct ItemSetEntry
 {
     //uint32    id                                          // 0        m_ID
-    char*     name[16];                                     // 1-16     m_name_lang
+    char*     name[2];                                     // 1-16     m_name_lang
                                                             // 17 string flags, unused
     //uint32    itemId[17];                                 // 18-34    m_itemID
     uint32    spells[8];                                    // 35-42    m_setSpellID
@@ -1125,7 +1134,7 @@ struct MailTemplateEntry
     uint32      ID;                                         // 0
     //char*       subject[16];                              // 1-16
                                                             // 17 name flags, unused
-    char*       content[16];                              // 18-33
+    char*       content[1];                              // 18-33
 };
 
 struct MapEntry
@@ -1135,7 +1144,7 @@ struct MapEntry
     uint32  map_type;                                       // 2
     //uint32 unk_330;                                       // 3
                                                             // 4 0 or 1 for battlegrounds (not arenas)
-    char*   name[16];                                       // 5-20
+    char*   name[1];                                       // 5-20
                                                             // 21 name flags, unused
     uint32  linked_zone;                                    // 22 common zone for instance and continent map
     //char*     hordeIntro[16];                             // 23-38 text for PvP Zones
@@ -1318,7 +1327,7 @@ struct ScalingStatValuesEntry
 
 //struct SkillLineCategoryEntry{
 //    uint32    id;                                         // 0      m_ID
-//    char*     name[16];                                   // 1-17   m_name_lang
+//															// 1-17   m_name_lang
 //                                                          // 18 string flag
 //    uint32    displayOrder;                               // 19     m_sortIndex
 //};
@@ -1345,12 +1354,12 @@ struct SkillLineEntry
     uint32    id;                                           // 0        m_ID
     int32     categoryId;                                   // 1        m_categoryID
     //uint32    skillCostID;                                // 2        m_skillCostsID
-    char*     name[16];                                     // 3-18     m_displayName_lang
+    char*     name[1];                                     // 3-18     m_displayName_lang
                                                             // 19 string flags
-    //char*     description[16];                            // 20-35    m_description_lang
+    //char*     description[1];                            // 20-35    m_description_lang
                                                             // 36 string flags
     uint32    spellIcon;                                    // 37       m_spellIconID
-    //char*     alternateVerb[16];                          // 38-53    m_alternateVerb_lang
+    //char*     alternateVerb[1];                          // 38-53    m_alternateVerb_lang
                                                             // 54 string flags
     uint32    canLink;                                      // 55       m_canLink (prof. with recipes
 };
@@ -1602,7 +1611,7 @@ struct SpellItemEnchantmentEntry
     uint32      amount[3];                                  // 5-7      m_effectPointsMin[3]
     //uint32      amount2[3]                                // 8-10     m_effectPointsMax[3]
     uint32      spellid[3];                                 // 11-13    m_effectArg[3]
-    char*       description[16];                            // 14-29    m_name_lang[16]
+    char*       description[1];                            // 14-29    m_name_lang[16]
     //uint32      descriptionFlags;                         // 30 name flags
     uint32      aura_id;                                    // 31       m_itemVisual
     uint32      slot;                                       // 32       m_flags
@@ -1682,7 +1691,7 @@ struct TaxiNodesEntry
     float     x;                                            // 2        m_x
     float     y;                                            // 3        m_y
     float     z;                                            // 4        m_z
-    char*     name[16];                                     // 5-21     m_Name_lang
+    char*     name[1];                                     // 5-21     m_Name_lang
                                                             // 22 string flags
     uint32    MountCreatureID[2];                           // 23-24    m_MountCreatureID[2]
 };
