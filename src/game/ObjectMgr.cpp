@@ -3103,8 +3103,6 @@ void ObjectMgr::LoadPlayerInfo()
             // skip expansion classes if not playing with expansion
             if (sWorld.getConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
 				continue;
-			if (sWorld.getConfig(CONFIG_EXPANSION) < 3 && class_ == CLASS_DEATH_KNIGHT == RACE_GOBLIN || race == RACE_WORGEN)
-                continue;
 				
 
             // fatal error if no level 1 data

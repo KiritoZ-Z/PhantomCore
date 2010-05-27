@@ -5019,7 +5019,7 @@ void Player::UpdateLocalChannels(uint32 newZone)
     if (!cMgr)
         return;
 
-    std::string current_zone_name = current_zone->area_name[GetSession()->GetSessionDbcLocale()];
+    std::string current_zone_name = current_zone->area_name
 
     for (JoinedChannelsList::iterator i = m_channels.begin(), next; i != m_channels.end(); i = next)
     {
@@ -5038,7 +5038,7 @@ void Player::UpdateLocalChannels(uint32 newZone)
 
         //  new channel
         char new_channel_name_buf[100];
-        snprintf(new_channel_name_buf,100,ch->pattern[m_session->GetSessionDbcLocale()],current_zone_name.c_str());
+        snprintf(new_channel_name_buf,100,ch->pattern,current_zone_name.c_str());
         Channel* new_channel = cMgr->GetJoinChannel(new_channel_name_buf,ch->ChannelID);
 
         if ((*i) != new_channel)
@@ -8060,7 +8060,7 @@ void Player::_ApplyAllLevelScaleItemMods(bool apply)
 void Player::_ApplyAmmoBonuses()
 {
     // check ammo
-    uint32 ammo_id = GetUInt32Value(PLAYER_AMMO_ID);
+    /*uint32 ammo_id = GetUInt32Value(PLAYER_AMMO_ID);
     if (!ammo_id)
         return;
 
@@ -8078,7 +8078,7 @@ void Player::_ApplyAmmoBonuses()
     m_ammoDPS = currentAmmoDPS;
 
     if (CanModifyStats())
-        UpdateDamagePhysical(RANGED_ATTACK);
+        UpdateDamagePhysical(RANGED_ATTACK);*/
 }
 
 bool Player::CheckAmmoCompatibility(const ItemPrototype *ammo_proto) const
@@ -11358,7 +11358,7 @@ uint8 Player::CanUseAmmo(uint32 item) const
 
 void Player::SetAmmo(uint32 item)
 {
-    if (!item)
+    /*if (!item)
         return;
 
     // already set
@@ -11378,17 +11378,17 @@ void Player::SetAmmo(uint32 item)
 
     SetUInt32Value(PLAYER_AMMO_ID, item);
 
-    _ApplyAmmoBonuses();
+    _ApplyAmmoBonuses();*/
 }
 
 void Player::RemoveAmmo()
 {
-    SetUInt32Value(PLAYER_AMMO_ID, 0);
+    /*SetUInt32Value(PLAYER_AMMO_ID, 0);
 
     m_ammoDPS = 0.0f;
 
     if (CanModifyStats())
-        UpdateDamagePhysical(RANGED_ATTACK);
+        UpdateDamagePhysical(RANGED_ATTACK);*/
 }
 
 // Return stored item (if stored to stack, it can diff. from pItem). And pItem ca be deleted in this case.
@@ -15939,9 +15939,9 @@ bool Player::LoadFromDB(uint32 guid, SqlQueryHolder *holder)
     SetUInt32Value(PLAYER_FLAGS, fields[11].GetUInt32());
     SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, fields[48].GetUInt32());
 
-    SetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES, fields[47].GetUInt64());
+    //SetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES, fields[47].GetUInt64());
 
-    SetUInt32Value(PLAYER_AMMO_ID, fields[63].GetUInt32());
+    //SetUInt32Value(PLAYER_AMMO_ID, fields[63].GetUInt32());
 
     // set which actionbars the client has active - DO NOT REMOVE EVER AGAIN (can be changed though, if it does change fieldwise)
     SetByteValue(PLAYER_FIELD_BYTES, 2, fields[65].GetUInt8());
@@ -17769,7 +17769,7 @@ void Player::SaveToDB()
 
     ss << GetUInt32Value(PLAYER_CHOSEN_TITLE) << ", ";
 
-    ss << GetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES) << ", ";
+    ss << uint32(0)/*GetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES)*/ << ", ";
 
     ss << GetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX) << ", ";
 
@@ -17798,7 +17798,7 @@ void Player::SaveToDB()
 
     ss << "',";
 
-    ss << GetUInt32Value(PLAYER_AMMO_ID) << ", '";
+    ss << uint32(0)/*GetUInt32Value(PLAYER_AMMO_ID)*/ << ", '";
     for (uint32 i = 0; i < KNOWN_TITLES_SIZE*2; ++i)
     {
         ss << GetUInt32Value(PLAYER__FIELD_KNOWN_TITLES + i) << " ";
@@ -23201,13 +23201,13 @@ void Player::LearnPetTalent(uint64 petGuid, uint32 talentId, uint32 talentRank)
 
 void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
 {
-    if (CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemId))
+    /*if (CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemId))
     {
         if (apply)
             SetFlag64(PLAYER_FIELD_KNOWN_CURRENCIES,(1LL << (ctEntry->BitIndex-1)));
         else
             RemoveFlag64(PLAYER_FIELD_KNOWN_CURRENCIES,(1LL << (ctEntry->BitIndex-1)));
-    }
+    }*/
 }
 
 void Player::UpdateFallInformationIfNeed(MovementInfo const& minfo,uint16 opcode)
