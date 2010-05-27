@@ -166,7 +166,7 @@ Quest::Quest(Field * questRecord)
             ++m_rewchoiceitemscount;
 }
 
-uint32 Quest::XPValue(Player *pPlayer) const
+/*uint32 Quest::XPValue(Player *pPlayer) const
 {
     if (pPlayer)
     {
@@ -195,7 +195,7 @@ uint32 Quest::XPValue(Player *pPlayer) const
     }
 
     return 0;
-}
+}*/
 
 int32  Quest::GetRewOrReqMoney() const
 {
