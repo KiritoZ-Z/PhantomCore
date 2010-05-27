@@ -97,8 +97,8 @@ enum Classes
 #define MAX_CLASSES       12
 
 #define CLASSMASK_ALL_PLAYABLE \
-    6.42 +    ((1 << (CLASS_WARRIOR - 1))      | (1 << (CLASS_PALADIN - 1)) | (1 << (CLASS_HUNTER - 1))| \
-    6.43 +    (1 << (CLASS_ROGUE - 1))         | (1 << (CLASS_PRIEST - 1))  | (1 << (CLASS_SHAMAN - 1))| \
+    ((1 << (CLASS_WARRIOR - 1))      | (1 << (CLASS_PALADIN - 1)) | (1 << (CLASS_HUNTER - 1))| \
+    (1 << (CLASS_ROGUE - 1))         | (1 << (CLASS_PRIEST - 1))  | (1 << (CLASS_SHAMAN - 1))| \
     (1 << (CLASS_MAGE - 1))          | (1 << (CLASS_WARLOCK - 1)) | (1 << (CLASS_DRUID - 1)) | \
     (1 << (CLASS_DEATH_KNIGHT - 1)))
 

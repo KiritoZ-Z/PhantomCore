@@ -2066,16 +2066,15 @@ void ObjectMgr::LoadItemPrototypes()
                         break;
                     }
                 }
-
-            if (req)
-            {
-                if (!(proto->AllowableClass & CLASSMASK_ALL_PLAYABLE))
-                    sLog.outErrorDb("Item (Entry: %u) not have in `AllowableClass` any playable classes (%u) and can't be equipped or use.",i,proto->AllowableClass);
+				if (req)
+				{
+					if (!(proto->AllowableClass & CLASSMASK_ALL_PLAYABLE))
+					sLog.outErrorDb("Item (Entry: %u) not have in `AllowableClass` any playable classes (%u) and can't be equipped or use.",i,proto->AllowableClass);
 
                 if (!(proto->AllowableRace & RACEMASK_ALL_PLAYABLE))
                     sLog.outErrorDb("Item (Entry: %u) not have in `AllowableRace` any playable races (%u) and can't be equipped or use.",i,proto->AllowableRace);
             }
-        }
+		}
 
         if (proto->RequiredSpell && !sSpellStore.LookupEntry(proto->RequiredSpell))
         {
@@ -3102,12 +3101,11 @@ void ObjectMgr::LoadPlayerInfo()
                 continue;
 
             // skip expansion classes if not playing with expansion
-            //if (sWorld.getConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
-			if (sWorld.getConfig(CONFIG_EXPANSION) < 3 && class_ == CLASS_DEATH_KNIGHT == RACE_GOBLIN || race == RACE_WORGEN))
+            if (sWorld.getConfig(CONFIG_EXPANSION) < 2 && class_ == CLASS_DEATH_KNIGHT)
+				continue;
+			if (sWorld.getConfig(CONFIG_EXPANSION) < 3 && class_ == CLASS_DEATH_KNIGHT == RACE_GOBLIN || race == RACE_WORGEN)
                 continue;
 				
-			if (sWorld.getConfig(CONFIG_UINT32_EXPANSION) < 3 && (race == RACE_GOBLIN || race == RACE_WORGEN))
-				continue;
 
             // fatal error if no level 1 data
             if (!pInfo->levelInfo || pInfo->levelInfo[0].stats[0] == 0)
