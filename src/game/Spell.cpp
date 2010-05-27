@@ -3740,7 +3740,7 @@ void Spell::WriteAmmoToPacket(WorldPacket * data)
                 ammoDisplayID = pItem->GetProto()->DisplayInfoID;
             else
             {
-                uint32 ammoID = m_caster->ToPlayer()->GetUInt32Value(PLAYER_AMMO_ID);
+                /*  uint32 ammoID = m_caster->ToPlayer()->GetUInt32Value(PLAYER_AMMO_ID);
                 if (ammoID)
                 {
                     ItemPrototype const *pProto = objmgr.GetItemPrototype(ammoID);
@@ -3750,7 +3750,7 @@ void Spell::WriteAmmoToPacket(WorldPacket * data)
                         ammoInventoryType = pProto->InventoryType;
                     }
                 }
-                else if (m_caster->HasAura(46699))      // Requires No Ammo
+                else */if (m_caster->HasAura(46699))      // Requires No Ammo
                 {
                     ammoDisplayID = 5996;                   // normal arrow
                     ammoInventoryType = INVTYPE_AMMO;
@@ -4182,7 +4182,7 @@ void Spell::TakePower()
 
 void Spell::TakeAmmo()
 {
-    if (m_attackType == RANGED_ATTACK && m_caster->GetTypeId() == TYPEID_PLAYER)
+    /*if (m_attackType == RANGED_ATTACK && m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         Item *pItem = m_caster->ToPlayer()->GetWeaponForAttack(RANGED_ATTACK);
 
@@ -4206,7 +4206,7 @@ void Spell::TakeAmmo()
         }
         else if (uint32 ammo = m_caster->ToPlayer()->GetUInt32Value(PLAYER_AMMO_ID))
             m_caster->ToPlayer()->DestroyItemCount(ammo, 1, true);
-    }
+    }*/
 }
 
 SpellCastResult Spell::CheckRuneCost(uint32 runeCostID)
@@ -6107,7 +6107,7 @@ SpellCastResult Spell::CheckItems()
                         if (!m_caster->ToPlayer()->HasItemCount(ammo, 1))
                             return SPELL_FAILED_NO_AMMO;
                     };  break;
-                    case ITEM_SUBCLASS_WEAPON_GUN:
+                    /*case ITEM_SUBCLASS_WEAPON_GUN:
                     case ITEM_SUBCLASS_WEAPON_BOW:
                     case ITEM_SUBCLASS_WEAPON_CROSSBOW:
                     {
@@ -6146,7 +6146,7 @@ SpellCastResult Spell::CheckItems()
 
                         if (!m_caster->ToPlayer()->HasItemCount(ammo, 1))
                             return SPELL_FAILED_NO_AMMO;
-                    };  break;
+                    };  break;*/
                     case ITEM_SUBCLASS_WEAPON_WAND:
                         break;
                     default:

@@ -306,7 +306,7 @@ m_spellProto(spellproto), m_owner(owner), m_casterGuid(casterGUID ? casterGUID :
     m_applyTime(time(NULL)), m_timeCla(0), m_isSingleTarget(false), m_updateTargetMapInterval(0),
     m_procCharges(0), m_stackAmount(1), m_isRemoved(false), m_casterLevel(caster ? caster->getLevel() : m_spellProto->spellLevel)
 {
-    if (m_spellProto->manaPerSecond || m_spellProto->manaPerSecondPerLevel)
+    if (m_spellProto->manaPerSecond)
         m_timeCla = 1 * IN_MILISECONDS;
 
     Player* modOwner = NULL;
@@ -603,7 +603,7 @@ void Aura::Update(uint32 diff, Unit * caster)
                 m_timeCla -= diff;
             else if (caster)
             {
-                if (int32 manaPerSecond = m_spellProto->manaPerSecond + m_spellProto->manaPerSecondPerLevel * caster->getLevel())
+                if (int32 manaPerSecond = m_spellProto->manaPerSecond )
                 {
                     m_timeCla += 1000 - diff;
 
@@ -692,7 +692,7 @@ void Aura::RefreshDuration()
         if (m_effects[i])
             m_effects[i]->ResetPeriodic();
 
-    if (m_spellProto->manaPerSecond || m_spellProto->manaPerSecondPerLevel)
+    if (m_spellProto->manaPerSecond)
         m_timeCla = 1 * IN_MILISECONDS;
 }
 
