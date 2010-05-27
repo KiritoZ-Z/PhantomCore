@@ -44,15 +44,19 @@ struct AchievementEntry
     uint32    factionFlag;                                  // 1 -1=all, 0=horde, 1=alliance
     uint32    mapID;                                        // 2 -1=none
     //uint32 parentAchievement;                             // 3 its Achievement parent (can`t start while parent uncomplete, use its Criteria if don`t have own, use its progress on begin)
-	char *name[2];                                          // 4-5
-	//char *description;                                    // 6
-	uint32    points;                                       // 7 reward points
-	//uint32 OrderInCategory;                               // 8
-	uint32    flags;                                        // 9
-	//uint32    icon;                                       // 10 icon (from SpellIcon.dbc)
-	//char *titleReward;                                    // 11
-	uint32 count;                                           // 12 - need this count of completed criterias (own or referenced achievement criterias)
-	uint32 refAchievement;                                  // 13 - referenced achievement (counting of all completed criterias)
+	char *name;                                         // 4-19
+	//uint32 name_flags;                                    // 20
+	//char *description[16];                                // 21-36
+	//uint32 desc_flags;                                    // 37
+	uint32    categoryId;                                   // 38
+	uint32    points;                                       // 39 reward points
+	//uint32 OrderInCategory;                               // 40
+	uint32    flags;                                        // 41
+	//uint32    icon;                                       // 42 icon (from SpellIcon.dbc)
+	//char *titleReward[16];                                // 43-58
+	//uint32 titleReward_flags;                             // 59
+	uint32 count;                                           // 60 - need this count of completed criterias (own or referenced achievement criterias)
+	uint32 refAchievement;                                  // 61 - referenced achievement (counting of all completed criterias)
 };
 
 struct AchievementCategoryEntry
@@ -505,7 +509,7 @@ struct AreaTableEntry
     uint32  flags;                                          // 4, unknown value but 312 for all cities
                                                             // 5-9 unused
     int32   area_level;                                     // 10
-    char*   area_name[16];                                  // 11-26
+    char*   area_name;                                  // 11-26
                                                             // 27, string flags, unused
     uint32  team;                                           // 28
 
@@ -593,7 +597,7 @@ struct BattlemasterListEntry
     int32   mapid[8];                                       // 1-8 mapid
     uint32  type;                                           // 9 (3 - BG, 4 - arena)
     //uint32 canJoinAsGroup;                                // 10 (0 or 1)
-	char*   name[1];                                       // 11-26
+	char*   name;                                       // 11-26
 	//uint32 nameFlags                                      // 27 string flag, unused
 	uint32 maxGroupSize;                                    // 28 maxGroupSize, used for checking if queue as group
 	//uint32 HolidayWorldStateId;                           // 29 new 3.1
@@ -619,9 +623,9 @@ struct CharTitlesEntry
 {
     uint32  ID;                                             // 0, title ids, for example in Quest::GetCharTitleId()
     //uint32      unk1;                                     // 1 flags?
-    char*   name[1];                                       // 2-17
+    char*   name;                                       // 2-17
                                                             // 18 string flag, unused
-    //char*       name2[1];                                // 19-34, unused
+    //char*       name2[16];                                // 19-34, unused
                                                             // 35 string flag, unused
     uint32  bit_index;                                      // 36 used in PLAYER_CHOSEN_TITLE and 1<<index in PLAYER__FIELD_KNOWN_TITLES
 };
@@ -630,9 +634,9 @@ struct ChatChannelsEntry
 {
     uint32  ChannelID;                                      // 0
     uint32  flags;                                          // 1
-    char*   pattern[1];                                    // 3-18
+    char*   pattern;                                    // 3-18
                                                             // 19 string flags, unused
-    //char*       name[16];                                 // 20-35 unused
+    //char*       name;                                 // 20-35 unused
                                                             // 36 string flag, unused
 };
 
@@ -642,11 +646,11 @@ struct ChrClassesEntry
                                                             // 1, unused
 	uint32  powerType;                                      // 2
 	                                                        // 3-4, unused
-	//char*       name[16];                                 // 5-20 unused
+	//char*       name;                                 // 5-20 unused
 	                                                        // 21 string flag, unused
-	//char*       nameFemale[16];                           // 21-36 unused, if different from base (male) case
+	//char*       nameFemale;                           // 21-36 unused, if different from base (male) case
 	                                                        // 37 string flag, unused
-	//char*       nameNeutralGender[16];                    // 38-53 unused, if different from base (male) case
+	//char*       nameNeutralGender;                    // 38-53 unused, if different from base (male) case
 	                                                        // 54 string flag, unused
 	                                                        // 55, unused
 	uint32  spellfamily;                                    // 56
@@ -668,7 +672,7 @@ struct ChrRacesEntry
                                                             // 8-11 unused
     uint32      CinematicSequence;                          // 12 id from CinematicSequences.dbc
     //uint32    unk_322;                                    // 13 faction (0 alliance, 1 horde, 2 not available?)
-    char*       name[1];                                   // 14-29 used for DBC language detection/selection
+    char*       name;                                   // 14-29 used for DBC language detection/selection
                                                             // 30 string flags, unused
     //char*       nameFemale[16];                           // 31-46, if different from base (male) case
                                                             // 47 string flags, unused
@@ -728,7 +732,7 @@ struct CreatureFamilyEntry
     uint32  petFoodMask;                                    // 7        m_petFoodMask
     int32   petTalentType;                                  // 8        m_petTalentType
                                                             // 9        m_categoryEnumID
-    char*   Name[16];                                       // 10-25    m_name_lang
+    char*   Name;                                       // 10-25    m_name_lang
                                                             // 26 string flags
                                                             // 27       m_iconFile
 };
@@ -810,9 +814,9 @@ struct FactionEntry
     //float     unk2;                                       // 20
     //uint32    unk3                                        // 21
     //uint32    unk4;                                       // 22
-    char*       name[16];                                   // 23-38    m_name_lang
+    char*       name;                                   // 23-38    m_name_lang
                                                             // 39 string flags
-    //char*     description[16];                            // 40-55    m_description_lang
+    //char*     description;                            // 40-55    m_description_lang
                                                             // 56 string flags
 };
 
@@ -1062,14 +1066,14 @@ struct ItemRandomPropertiesEntry
     uint32    ID;                                           // 0        m_ID
     //char*     internalName                                // 1        m_Name
     uint32    enchant_id[5];                                // 2-6      m_Enchantment
-    char*     nameSuffix[16];                              // 7-22     m_name_lang
+    char*     nameSuffix;                              // 7-22     m_name_lang
                                                             // 23 name flags
 };
 
 struct ItemRandomSuffixEntry
 {
     uint32    ID;                                           // 0        m_ID
-    char*     nameSuffix[16];                               // 1-16     m_name_lang
+    char*     nameSuffix;                               // 1-16     m_name_lang
                                                             // 17, name flags
                                                             // 18       m_internalName
     uint32    enchant_id[5];                                // 19-21    m_enchantment
@@ -1079,7 +1083,7 @@ struct ItemRandomSuffixEntry
 struct ItemSetEntry
 {
     //uint32    id                                          // 0        m_ID
-    char*     name[16];                                     // 1-16     m_name_lang
+    char*     name;                                     // 1-16     m_name_lang
                                                             // 17 string flags, unused
     //uint32    itemId[17];                                 // 18-34    m_itemID
     uint32    spells[8];                                    // 35-42    m_setSpellID
@@ -1127,7 +1131,7 @@ struct MailTemplateEntry
     uint32      ID;                                         // 0
     //char*       subject[16];                              // 1-16
                                                             // 17 name flags, unused
-    char*       content[16];                              // 18-33
+    char*       content;                              // 18-33
 };
 
 struct MapEntry
@@ -1137,7 +1141,7 @@ struct MapEntry
     uint32  map_type;                                       // 2
     //uint32 unk_330;                                       // 3
                                                             // 4 0 or 1 for battlegrounds (not arenas)
-    char*   name[16];                                       // 5-20
+    char*   name;                                       // 5-20
                                                             // 21 name flags, unused
     uint32  linked_zone;                                    // 22 common zone for instance and continent map
     //char*     hordeIntro[16];                             // 23-38 text for PvP Zones
@@ -1217,7 +1221,7 @@ struct PvPDifficultyEntry
 struct QuestSortEntry
 {
     uint32      id;                                         // 0        m_ID
-    //char*       name[16];                                 // 1-16     m_SortName_lang
+    //char*       name;                                 // 1-16     m_SortName_lang
                                                             // 17 name flags
 };
 
@@ -1347,7 +1351,7 @@ struct SkillLineEntry
     uint32    id;                                           // 0        m_ID
     int32     categoryId;                                   // 1        m_categoryID
     //uint32    skillCostID;                                // 2        m_skillCostsID
-    char*     name[16];                                     // 3-18     m_displayName_lang
+    char*     name;                                     // 3-18     m_displayName_lang
                                                             // 19 string flags
     //char*     description[16];                            // 20-35    m_description_lang
                                                             // 36 string flags
@@ -1440,7 +1444,7 @@ struct SpellEntry
     uint32    manaCost;                                     // 42       m_manaCost
     uint32    manaCostPerlevel;                             // 43       m_manaCostPerLevel
     uint32    manaPerSecond;                                // 44       m_manaPerSecond
-    uint32    manaPerSecondPerLevel;                        // 45       m_manaPerSecondPerLeve
+    //uint32    manaPerSecondPerLevel;                        // 45       m_manaPerSecondPerLeve
     uint32    rangeIndex;                                   // 46       m_rangeIndex
     float     speed;                                        // 47       m_speed
     //uint32    modalNextSpell;                             // 48       m_modalNextSpell not used
@@ -1473,9 +1477,9 @@ struct SpellEntry
     uint32    SpellIconID;                                  // 133      m_spellIconID
     uint32    activeIconID;                                 // 134      m_activeIconID
     //uint32    spellPriority;                              // 135 not used
-    char*     SpellName[16];                                // 136-151  m_name_lang
+    char*     SpellName;                                // 142-157  m_name_lang
     //uint32    SpellNameFlag;                              // 152 not used
-    char*     Rank[16];                                     // 153-168  m_nameSubtext_lang
+    char*     Rank;                                     // 159-174  m_nameSubtext_lang
     //uint32    RankFlags;                                  // 169 not used
     //char*     Description[16];                            // 170-185  m_description_lang not used
     //uint32    DescriptionFlags;                           // 186 not used
@@ -1604,7 +1608,7 @@ struct SpellItemEnchantmentEntry
     uint32      amount[3];                                  // 5-7      m_effectPointsMin[3]
     //uint32      amount2[3]                                // 8-10     m_effectPointsMax[3]
     uint32      spellid[3];                                 // 11-13    m_effectArg[3]
-    char*       description[16];                            // 14-29    m_name_lang[16]
+    char*       description;                            // 14-29    m_name_lang[16]
     //uint32      descriptionFlags;                         // 30 name flags
     uint32      aura_id;                                    // 31       m_itemVisual
     uint32      slot;                                       // 32       m_flags
@@ -1684,7 +1688,7 @@ struct TaxiNodesEntry
     float     x;                                            // 2        m_x
     float     y;                                            // 3        m_y
     float     z;                                            // 4        m_z
-    char*     name[16];                                     // 5-21     m_Name_lang
+    char*     name;                                     // 5-21     m_Name_lang
                                                             // 22 string flags
     uint32    MountCreatureID[2];                           // 23-24    m_MountCreatureID[2]
 };

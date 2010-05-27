@@ -742,9 +742,9 @@ bool ChatHandler::HandleGPSCommand(const char* args)
     uint32 have_vmap = Map::ExistVMap(obj->GetMapId(),gx,gy) ? 1 : 0;
 
     PSendSysMessage(LANG_MAP_POSITION,
-        obj->GetMapId(), (mapEntry ? mapEntry->name[GetSessionDbcLocale()] : "<unknown>"),
-        zone_id, (zoneEntry ? zoneEntry->area_name[GetSessionDbcLocale()] : "<unknown>"),
-        area_id, (areaEntry ? areaEntry->area_name[GetSessionDbcLocale()] : "<unknown>"),
+        obj->GetMapId(), (mapEntry ? mapEntry->name : "<unknown>"),
+        zone_id, (zoneEntry ? zoneEntry->area_name : "<unknown>"),
+        area_id, (areaEntry ? areaEntry->area_name : "<unknown>"),
         obj->GetPhaseMask(),
         obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),
         cell.GridX(), cell.GridY(), cell.CellX(), cell.CellY(), obj->GetInstanceId(),
@@ -755,9 +755,9 @@ bool ChatHandler::HandleGPSCommand(const char* args)
         (obj->GetTypeId() == TYPEID_PLAYER ? "player" : "creature"), obj->GetName(),
         (obj->GetTypeId() == TYPEID_PLAYER ? "GUID" : "Entry"), (obj->GetTypeId() == TYPEID_PLAYER ? obj->GetGUIDLow(): obj->GetEntry()));
     sLog.outDebug(GetTrinityString(LANG_MAP_POSITION),
-        obj->GetMapId(), (mapEntry ? mapEntry->name[sWorld.GetDefaultDbcLocale()] : "<unknown>"),
-        zone_id, (zoneEntry ? zoneEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>"),
-        area_id, (areaEntry ? areaEntry->area_name[sWorld.GetDefaultDbcLocale()] : "<unknown>"),
+        obj->GetMapId(), (mapEntry ? mapEntry->name : "<unknown>"),
+        zone_id, (zoneEntry ? zoneEntry->area_name : "<unknown>"),
+        area_id, (areaEntry ? areaEntry->area_name : "<unknown>"),
         obj->GetPhaseMask(),
         obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation(),
         cell.GridX(), cell.GridY(), cell.CellX(), cell.CellY(), obj->GetInstanceId(),
@@ -2247,7 +2247,7 @@ bool ChatHandler::HandleLookupAreaCommand(const char* args)
         if (areaEntry)
         {
             int loc = GetSessionDbcLocale ();
-            std::string name = areaEntry->area_name[loc];
+            std::string name = areaEntry->area_name;
             if (name.empty())
                 continue;
 
@@ -2259,7 +2259,7 @@ bool ChatHandler::HandleLookupAreaCommand(const char* args)
                     if (loc == GetSessionDbcLocale ())
                         continue;
 
-                    name = areaEntry->area_name[loc];
+                    name = areaEntry->area_name;
                     if (name.empty ())
                         continue;
 
