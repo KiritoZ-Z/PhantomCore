@@ -41,6 +41,7 @@
 #include "ReputationMgr.h"
 #include "BattleGround.h"
 #include "DBCEnums.h"
+#include "LFG.h"
 
 #include<string>
 #include<vector>
@@ -339,74 +340,6 @@ struct EnchantDuration
 typedef std::list<EnchantDuration> EnchantDurationList;
 typedef std::list<Item*> ItemDurationList;
 
-enum LfgType
-{
-    LFG_TYPE_NONE           = 0,
-    LFG_TYPE_DUNGEON        = 1,
-    LFG_TYPE_RAID           = 2,
-    LFG_TYPE_QUEST          = 3,
-    LFG_TYPE_ZONE           = 4,
-    LFG_TYPE_HEROIC_DUNGEON       = 5,
-    LFG_TYPE_RANDOM_DUNGEON       = 6
-};
-
-enum LfgRoles
-{
-    LEADER  = 0x01,
-    TANK    = 0x02,
-    HEALER  = 0x04,
-    DAMAGE  = 0x08
-};
-
-struct LookingForGroupSlot
-{
-    LookingForGroupSlot() : entry(0), type(0) {}
-    bool Empty() const { return !entry && !type; }
-    void Clear() { entry = 0; type = 0; }
-    void Set(uint32 _entry, uint32 _type) { entry = _entry; type = _type; }
-    bool Is(uint32 _entry, uint32 _type) const { return entry == _entry && type == _type; }
-    bool canAutoJoin() const { return entry && (type == LFG_TYPE_DUNGEON || type == LFG_TYPE_HEROIC_DUNGEON); }
-
-    uint32 entry;
-    uint32 type;
-};
-
-#define MAX_LOOKING_FOR_GROUP_SLOT 3
-
-struct LookingForGroup
-{
-    LookingForGroup() {}
-    bool HaveInSlot(LookingForGroupSlot const& slot) const { return HaveInSlot(slot.entry, slot.type); }
-    bool HaveInSlot(uint32 _entry, uint32 _type) const
-    {
-        for (uint8 i = 0; i < MAX_LOOKING_FOR_GROUP_SLOT; ++i)
-            if (slots[i].Is(_entry, _type))
-                return true;
-        return false;
-    }
-
-    bool canAutoJoin() const
-    {
-        for (uint8 i = 0; i < MAX_LOOKING_FOR_GROUP_SLOT; ++i)
-            if (slots[i].canAutoJoin())
-                return true;
-        return false;
-    }
-
-    bool Empty() const
-    {
-        for (uint8 i = 0; i < MAX_LOOKING_FOR_GROUP_SLOT; ++i)
-            if (!slots[i].Empty())
-                return false;
-        return more.Empty();
-    }
-
-    LookingForGroupSlot slots[MAX_LOOKING_FOR_GROUP_SLOT];
-    LookingForGroupSlot more;
-    std::string comment;
-    uint8 roles;
-};
-
 enum PlayerMovementType
 {
     MOVE_ROOT       = 1,
@@ -575,6 +508,7 @@ enum PlayerExtraFlags
     PLAYER_EXTRA_TAXICHEAT          = 0x0008,
     PLAYER_EXTRA_GM_INVISIBLE       = 0x0010,
     PLAYER_EXTRA_GM_CHAT            = 0x0020,               // Show GM badge in chat messages
+	PLAYER_EXTRA_HAS_310_FLYER      = 0x0040,               // Marks if player already has 310% speed flying mount
 
     // other states
     PLAYER_EXTRA_PVP_DEATH          = 0x0100                // store PvP death status until corpse creating.
@@ -1098,6 +1032,8 @@ class Player : public Unit, public GridObject<Player>
         void SetTaxiCheater(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_TAXICHEAT; else m_ExtraFlags &= ~PLAYER_EXTRA_TAXICHEAT; }
         bool isGMVisible() const { return !(m_ExtraFlags & PLAYER_EXTRA_GM_INVISIBLE); }
         void SetGMVisible(bool on);
+		bool Has310Flyer(bool checkAllSpells, uint32 excludeSpellId = 0);
+		void SetHas310Flyer(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_HAS_310_FLYER; else m_ExtraFlags &= ~PLAYER_EXTRA_HAS_310_FLYER; }
         void SetPvPDeath(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_PVP_DEATH; else m_ExtraFlags &= ~PLAYER_EXTRA_PVP_DEATH; }
 
         void GiveXP(uint32 xp, Unit* victim);
@@ -1811,6 +1747,8 @@ class Player : public Unit, public GridObject<Player>
         inline void RecalculateRating(CombatRating cr) { ApplyRatingMod(cr, 0, true);}
         float GetMeleeCritFromAgility();
         float GetDodgeFromAgility();
+		float DodgeDiminishingReturn(float);
+		float GetBaseDodge();
         float GetSpellCritFromIntellect();
         float OCTRegenHPPerSpirit();
         float OCTRegenMPPerSpirit();

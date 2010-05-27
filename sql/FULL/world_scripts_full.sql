@@ -451,6 +451,43 @@ UPDATE `creature_template` SET `Scriptname`='boss_infinite_corruptor' WHERE `ent
 
 /* CRYSTALSONG FOREST */
 UPDATE `creature_template` SET `ScriptName`='npc_warmage_violetstand' WHERE `entry` IN (32369,32371,32372);
+/*ICECROWN CITADEL*/
+UPDATE `creature_template` SET `ScriptName`='boss_blood_queen_lanathel' WHERE (`entry`='37955');
+UPDATE `creature_template` SET `ScriptName`='npc_swarming_shadows' WHERE (`entry`='38163');
+UPDATE `creature_template` SET `ScriptName`='boss_saurfang' WHERE (`entry`='37813');
+UPDATE `creature_template` SET `ScriptName`='npc_bloodbeast' WHERE (`entry`='38508');
+UPDATE `creature_template` SET `ScriptName`='boss_Festergut' WHERE (`entry`='36626');
+UPDATE `gameobject_template` SET `ScriptName` = 'icecrown_teleporter' WHERE `entry` IN (202223,202235,202242, 202243,202244,202245,202246);
+UPDATE `creature_template` SET `ScriptName`='Boss_Lady_Deathwisper' WHERE (`entry`='36855');
+UPDATE `creature_template` SET `ScriptName`='mob_CultAdherents' WHERE (`entry`='37949');
+UPDATE `creature_template` SET `ScriptName`='Boss_ProfessorPutricide' WHERE (`entry`='36678');  
+UPDATE `creature_template` SET `ScriptName`='Mob_VolatileOoze' WHERE (`entry`='37697');  
+UPDATE `creature_template` SET `ScriptName`='Boss_Sindragosa' WHERE (`entry`='36853');
+UPDATE `creature_template` SET `ScriptName`='boss_the_lich_king' WHERE (`entry`='36597');
+UPDATE `creature_template` SET `ScriptName`='boss_tirion_icc' WHERE (`entry`='38995');
+UPDATE `creature_template` SET `ScriptName`='mob_Ice_Puls' WHERE (`entry`='36633');
+UPDATE `creature_template` SET `ScriptName`='mob_Valkyr' WHERE (`entry`='36609');
+UPDATE `creature_template` SET `ScriptName`='mob_Ghoul' WHERE (`entry`='37695');
+UPDATE `creature_template` SET `ScriptName`='mob_Defile' WHERE (`entry`='38757');
+UPDATE `creature_template` SET `ScriptName`='mob_RagingSpirit' WHERE (`entry`='36701');
+UPDATE `creature_template` SET `ScriptName`='boss_Rotface' WHERE `entry`= 36627;
+UPDATE `creature_template` SET `ScriptName`='npc_OozeLittle' WHERE `entry`= 36897;
+UPDATE `creature_template` SET `ScriptName`='npc_OozeBig' WHERE `entry`= 36899;
+UPDATE `creature_template` SET `ScriptName` = 'npc_NerubarBroodkeeper' WHERE `entry` = 36725;
+UPDATE `creature_template` SET `ScriptName` = 'npc_TheDamned' WHERE `entry` = 37011;
+UPDATE `creature_template` SET `ScriptName` = 'npc_ServantoftheThrone' WHERE `entry` = 36724;
+UPDATE `creature_template` SET `ScriptName` = 'npc_AncientSkeletalSoldier' WHERE `entry` = 37012;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathboundWard' WHERE `entry` = 37007;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathspeakerAttedant' WHERE `entry` = 36811;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathspeakerDisciple' WHERE `entry` = 36807;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathspeakerHighPriest' WHERE `entry` = 36829;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathspeakerServant' WHERE `entry` = 36844;
+UPDATE `creature_template` SET `ScriptName` = 'npc_DeathspeakerZealot' WHERE `entry` = 36808;
+UPDATE `creature_template` SET `ScriptName` = 'npc_CultFanatic' WHERE `entry` = 38135;
+UPDATE `creature_template` SET `ScriptName` = 'npc_CultAdherent' WHERE `entry` = 37949;
+UPDATE `creature_template` SET `ScriptName` = 'boss_Valanar' WHERE `entry` = 37970;
+UPDATE `creature_template` SET `ScriptName` = 'boss_Keleset' WHERE `entry` = 37972;
+UPDATE `creature_template` SET `ScriptName` = 'boss_Taldaram' WHERE `entry` = 37973;
 
 /* MT. HYJAL */
 UPDATE `instance_template` SET `script`='instance_hyjal' WHERE `map`=534;
@@ -769,6 +806,19 @@ UPDATE `creature_template` SET `ScriptName`='boss_magtheridon' WHERE `entry`=172
 UPDATE `creature_template` SET `ScriptName`='mob_hellfire_channeler' WHERE `entry`=17256;
 UPDATE `creature_template` SET `ScriptName`='mob_abyssal' WHERE `entry`=17454;
 
+/* HALLS OF REFLECTION */
+UPDATE `instance_template` SET `script`='instance_halls_of_reflection' WHERE `map`=668;
+UPDATE `creature_template` SET `Scriptname`='boss_falric' WHERE `entry`=38112;
+UPDATE `creature_template` SET `Scriptname`='boss_marwyn' WHERE `entry`=38113;
+UPDATE `creature_template` SET `Scriptname`='npc_jaina_hor_part1' WHERE `entry`=37221;
+UPDATE `creature_template` SET `Scriptname`='npc_sylvanas_hor_part1' WHERE `entry`=37223;
+UPDATE `creature_template` SET `Scriptname`='npc_ghostly_priest' WHERE `entry`=38175;
+UPDATE `creature_template` SET `Scriptname`='npc_phantom_mage' WHERE `entry`=38172;
+UPDATE `creature_template` SET `Scriptname`='npc_phantom_hallucination' WHERE `entry`=38567;
+UPDATE `creature_template` SET `Scriptname`='npc_shadowy_mercenary' WHERE `entry`=38177;
+UPDATE `creature_template` SET `Scriptname`='npc_spectral_footman' WHERE `entry`=38173;
+UPDATE `creature_template` SET `Scriptname`='npc_tortured_rifleman' WHERE `entry`=38176;
+
 /* HELLFIRE PENINSULA */
 UPDATE `creature_template` SET `ScriptName`='boss_doomlord_kazzak' WHERE `entry`=18728;
 UPDATE `creature_template` SET `ScriptName`='npc_wounded_blood_elf' WHERE `entry`=16993;
@@ -988,6 +1038,7 @@ UPDATE `creature_template` SET `ScriptName`='mob_acolyte_of_vesperon' WHERE `ent
 UPDATE `creature_template` SET `ScriptName`='npc_flame_tsunami' WHERE `entry`=30616;
 
 /* ONYXIA'S LAIR */
+UPDATE `instance_template` SET `script`='instance_onyxias_lair' WHERE `map`=249;
 UPDATE `creature_template` SET `ScriptName`='boss_onyxia' WHERE `entry`=10184;
 
 /* ORGRIMMAR */

@@ -2533,9 +2533,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                 {
                     if ((*i)->GetSpellProto()->SpellIconID == 240 && (*i)->GetMiscValue() == 3)
                     {
-                        int32 HotWMod = (*i)->GetAmount();
-                        if (GetMiscValue() == FORM_CAT)
-                            HotWMod /= 2;
+						int32 HotWMod = (*i)->GetSpellProto()->EffectBasePoints[1] + 1;
 
                         target->CastCustomSpell(target, HotWSpellId, &HotWMod, NULL, NULL, true, NULL, this);
                         break;
@@ -2581,7 +2579,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                     // Survival of the Fittest
                     if (AuraEffect const * aurEff = target->GetAuraEffect(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE,SPELLFAMILY_DRUID, 961, 0))
                     {
-                        int32 bp = 100 + aurEff->GetSpellProto()->CalculateSimpleValue(2);
+                        int32 bp = target->CalculateSpellDamage(target, aurEff->GetSpellProto(),2);
                         target->CastCustomSpell(target, 62069, &bp, NULL, NULL, true, 0, this);
                     }
                 break;
@@ -4161,7 +4159,7 @@ void AuraEffect::HandleModStateImmunityMask(AuraApplication const * aurApp, uint
     std::list <AuraType> immunity_list;
     if (GetMiscValue() & (1<<10))
         immunity_list.push_back(SPELL_AURA_MOD_STUN);
-    if (GetMiscValue() & (1<<7))
+    if ((GetMiscValue() & (1<<7)) && !(apply && GetId() == 46924))
         immunity_list.push_back(SPELL_AURA_MOD_DISARM);
     if (GetMiscValue() & (1<<1))
         immunity_list.push_back(SPELL_AURA_TRANSFORM);
@@ -5626,7 +5624,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         if (AuraEffect *aurEff = caster->GetAuraEffect(63330, 0)) // glyph of Dancing Rune Weapon
                             GetBase()->SetDuration(GetBase()->GetDuration() + aurEff->GetAmount());
                     break;
-                case 47977:                             // Magic Broom
+                /*case 47977:                             // Magic Broom
                     Spell::SelectMountByAreaAndSkill(target, 42680, 42683, 42667, 42668, 0);
                         return;
                 case 71342:                             // Big Love Rocket
@@ -5634,7 +5632,7 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         return;
                 case 72286:                             // Invincible 	
                     Spell::SelectMountByAreaAndSkill(target, 72281, 72282, 72283, 72284, 0);
-                         return;
+                         return;*/
                 case 62061:                                     // Festive Holiday Mount
                     if (target->HasAuraType(SPELL_AURA_MOUNTED))
                         target->CastSpell(target, 25860, true, NULL, this); // Reindeer Transformation

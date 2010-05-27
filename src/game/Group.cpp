@@ -34,6 +34,7 @@
 #include "InstanceSaveMgr.h"
 #include "MapInstanced.h"
 #include "Util.h"
+#include "LFG.h"
 
 Group::Group()
 {
@@ -44,6 +45,10 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
+	m_guid              = 0;
+    m_counter           = 0;
+	m_maxEnchantingLevel= 0;
+
 
     for (uint8 i = 0; i < TARGETICONCOUNT; ++i)
         m_targetIcons[i] = 0;
@@ -335,6 +340,9 @@ bool Group::AddMember(const uint64 &guid, const char* name)
         // quest related GO state dependent from raid memebership
         if (isRaidGroup())
             player->UpdateForQuestWorldObjects();
+
+        if (m_maxEnchantingLevel < player->GetSkillValue(SKILL_ENCHANTING))
+            m_maxEnchantingLevel = player->GetSkillValue(SKILL_ENCHANTING);
     }
 
     return true;
@@ -372,7 +380,7 @@ uint32 Group::RemoveMember(const uint64 &guid, const uint8 &method)
             {
                 data.Initialize(SMSG_GROUP_LIST, 1+1+1+1+8+4+4+8);
                 data << uint8(0x10) << uint8(0) << uint8(0) << uint8(0);
-                data << uint64(0) << uint32(0) << uint32(0) << uint64(0);
+                data << uint64(m_guid) << uint32(m_counter) << uint32(0) << uint64(0);
                 player->GetSession()->SendPacket(&data);
             }
 
@@ -387,10 +395,11 @@ uint32 Group::RemoveMember(const uint64 &guid, const uint8 &method)
         }
 
         SendUpdate();
+        ResetMaxEnchantingLevel();
     }
     // if group before remove <= 2 disband it
     else
-        Disband(true);
+        Disband();
 
     return m_memberSlots.size();
 }
@@ -431,6 +440,8 @@ void Group::Disband(bool hideDestroy)
                 player->SetOriginalGroup(NULL);
             else
                 player->SetGroup(NULL);
+            player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_GROUP_DISBAND);
+            player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
         }
 
         // quest related GO state dependent from raid membership
@@ -456,7 +467,7 @@ void Group::Disband(bool hideDestroy)
         {
             data.Initialize(SMSG_GROUP_LIST, 1+1+1+1+8+4+4+8);
             data << uint8(0x10) << uint8(0) << uint8(0) << uint8(0);
-            data << uint64(0) << uint32(0) << uint32(0) << uint64(0);
+            data << uint64(m_guid) << uint32(m_counter) << uint32(0) << uint64(0);
             player->GetSession()->SendPacket(&data);
         }
 
@@ -505,7 +516,7 @@ void Group::SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r)
     data << uint32(r.itemRandomPropId);                     // item random property ID
     data << uint32(r.itemCount);                            // items in stack
     data << uint32(CountDown);                              // the countdown time to choose "need" or "greed"
-    data << uint8(ALL_ROLL_TYPE_MASK);                      // roll type mask
+    data << uint8(r.rollVoteMask);                          // roll type mask
 
     for (Roll::PlayerVote::const_iterator itr=r.playerVote.begin(); itr != r.playerVote.end(); ++itr)
     {
@@ -656,6 +667,11 @@ void Group::GroupLoot(Loot *loot, WorldObject* pLootedObject)
             {
                 r->setLoot(loot);
                 r->itemSlot = itemSlot;
+                if (item->DisenchantID && m_maxEnchantingLevel >= item->RequiredDisenchantSkill)
+                    r->rollVoteMask |= ROLL_FLAG_TYPE_DISENCHANT;
+
+                if (item->Flags2 & ITEM_FLAGS_EXTRA_NEED_ROLL_DISABLED)
+                    r->rollVoteMask &= ~ROLL_FLAG_TYPE_NEED;
 
                 loot->items[itemSlot].is_blocked = true;
 
@@ -745,6 +761,11 @@ void Group::NeedBeforeGreed(Loot *loot, WorldObject* pLootedObject)
             {
                 r->setLoot(loot);
                 r->itemSlot = itemSlot;
+                if (item->DisenchantID && m_maxEnchantingLevel >= item->RequiredDisenchantSkill)
+                    r->rollVoteMask |= ROLL_FLAG_TYPE_DISENCHANT;
+
+                if (item->Flags2 & ITEM_FLAGS_EXTRA_NEED_ROLL_DISABLED)
+                    r->rollVoteMask &= ~ROLL_FLAG_TYPE_NEED;
 
                 loot->items[itemSlot].is_blocked = true;
 
@@ -1266,6 +1287,7 @@ bool Group::_removeMember(const uint64 &guid)
                 player->SetOriginalGroup(NULL);
             else
                 player->SetGroup(NULL);
+            player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
         }
     }
 
@@ -1833,5 +1855,17 @@ void Group::BroadcastGroupUpdate(void)
             pp->ForceValuesUpdateAtIndex(UNIT_FIELD_FACTIONTEMPLATE);
             DEBUG_LOG("-- Forced group value update for '%s'", pp->GetName());
         }
+    }
+}
+
+void Group::ResetMaxEnchantingLevel()
+{
+    m_maxEnchantingLevel = 0;
+    Player *pMember = NULL;
+    for (member_citerator citr = m_memberSlots.begin(); citr != m_memberSlots.end(); ++citr)
+    {
+        if (pMember = objmgr.GetPlayer(citr->guid))
+            if (m_maxEnchantingLevel < pMember->GetSkillValue(SKILL_ENCHANTING))
+                m_maxEnchantingLevel = pMember->GetSkillValue(SKILL_ENCHANTING);
     }
 }

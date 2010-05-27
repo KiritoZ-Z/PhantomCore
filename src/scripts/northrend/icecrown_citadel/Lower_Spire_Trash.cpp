@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
+ * Copyright (C) 2009 - 2010 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
  */
 
 #include "ScriptedPch.h"
-#include "instance_icecrown_citadel.h"
+#include "icecrown_citadel.h"
 
 /***************************************SPELLS*************************************/
 //Nerub'ar Broodkeeper
@@ -132,7 +132,7 @@
 
 
 /*****************************MARROWGAR TRASH****************************/
-struct npc_NerubarBroodkeeperAI: public ScriptedAI
+struct  npc_NerubarBroodkeeperAI: public ScriptedAI
 {
     npc_NerubarBroodkeeperAI(Creature *c) : ScriptedAI(c)
     {
@@ -186,7 +186,7 @@ struct npc_NerubarBroodkeeperAI: public ScriptedAI
     }
 };
 
-struct npc_TheDamnedAI: public ScriptedAI
+struct  npc_TheDamnedAI: public ScriptedAI
 {
     npc_TheDamnedAI(Creature *c) : ScriptedAI(c)
     {
@@ -234,7 +234,7 @@ struct npc_TheDamnedAI: public ScriptedAI
     }
 };
 
-struct npc_ServantoftheThroneAI: public ScriptedAI
+struct  npc_ServantoftheThroneAI: public ScriptedAI
 {
     npc_ServantoftheThroneAI(Creature *c) : ScriptedAI(c)
     {
@@ -276,7 +276,7 @@ struct npc_ServantoftheThroneAI: public ScriptedAI
     }
 };
 
-struct npc_AncientSkeletalSoldierAI: public ScriptedAI
+struct  npc_AncientSkeletalSoldierAI: public ScriptedAI
 {
     npc_AncientSkeletalSoldierAI(Creature *c) : ScriptedAI(c)
     {
@@ -318,7 +318,7 @@ struct npc_AncientSkeletalSoldierAI: public ScriptedAI
     }
 };
 
-struct npc_DeathboundWardAI: public ScriptedAI
+struct  npc_DeathboundWardAI: public ScriptedAI
 {
     npc_DeathboundWardAI(Creature *c) : ScriptedAI(c)
     {
@@ -366,7 +366,7 @@ struct npc_DeathboundWardAI: public ScriptedAI
 };
 
 /*****************************DEATHWHISPER TRASH****************************/
-struct npc_DeathspeakerAttedantAI: public ScriptedAI
+struct  npc_DeathspeakerAttedantAI: public ScriptedAI
 {
     npc_DeathspeakerAttedantAI(Creature *c) : ScriptedAI(c)
     {
@@ -414,7 +414,7 @@ struct npc_DeathspeakerAttedantAI: public ScriptedAI
     }
 };
 
-struct npc_DeathspeakerDiscipleAI: public ScriptedAI
+struct  npc_DeathspeakerDiscipleAI: public ScriptedAI
 {
     npc_DeathspeakerDiscipleAI(Creature *c) : ScriptedAI(c)
     {
@@ -469,7 +469,7 @@ struct npc_DeathspeakerDiscipleAI: public ScriptedAI
     }
 };
 
-struct npc_DeathspeakerHighPriestAI: public ScriptedAI
+struct  npc_DeathspeakerHighPriestAI: public ScriptedAI
 {
     npc_DeathspeakerHighPriestAI(Creature *c) : ScriptedAI(c)
     {
@@ -513,7 +513,7 @@ struct npc_DeathspeakerHighPriestAI: public ScriptedAI
     }
 };
 
-struct npc_DeathspeakerServantAI: public ScriptedAI
+struct  npc_DeathspeakerServantAI: public ScriptedAI
 {
     npc_DeathspeakerServantAI(Creature *c) : ScriptedAI(c)
     {
@@ -568,7 +568,7 @@ struct npc_DeathspeakerServantAI: public ScriptedAI
     }
 };
 
-struct npc_DeathspeakerZealotAI: public ScriptedAI
+struct  npc_DeathspeakerZealotAI: public ScriptedAI
 {
     npc_DeathspeakerZealotAI(Creature *c) : ScriptedAI(c)
     {
@@ -610,7 +610,7 @@ struct npc_DeathspeakerZealotAI: public ScriptedAI
     }
 };
 
-struct npc_CultAdherentAI: public ScriptedAI
+struct  npc_CultAdherentAI: public ScriptedAI
 {
     npc_CultAdherentAI(Creature *c) : ScriptedAI(c)
     {
@@ -699,7 +699,7 @@ struct npc_CultAdherentAI: public ScriptedAI
     }
 };
 
-struct npc_CultFanaticAI: public ScriptedAI
+struct  npc_CultFanaticAI: public ScriptedAI
 {
     npc_CultFanaticAI(Creature *c) : ScriptedAI(c)
     {

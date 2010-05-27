@@ -262,6 +262,7 @@ SET(scripts_STAT_SRCS
    kalimdor/maraudon/boss_noxxion.cpp
    kalimdor/maraudon/boss_princess_theradras.cpp
    kalimdor/onyxias_lair/boss_onyxia.cpp
+   kalimdor/onyxias_lair/instance_onyxias_lair.cpp
    kalimdor/razorfen_downs/boss_amnennar_the_coldbringer.cpp
    kalimdor/razorfen_downs/razorfen_downs.cpp
    kalimdor/razorfen_downs/instance_razorfen_downs.cpp
@@ -329,18 +330,22 @@ SET(scripts_STAT_SRCS
    northrend/azjol_nerub/ahnkahet/boss_herald_volazj.cpp
    northrend/azjol_nerub/ahnkahet/boss_amanitar.cpp
    northrend/azjol_nerub/ahnkahet/ahnkahet.h
-   northrend/icecrown_citadel/boss_lady_deathwhisper.cpp
-   northrend/icecrown_citadel/boss_lord_marrowgar.cpp
-   northrend/icecrown_citadel/citadel_transporter.cpp
-   northrend/icecrown_citadel/boss_festergut.cpp
-   northrend/icecrown_citadel/def_spire.h
-   northrend/icecrown_citadel/boss_lichking_icc.cpp
    northrend/icecrown_citadel/instance_icecrown_citadel.cpp
-   northrend/icecrown_citadel/instance_icecrown_citadel.h
-   northrend/icecrown_citadel/Lower_Spire_Trash.cpp
-   northrend/icecrown_citadel/Shadowmourne.cpp
-   northrend/icecrown_citadel/boss_deathbringer_saurfang.cpp
-   northrend/icecrown_citadel/boss_blood-queen_lanathel.cpp
+   northrend/icecrown_citadel/icecrown_citadel.h
+   northrend/icecrown_citadel/icecrown_teleport.cpp
+   northrend/icecrown_citadel/blood-queen_lanathel.cpp
+   northrend/icecrown_citadel/deathbringer_saurfang.cpp
+   northrend/icecrown_citadel/festergut.cpp
+   northrend/icecrown_citadel/gunship_battle.cpp
+   northrend/icecrown_citadel/lady_deathwhisper.cpp
+   northrend/icecrown_citadel/lord_marrowgar.cpp
+   northrend/icecrown_citadel/professor_putricide.cpp
+   northrend/icecrown_citadel/rat_des_blutes.cpp
+   northrend/icecrown_citadel/rotface.cpp
+   northrend/icecrown_citadel/sindragosa.cpp
+   northrend/icecrown_citadel/the_lich_king.cpp
+   northrend/icecrown_citadel/valithria_dreamwalker.cpp
+   northrend/icecrown_citadel/lower_spire_trash.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_argent_challenge.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_black_knight.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_grand_champions.cpp
@@ -368,7 +373,10 @@ SET(scripts_STAT_SRCS
    northrend/frozen_halls/forge_of_souls/boss_devourer_of_souls.cpp
    northrend/frozen_halls/forge_of_souls/forge_of_souls.h
    northrend/frozen_halls/forge_of_souls/forge_of_souls.cpp
+   northrend/frozen_halls/halls_of_reflection/boss_falric.cpp
+   northrend/frozen_halls/halls_of_reflection/boss_marwyn.cpp
    northrend/frozen_halls/halls_of_reflection/instance_halls_of_reflection.cpp
+   northrend/frozen_halls/halls_of_reflection/halls_of_reflection.cpp
    northrend/frozen_halls/halls_of_reflection/halls_of_reflection.h
    northrend/frozen_halls/pit_of_saron/boss_forgemaster_garfrost.cpp
    northrend/frozen_halls/pit_of_saron/boss_krickandick.cpp

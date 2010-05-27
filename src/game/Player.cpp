@@ -3359,6 +3359,12 @@ bool Player::addSpell(uint32 spell_id, bool active, bool learning, bool dependen
             SkillLineEntry const *pSkill = sSkillLineStore.LookupEntry(_spell_idx->second->skillId);
             if (!pSkill)
                 continue;
+				
+			if (!Has310Flyer(false) && pSkill->id == SKILL_MOUNTS)
+				for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+					if (spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED &&
+						spellInfo->CalculateSimpleValue(i) == 310)
+						SetHas310Flyer(true);
 
             if (HasSkill(pSkill->id))
                 continue;
@@ -3516,6 +3522,8 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank)
     if (itr == m_spells.end())
         return;                                             // already unleared
 
+    bool giveTalentPoints = disabled || !itr->second->disabled;
+
     bool cur_active    = itr->second->active;
     bool cur_dependent = itr->second->dependent;
 
@@ -3545,7 +3553,7 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank)
 
     // free talent points
     uint32 talentCosts = GetTalentSpellCost(spell_id);
-    if (talentCosts > 0)
+    if (talentCosts > 0 && giveTalentPoints)
     {
         if (talentCosts < m_usedTalentCount)
             m_usedTalentCount -= talentCosts;
@@ -3621,6 +3629,16 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank)
 
                 SetSkill(pSkill->id, GetSkillStep(pSkill->id), 0, 0);
             }
+			
+			// most likely will never be used, haven't heard of cases where players unlearn a mount
+			if (Has310Flyer(false) && _spell_idx->second->skillId == SKILL_MOUNTS)
+			{
+				SpellEntry const *pSpellInfo = sSpellStore.LookupEntry(spell_id);
+				for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+					if (pSpellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED &&
+						pSpellInfo->CalculateSimpleValue(i) == 310)
+						Has310Flyer(true, spell_id);    // with true as first argument its also used to set/remove the flag
+			}
         }
     }
 
@@ -3688,6 +3706,40 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank)
         data << uint32(spell_id);
         GetSession()->SendPacket(&data);
     }
+}
+
+bool Player::Has310Flyer(bool checkAllSpells, uint32 excludeSpellId)
+{
+	if (!checkAllSpells)
+		return m_ExtraFlags & PLAYER_EXTRA_HAS_310_FLYER;
+	else
+	{
+		SetHas310Flyer(false);
+		SpellEntry const *pSpellInfo;
+		for (PlayerSpellMap::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
+		{
+			if (itr->first == excludeSpellId)
+				continue;
+				
+			SkillLineAbilityMapBounds bounds = spellmgr.GetSkillLineAbilityMapBounds(itr->first);
+			for (SkillLineAbilityMap::const_iterator _spell_idx = bounds.first; _spell_idx != bounds.second; ++_spell_idx)
+			{
+				if (_spell_idx->second->skillId != SKILL_MOUNTS)
+					break;  // We can break because mount spells belong only to one skillline (at least 310 flyers do)
+				
+				pSpellInfo = sSpellStore.LookupEntry(itr->first);
+				for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+					if (pSpellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED &&
+						pSpellInfo->CalculateSimpleValue(i) == 310)
+					{
+						SetHas310Flyer(true);
+						return true;
+					}
+			}
+		}
+	}
+	
+	return false;
 }
 
 void Player::RemoveSpellCooldown(uint32 spell_id, bool update /* = false */)
@@ -3911,11 +3963,11 @@ bool Player::resetTalents(bool no_cost)
             // skip non-existant talent ranks
             if (talentInfo->RankID[rank] == 0)
                 continue;
-            removeSpell(talentInfo->RankID[rank]);
+            removeSpell(talentInfo->RankID[rank],true);
             if (const SpellEntry *_spellEntry = sSpellStore.LookupEntry(talentInfo->RankID[rank]))
                 for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)                  // search through the SpellEntry for valid trigger spells
                     if (_spellEntry->EffectTriggerSpell[i] > 0 && _spellEntry->Effect[i] == SPELL_EFFECT_LEARN_SPELL)
-                        removeSpell(_spellEntry->EffectTriggerSpell[i]); // and remove any spells that the talent teaches
+                        removeSpell(_spellEntry->EffectTriggerSpell[i],true); // and remove any spells that the talent teaches
             // if this talent rank can be found in the PlayerTalentMap, mark the talent as removed so it gets deleted
             PlayerTalentMap::iterator plrTalent = m_talents[m_activeSpec]->find(talentInfo->RankID[rank]);
             if (plrTalent != m_talents[m_activeSpec]->end())
@@ -5115,6 +5167,57 @@ float Player::GetMeleeCritFromAgility()
 
     float crit = critBase->base + GetStat(STAT_AGILITY)*critRatio->ratio;
     return crit*100.0f;
+}
+float Player::GetBaseDodge()
+{
+	uint32 pclass = getClass();
+	float BaseDodge[MAX_CLASSES] = {
+		3.664f,// Warrior
+		3.494f,// Paladin
+		-4.087f,// Hunter
+		2.095f,// Rogue
+		3.417f,// Priest
+		3.664f,// DK?
+		2.108f,// Shaman
+		3.658f,// Mage
+		2.421f,// Warlock
+		0.0f,
+		5.609f// Druid
+	};
+	return BaseDodge[pclass-1];
+}
+float Player::DodgeDiminishingReturn(float dodge)
+{
+	float dimdodge;
+	uint32 pclass = getClass();
+	float k[MAX_CLASSES] = {
+		0.956f ,// Warrior
+		0.956f ,// Paladin
+		0.988f ,// Hunter
+		0.988f ,// Rogue
+		0.953f ,// Priest
+		0.956f ,// DK?
+		0.988f ,// Shaman
+		0.953f ,// Mage
+		0.953f ,// Warlock
+		0.0f,   // ??
+		0.972f  // Druid
+	};
+    float Dodge_Cap[MAX_CLASSES] = {
+         88.12f,      // Warrior
+         88.12f,      // Paladin
+         145.56f,      // Hunter
+         145.56f,      // Rogue
+         150.37f,      // Priest
+         88.12f,      // DK?
+         145.56f,      // Shaman
+         150.37f,      // Mage
+         150.37f,      // Warlock
+         0.0f,      // ??
+         116.89f       // Druid
+    };
+	if (dodge > 0.0f) dimdodge = (dodge * Dodge_Cap[pclass-1] /(dodge + (Dodge_Cap[pclass-1]*k[pclass-1])));
+	return dimdodge;
 }
 
 float Player::GetDodgeFromAgility()

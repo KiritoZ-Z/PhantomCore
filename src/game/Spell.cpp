@@ -1401,6 +1401,11 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
                 if (IsChanneledSpell(m_spellInfo))
                     m_originalCaster->ModSpellCastTime(aurSpellInfo, duration, this);
 
+ 	                if (duration <= 0)
+ 	                {
+ 	                    m_spellAura->Remove();
+ 	                    return SPELL_MISS_IMMUNE;
+ 	                }
                 if (duration != m_spellAura->GetMaxDuration())
                 {
                     m_spellAura->SetMaxDuration(duration);
@@ -4876,7 +4881,7 @@ SpellCastResult Spell::CheckCast(bool strict)
         }
     }*/
 
-    if (!m_IsTriggeredSpell)
+    if (!m_IsTriggeredSpell || m_spellInfo->Id == 33395)
     {
         SpellCastResult castResult = CheckRange(strict);
         if (castResult != SPELL_CAST_OK)
@@ -5218,14 +5223,22 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_EFFECT_LEAP_BACK:
             {
-                if (m_spellInfo->Id == 781)
-                    if (!m_caster->isInCombat())
-                        return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
-                if (m_caster->hasUnitState(UNIT_STAT_ROOT))
-                    return SPELL_FAILED_ROOTED;
+                // Spell 781 (Disengage) requires player to be in combat
+                if (m_caster->GetTypeId() == TYPEID_PLAYER && m_spellInfo->Id == 781 && !m_caster->isInCombat())
+                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+
+                Unit* target = m_targets.getUnitTarget();
+                if (m_caster == target && m_caster->hasUnitState(UNIT_STAT_ROOT))
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+                        return SPELL_FAILED_ROOTED;
+                    else
+                        return SPELL_FAILED_DONT_REPORT;
+                }
                 break;
             }
-            default:break;
+            default:
+                break;
         }
     }
 
@@ -7057,7 +7070,7 @@ void Spell::FillRaidOrPartyHealthPriorityTargets(UnitList &TagUnitMap, Unit* tar
     }
 }
 
-void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial)
+/*void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial)
 {
     if (!target || target->GetTypeId() != TYPEID_PLAYER)
         return;
@@ -7111,4 +7124,4 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
         target->CastSpell(target, spellId75, true);
 
     return;
-}
+}*/

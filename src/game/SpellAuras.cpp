@@ -1054,16 +1054,6 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
                     }
                 }
                 break;
-            case SPELLFAMILY_SHAMAN:
-                if (!caster)
-                    break;
-                //Glyph of Totem of Wrath
-                if (GetSpellProto()->SpellFamilyFlags[0] & 0x4000000 && GetSpellProto()->Attributes & 0x00000140)
-                {
-                    if (target->HasAura(63280))
-                        target->CastSpell(target,63283,true);
-                }
-                break;
         }
     }
     // mods at aura remove
@@ -1101,9 +1091,26 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
         switch(GetSpellProto()->SpellFamilyName)
         {
             case SPELLFAMILY_GENERIC:
-                // Remove the immunity shield marker on Avenging Wrath removal if Forbearance is not present
-                if (GetId() == 61987 && target->HasAura(61988) && !target->HasAura(25771))
-                    target->RemoveAura(61988);
+                switch(GetId())
+                {
+                    case 61987: // Avenging Wrath
+                        // Remove the immunity shield marker on Avenging Wrath removal if Forbearance is not present
+                        if (target->HasAura(61988) && !target->HasAura(25771))
+                            target->RemoveAura(61988);
+                        break;
+                    case 72368: // Shared Suffering
+                    case 72369:
+                        if (caster)
+                        {
+                            if (AuraEffect* aurEff = GetEffect(0))
+                            {
+                                int32 remainingDamage = aurEff->GetAmount() * (aurEff->GetTotalTicks() - aurEff->GetTickNumber());
+                                if (remainingDamage > 0)
+                                    caster->CastCustomSpell(caster, 72373, NULL, &remainingDamage, NULL, true);
+                            }
+                        }
+                        break;
+                }
                 break;
             case SPELLFAMILY_MAGE:
                 switch(GetId())

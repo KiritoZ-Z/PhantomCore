@@ -52,15 +52,16 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
     CreatureTraveller traveller(owner);
 	
 	uint32 travel_time;
+	float myx,myy,myz,x,y,z;
 	if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
 	{
-		float myx,myy,myz,x,y,z;
 		owner.GetPosition(myx,myy,myz);
+		owner.GetPosition(x,y,z);
 		Position travelto = owner.GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 		travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 	}
 	else
-	travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
+	travel_time = i_destinationHolder.SetDestination(traveller, x, y, z);
 		
     modifyTravelTime(travel_time);
     owner.clearUnitState(UNIT_STAT_ALL_STATE);

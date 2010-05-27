@@ -71,6 +71,7 @@
 #include "ProgressBar.h"
 #include "ScriptMgr.h"
 #include "AddonMgr.h"
+#include "LFGMgr.h"
 
 INSTANTIATE_SINGLETON_1(World);
 
@@ -1205,7 +1206,8 @@ void World::LoadConfigSettings(bool reload)
     sLog.outString("WORLD: VMap data directory is: %svmaps",m_dataPath.c_str());
     sLog.outString("WORLD: VMap config keys are: vmap.enableLOS, vmap.enableHeight, vmap.ignoreMapIds, vmap.ignoreSpellIds");
 
-	m_configs[CONFIG_MOVEMAP_ENABLE] = sConfig.GetBoolDefault("Movemap.Enable", 0);
+	m_configs[CONFIG_MOVEMAP_ENABLE] = sConfig.GetBoolDefault("Movemap.Enable", 1);
+	m_configs[CONFIG_MOVEMAP_LOGS_ENABLE] = sConfig.GetBoolDefault("MovemapLogs.Enable", 0);
     m_configs[CONFIG_MAX_WHO] = sConfig.GetIntDefault("MaxWhoListReturns", 49);
     m_configs[CONFIG_PET_LOS] = sConfig.GetBoolDefault("vmap.petLOS", false);
     m_configs[CONFIG_BG_START_MUSIC] = sConfig.GetBoolDefault("MusicInBattleground", false);
@@ -1692,6 +1694,10 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading World States..."); // must be loaded before battleground and outdoor PvP
     LoadWorldStates();
+
+    ///- Initialize Looking For Group
+    sLog.outString("Starting Looking For Group System");
+    sLFGMgr.InitLFG();
 
     ///- Initialize Battlegrounds
     sLog.outString("Starting BattleGround System");

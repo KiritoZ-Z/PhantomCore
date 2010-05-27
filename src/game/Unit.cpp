@@ -5470,62 +5470,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     target = this;
                     break;
                 }
-		// Item - Deathbringer's Will
-                // Item - Icecrown 25 Heroic Melee Trinket
-                // =====================================================
-		// 71485 - Agility of the Vrykul 600/700 agility   -
-		// 71492 - Speed of the Vrykul 600/700 600/700 haste -
-		// 71486 - Power of the Taunka 1200/1400 attack power -
-		// 71484 - Strength of the Taunka 600/700 strength -
-		// 71491 - Aim of the Iron Dwarves 600/700 critical strike rating  -
-		// 71487 - Precision of the Iron Dwarves 600/700 armor penetration -
-
-		//* Paladin - +600 Strength, +600 Haste, or +600 Crit Rating ok
-		//* Death Knight - +600 Strength, +600 Haste, or +600 Crit Rating ok
-		//* Druid - +600 Agility, +600 Haste, or +600 Strength ok
-		//* Hunter - +600 Agility, +600 Crit Rating, or +1200 Attack Power ok
-		//* Rogue - +600 Agility, +600 Haste, or +1200 Attack Power ok
-		//* Warrior - +600 Strength, +600 Haste, or +600 Crit Rating ok
-                //  Item - Icecrown 25 Heroic Melee Trinket
-                case 71562:
-                {
-                    if(ToPlayer()->HasSpellCooldown(71562))
-                        return true;
-                    switch(getClass())
-                    {
-                        case CLASS_WARRIOR:
-                        case CLASS_PALADIN:
-                        case CLASS_DEATH_KNIGHT:
-                        {
-                            uint32 spells[3]={71561, 71560, 71559};
-                            triggered_spell_id = spells[irand(0, 2)];
-                            break;
-                        }
-                        case CLASS_DRUID:
-                        {
-                            uint32 spells[3]={71561, 71556, 71560};
-                            triggered_spell_id = spells[irand(0, 2)];
-                            break;
-                        }
-                        case CLASS_ROGUE:
-                        case CLASS_SHAMAN:
-                        {
-                            uint32 spells[3]={71558, 71556, 71560};
-                            triggered_spell_id = spells[irand(0, 2)];
-                            break;
-                        }
-                        case CLASS_HUNTER:
-                        {
-                            uint32 spells[3]={71558, 71556, 71559};
-                            triggered_spell_id = spells[irand(0, 2)];
-                            break;
-                        }
-                        default: return true;
-                    }
-                    ToPlayer()->AddSpellCooldown(71562, 0, time(NULL) + 90);
-                    CastSpell(this, triggered_spell_id, true);
-                    return true;
-                }
                 // Aura of Madness (Darkmoon Card: Madness trinket)
                 //=====================================================
                 // 39511 Sociopath: +35 strength (Paladin, Rogue, Druid, Warrior)
@@ -5753,6 +5697,97 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 case 63320:
                 {
                     triggered_spell_id = 63321; // Life Tap
+                    break;
+                }
+                case 71519: // Deathbringer's Will Normal
+                {
+                    if (GetTypeId() != TYPEID_PLAYER)
+                        return false;
+
+                    std::vector<uint32> RandomSpells;
+                    switch (getClass())
+                    {
+                        case CLASS_WARRIOR:
+                        case CLASS_PALADIN:
+                        case CLASS_DEATH_KNIGHT:
+                            RandomSpells.push_back(71484);
+                            RandomSpells.push_back(71491);
+                            RandomSpells.push_back(71492);
+                            break;
+                        case CLASS_SHAMAN:
+                        case CLASS_ROGUE:
+                            RandomSpells.push_back(71486);
+                            RandomSpells.push_back(71485);
+                            RandomSpells.push_back(71492);
+                            break;
+                        case CLASS_DRUID:
+                            RandomSpells.push_back(71484);
+                            RandomSpells.push_back(71485);
+                            RandomSpells.push_back(71486);
+                            break;
+                        case CLASS_HUNTER:
+                            RandomSpells.push_back(71486);
+                            RandomSpells.push_back(71491);
+                            RandomSpells.push_back(71485);
+                            break;
+                        default:
+                            return false;
+                    }
+                    if (RandomSpells.empty()) //shouldn't happen
+                        return false;
+
+                    uint8 rand_spell = irand(0,(RandomSpells.size() - 1));
+                    CastSpell(target,RandomSpells[rand_spell],true,castItem,triggeredByAura, originalCaster);
+                    for (std::vector<uint32>::iterator itr = RandomSpells.begin(); itr != RandomSpells.end(); ++itr)
+                    {
+                        if (!ToPlayer()->HasSpellCooldown(*itr))
+                            ToPlayer()->AddSpellCooldown(*itr,0,time(NULL) + cooldown);
+                    }
+                    break;
+                }
+                case 71562: // Deahtbringer's Will Heroic
+                {
+                    if (GetTypeId() != TYPEID_PLAYER)
+                        return false;
+
+                    std::vector<uint32> RandomSpells;
+                    switch (getClass())
+                    {
+                        case CLASS_WARRIOR:
+                        case CLASS_PALADIN:
+                        case CLASS_DEATH_KNIGHT:
+                            RandomSpells.push_back(71561);
+                            RandomSpells.push_back(71559);
+                            RandomSpells.push_back(71560);
+                            break;
+                        case CLASS_SHAMAN:
+                        case CLASS_ROGUE:
+                            RandomSpells.push_back(71558);
+                            RandomSpells.push_back(71556);
+                            RandomSpells.push_back(71560);
+                            break;
+                        case CLASS_DRUID:
+                            RandomSpells.push_back(71561);
+                            RandomSpells.push_back(71556);
+                            RandomSpells.push_back(71558);
+                            break;
+                        case CLASS_HUNTER:
+                            RandomSpells.push_back(71558);
+                            RandomSpells.push_back(71559);
+                            RandomSpells.push_back(71556);
+                            break;
+                        default:
+                            return false;
+                    }
+                    if (RandomSpells.empty()) //shouldn't happen
+                        return false;
+
+                    uint8 rand_spell = irand(0,(RandomSpells.size() - 1));
+                    CastSpell(target,RandomSpells[rand_spell],true,castItem,triggeredByAura, originalCaster);
+                    for (std::vector<uint32>::iterator itr = RandomSpells.begin(); itr != RandomSpells.end(); ++itr)
+                    {
+                        ToPlayer()->AddSpellCooldown(*itr,0,time(NULL) + cooldown);
+                    }
                     break;
                 }
             }
@@ -7171,6 +7206,22 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 58879;
                     break;
                 }
+                // Glyph of Totem of Wrath
+                case 63280:
+                {
+                    if (procSpell->SpellIconID != 2019)
+                        return false;
+                    // we need the sp of the totem's spell
+                    CreatureInfo const * cinfo = GetCreatureInfo(procSpell->EffectMiscValue[0]);
+                    if (cinfo && cinfo->spells[0])
+                    {
+                        SpellEntry const * spell = sSpellStore.LookupEntry(cinfo->spells[0]);
+                        basepoints0 = triggerAmount * spell->CalculateSimpleValue(0) / 100;
+                        target = GetSpellModOwner();
+                        triggered_spell_id = 63283;
+                    }
+                    break;
+                }
                 // Shaman T8 Elemental 4P Bonus
                 case 64928:
                 {
@@ -7585,6 +7636,16 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 basepoints0 = triggerAmount * damage / 100;
                 triggered_spell_id = 50526;
                 break;
+            }
+            // Item - Death Knight T10 Melee 4P Bonus
+            else if (dummySpell->Id == 70656)
+            {
+                if (GetTypeId() != TYPEID_PLAYER)
+                    return false;
+
+                for (uint32 i = 0; i < MAX_RUNES; ++i)
+                    if (this->ToPlayer()->GetRuneCooldown(i) == 0)
+                        return false;
             }
             // Sudden Doom
             if (dummySpell->SpellIconID == 1939 && GetTypeId() == TYPEID_PLAYER)
@@ -8135,6 +8196,16 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                         default:
                             return false;
                     }
+                }
+                break;
+            }
+            case SPELLFAMILY_ROGUE:
+            {
+                // Item - Rogue T10 2P Bonus
+                if (auraSpellInfo->Id == 70805)
+                {
+                    if (pVictim != this)
+                        return false;
                 }
                 break;
             }
@@ -10012,7 +10083,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             (*i)->GetSpellProto()->EquippedItemClass == -1 &&          // -1 == any item class (not wand)
             (*i)->GetSpellProto()->EquippedItemInventoryTypeMask == 0) // 0 == any inventory type (not wand)
             DoneTotalMod *= ((*i)->GetAmount()+100.0f)/100.0f;
-
+			
     uint32 creatureTypeMask = pVictim->GetCreatureTypeMask();
     // Add flat bonus from spell damage versus
     DoneTotal += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS, creatureTypeMask);
@@ -10040,6 +10111,22 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                     DoneTotalMod *= (100.0f+(*i)->GetAmount())/100.0f;
                 break;
             }
+			case 6427: // Dirty Deeds
+			case 6428:
+			{
+				if (pVictim->HasAuraState(AURA_STATE_HEALTHLESS_35_PERCENT, spellProto, this))
+				{
+					AuraEffect* eff0 = (*i)->GetBase()->GetEffect(0);
+					if (!eff0 || (*i)->GetEffIndex() != 1)
+					{
+						sLog.outError("Spell structure of DD (%u) changed.",(*i)->GetId());
+						continue;
+					}
+					// effect 0 have expected value but in negative state
+					DoneTotalMod *= (-eff0->GetAmount()+100.0f)/100.0f;
+				}
+				break;
+			}
             // Soul Siphon
             case 4992:
             case 4993:
@@ -11970,8 +12057,6 @@ bool Unit::canDetectStealthOf(Unit const* target, float distance) const
         return false;
     if (distance < 0.24f) //collision
         return true;
-    if (!HasInArc(M_PI, target)) //behind
-        return false;
     if (HasAuraType(SPELL_AURA_DETECT_STEALTH))
         return true;
 
@@ -11981,14 +12066,17 @@ bool Unit::canDetectStealthOf(Unit const* target, float distance) const
             return true;
 
     //Visible distance based on stealth value (stealth rank 4 300MOD, 10.5 - 3 = 7.5)
-    float visibleDistance = 7.5f;
+    float visibleDistance = 26.0f;
     //Visible distance is modified by -Level Diff (every level diff = 1.0f in visible distance)
-    visibleDistance += (float(getLevel()) - float(getLevelForTarget(target))) * 2 - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH)/5.0f;
+    visibleDistance += float(getLevel() - getLevelForTarget(target)) * 2.5f - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH) / 5.0f;
     //-Stealth Mod(positive like Master of Deception) and Stealth Detection(negative like paranoia)
     //based on wowwiki every 5 mod we have 1 more level diff in calculation
-    visibleDistance += GetTotalAuraModifier(SPELL_AURA_MOD_DETECT) / 2.5f - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH_LEVEL) / 2.5f;
+    visibleDistance += GetTotalAuraModifier(SPELL_AURA_MOD_DETECT) / 2.0f - target->GetTotalAuraModifier(SPELL_AURA_MOD_STEALTH_LEVEL) / 2.0f;
     visibleDistance = visibleDistance > MAX_PLAYER_STEALTH_DETECT_RANGE ? MAX_PLAYER_STEALTH_DETECT_RANGE : visibleDistance;
-
+	
+    if (!HasInArc(M_PI, target)) //behind
+    visibleDistance /= 3.0f;
+	
     return distance < visibleDistance;
 }
 

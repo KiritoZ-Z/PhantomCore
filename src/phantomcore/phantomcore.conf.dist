@@ -222,6 +222,10 @@ EAIErrorLevel = 2
 #
 #    Movemap.Enable
 #	Enable or disable movemaps
+#	Default: 1
+#
+#    MovemapLogs.Enable
+#	Enable or disable logs movemaps
 #	Default: 0
 #
 ###############################################################################
@@ -255,7 +259,8 @@ LogDB.Opt.ClearTime = 1209600
 MaxCoreStuckTime = 0
 AddonChannel = 1
 MapUpdate.Threads = 1
-Movemap.Enable = 0
+Movemap.Enable = 1
+MovemapLogs.Enable = 0
 
 ###############################################################################
 # SERVER LOGGING

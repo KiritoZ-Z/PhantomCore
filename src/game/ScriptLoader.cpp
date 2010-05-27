@@ -266,6 +266,7 @@ void AddSC_boss_landslide();
 void AddSC_boss_noxxion();
 void AddSC_boss_ptheradras();
 void AddSC_boss_onyxia();                    //Onyxia's Lair
+void AddSC_instance_onyxias_lair();
 void AddSC_boss_amnennar_the_coldbringer();  //Razorfen Downs
 void AddSC_razorfen_downs();
 void AddSC_instance_razorfen_downs();
@@ -346,14 +347,19 @@ void AddSC_instance_trial_of_the_crusader();
 void AddSC_boss_lord_jaraksus();
 void AddSC_boss_champions();
 void AddSC_boss_twin_fjola();
-void AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
-void AddSC_instance_icecrown_citadel();
+void AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
+void AddSC_boss_saurfang();
+void AddSC_Boss_Festergut();
+void AddSC_boss_Deahtwisper();
 void AddSC_boss_Marrowgar();
+void AddSC_Boss_ProfessorPutricide();
+void AddSC_Boss_Sindragosa();
+void AddSC_boss_lichking();
+void AddSC_icecrown_teleporter();
+void AddSC_boss_Rotface();
+void AddSC_boss_Rat_des_Blutes();
 void AddSC_LowerSpireTrash();
-void AddSC_boss_Deathwhisper(); //ICC
-void AddSC_Boss_Festergut(); //ICC
-void AddSC_boss_the_lich_king();
-void AddSC_boss_deathbringer_saurfang();
+void AddSC_Blood_Queen_Lanathel();
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
@@ -437,6 +443,10 @@ void AddSC_pit_of_saron();
 void AddSC_boss_garfrost();
 void AddSC_boss_ick();
 void AddSC_boss_tyrannus();
+void AddSC_instance_halls_of_reflection();   // Halls of Reflection
+void AddSC_halls_of_reflection();
+void AddSC_boss_falric();
+void AddSC_boss_marwyn();
 
 void AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
@@ -782,6 +792,7 @@ void AddScripts()
     AddSC_boss_noxxion();
     AddSC_boss_ptheradras();
     AddSC_boss_onyxia();                    //Onyxia's Lair
+    AddSC_instance_onyxias_lair();
     AddSC_boss_amnennar_the_coldbringer();  //Razorfen Downs
     AddSC_razorfen_downs();
     AddSC_instance_razorfen_downs();
@@ -858,14 +869,19 @@ void AddScripts()
     AddSC_boss_lord_jaraksus();
     AddSC_boss_champions();
     AddSC_boss_twin_fjola();
-    AddSC_icecrown_teleporter();	//Icecrown_Citadel_Scripts
-    AddSC_instance_icecrown_citadel();
+    AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
+    AddSC_boss_saurfang();
+    AddSC_Boss_Festergut();
+    AddSC_boss_Deahtwisper();
     AddSC_boss_Marrowgar();
+    AddSC_Boss_ProfessorPutricide();
+    AddSC_Boss_Sindragosa();
+    AddSC_boss_lichking();
+    AddSC_icecrown_teleporter();
+    AddSC_boss_Rotface();
+    AddSC_boss_Rat_des_Blutes();
     AddSC_LowerSpireTrash();
-    AddSC_boss_Deathwhisper(); //ICC
-    AddSC_Boss_Festergut(); //ICC
-    AddSC_boss_the_lich_king();
-    AddSC_boss_deathbringer_saurfang();
+    AddSC_Blood_Queen_Lanathel();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();
@@ -953,6 +969,10 @@ void AddScripts()
     AddSC_boss_garfrost();
     AddSC_boss_ick();
     AddSC_boss_tyrannus();
+    AddSC_instance_halls_of_reflection();   // Halls of Reflection
+    AddSC_halls_of_reflection();
+    AddSC_boss_falric();
+    AddSC_boss_marwyn();
 
 	AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
