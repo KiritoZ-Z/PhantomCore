@@ -44,19 +44,15 @@ struct AchievementEntry
     uint32    factionFlag;                                  // 1 -1=all, 0=horde, 1=alliance
     uint32    mapID;                                        // 2 -1=none
     //uint32 parentAchievement;                             // 3 its Achievement parent (can`t start while parent uncomplete, use its Criteria if don`t have own, use its progress on begin)
-    char *name[16];                                         // 4-19
-    //uint32 name_flags;                                    // 20
-    //char *description[16];                                // 21-36
-    //uint32 desc_flags;                                    // 37
-    uint32    categoryId;                                   // 38
-    uint32    points;                                       // 39 reward points
-    //uint32 OrderInCategory;                               // 40
-    uint32    flags;                                        // 41
-    //uint32    icon;                                       // 42 icon (from SpellIcon.dbc)
-    //char *titleReward[16];                                // 43-58
-    //uint32 titleReward_flags;                             // 59
-    uint32 count;                                           // 60 - need this count of completed criterias (own or referenced achievement criterias)
-    uint32 refAchievement;                                  // 61 - referenced achievement (counting of all completed criterias)
+	char *name[2];                                          // 4-5
+	//char *description;                                    // 6
+	uint32    points;                                       // 7 reward points
+	//uint32 OrderInCategory;                               // 8
+	uint32    flags;                                        // 9
+	//uint32    icon;                                       // 10 icon (from SpellIcon.dbc)
+	//char *titleReward;                                    // 11
+	uint32 count;                                           // 12 - need this count of completed criterias (own or referenced achievement criterias)
+	uint32 refAchievement;                                  // 13 - referenced achievement (counting of all completed criterias)
 };
 
 struct AchievementCategoryEntry
@@ -597,12 +593,11 @@ struct BattlemasterListEntry
     int32   mapid[8];                                       // 1-8 mapid
     uint32  type;                                           // 9 (3 - BG, 4 - arena)
     //uint32 canJoinAsGroup;                                // 10 (0 or 1)
-    char*   name[16];                                       // 11-26
-    //uint32 nameFlags                                      // 27 string flag, unused
-    uint32 maxGroupSize;                                    // 28 maxGroupSize, used for checking if queue as group
-    uint32 HolidayWorldStateId;                             // 29 new 3.1
-    //uint32 MinLevel;                                      // 30
-    //uint32 SomeLevel;                                     // 31, may be max level
+	char*   name[1];                                        // 11
+	uint32 maxGroupSize;                                    // 12 maxGroupSize, used for checking if queue as group
+	//uint32 HolidayWorldStateId;                           // 13 new 3.1
+	uint32 minLevel;                                        // 14, min level (sync with PvPDifficulty.dbc content)
+	uint32 maxLevel;                                        // 15, max level (sync with PvPDifficulty.dbc content)
 };
 
 #define MAX_OUTFIT_ITEMS 24
@@ -623,7 +618,7 @@ struct CharTitlesEntry
 {
     uint32  ID;                                             // 0, title ids, for example in Quest::GetCharTitleId()
     //uint32      unk1;                                     // 1 flags?
-    char*   name[16];                                       // 2-17
+    char*   name[1];                                       // 2-17
                                                             // 18 string flag, unused
     //char*       name2[16];                                // 19-34, unused
                                                             // 35 string flag, unused
@@ -644,19 +639,18 @@ struct ChrClassesEntry
 {
     uint32  ClassID;                                        // 0
                                                             // 1, unused
-    uint32  powerType;                                      // 2
-                                                            // 3-4, unused
-    //char*       name[16];                                 // 5-20 unused
-                                                            // 21 string flag, unused
-    //char*       nameFemale[16];                           // 21-36 unused, if different from base (male) case
-                                                            // 37 string flag, unused
-    //char*       nameNeutralGender[16];                    // 38-53 unused, if different from base (male) case
-                                                            // 54 string flag, unused
-                                                            // 55, unused
-    uint32  spellfamily;                                    // 56
-                                                            // 57, unused
-    uint32  CinematicSequence;                              // 58 id from CinematicSequences.dbc
-    uint32  expansion;                                       // 59 (0 - original race, 1 - tbc addon, ...)
+	uint32  powerType;                                      // 1
+	                                                        // 2, unused
+	char*       name[3];                                    // 3-5 unused
+	//char*       nameFemale[1];                            // 6, unused, if different from base (male) case
+	uint32  spellfamily;                                    // 7
+	//uint32 flags2;                                        // 8, unused 0x08 HasRelicSlot
+	uint32  CinematicSequence;                              // 9 id from CinematicSequences.dbc
+	uint32  expansion;                                      // 10 (0 - original race, 1 - tbc addon, ...)
+	// uint32 unk440                                        // 11
+	// uint32 unk440                                        // 12
+	// uint32 unk440                                        // 13
+															// 3-4, unused
 };
 
 struct ChrRacesEntry
@@ -672,7 +666,7 @@ struct ChrRacesEntry
                                                             // 8-11 unused
     uint32      CinematicSequence;                          // 12 id from CinematicSequences.dbc
     //uint32    unk_322;                                    // 13 faction (0 alliance, 1 horde, 2 not available?)
-    char*       name[16];                                   // 14-29 used for DBC language detection/selection
+    char*       name[3];                                   // 14-29 used for DBC language detection/selection
                                                             // 30 string flags, unused
     //char*       nameFemale[16];                           // 31-46, if different from base (male) case
                                                             // 47 string flags, unused

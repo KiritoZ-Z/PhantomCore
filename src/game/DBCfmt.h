@@ -21,22 +21,22 @@
 #ifndef TRINITY_DBCSFRM_H
 #define TRINITY_DBCSFRM_H
 
-const char Achievementfmt[]="niixssssssssssssssssxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxxxxxxxxii";
+const char Achievementfmt[]="niixssxixixxii";
 const char AchievementCriteriafmt[]="niiiiiiiixxxxxxxxxxxxxxxxxiiiix";
 const char AreaTableEntryfmt[]="iiinixxxxxissssssssssssssssxixxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaPOIEntryfmt[]="niiiiiiiiiiifffixixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";
-const char AreaTriggerEntryfmt[]="niffffffff";
-const char AuctionHouseEntryfmt[]="niiixxxxxxxxxxxxxxxxx";
+const char AreaTriggerEntryfmt[]="niffffxxxffff";
+const char AuctionHouseEntryfmt[]="niiix";
 const char BankBagSlotPricesEntryfmt[]="ni";
 const char BarberShopStyleEntryfmt[]="nixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiii";
-const char BattlemasterListEntryfmt[]="niiiiiiiiixssssssssssssssssxiixx";
+const char BattlemasterListEntryfmt[]="niiiiiiiiixsixii";
 const char CharStartOutfitEntryfmt[]="diiiiiiiiiiiiiiiiiiiiiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-const char CharTitlesEntryfmt[]="nxssssssssssssssssxxxxxxxxxxxxxxxxxxi";
-const char ChatChannelsEntryfmt[]="iixssssssssssssssssxxxxxxxxxxxxxxxxxx";
+const char CharTitlesEntryfmt[]="nxsxix";
+const char ChatChannelsEntryfmt[]="iissx";
                                                             // ChatChannelsEntryfmt, index not used (more compact store)
-const char ChrClassesEntryfmt[]="nxixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxixii";
-const char ChrRacesEntryfmt[]="nxixiixixxxxixssssssssssssssssxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxi";
+const char ChrClassesEntryfmt[]="nixsxxxixiixxx";
+const char ChrRacesEntryfmt[]="nxixiixixxxxixsssxxxix";
 const char CinematicSequencesEntryfmt[]="nxxxxxxxxx";
 const char CreatureDisplayInfofmt[]="nxxxfxxxxxxxxxxx";
 const char CreatureFamilyfmt[]="nfifiiiiixssssssssssssssssxx";
