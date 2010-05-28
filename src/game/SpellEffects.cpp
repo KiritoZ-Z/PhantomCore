@@ -4630,17 +4630,12 @@ void Spell::SpellDamageWeaponDmg(uint32 i)
         }
         case SPELLFAMILY_PALADIN:
         {
-            // Seal of Command - Increase damage by 36% on every swing
-            if (m_spellInfo->SpellFamilyFlags[0] & 0x2000000)
-            {
-                totalDamagePercentMod *= 1.36f;            //136% damage
-            }
-
             // Seal of Command Unleashed
-            else if (m_spellInfo->Id == 20467)
+			if (m_spellInfo->Id == 20467)
             {
                 spell_bonus += int32(0.08f*m_caster->GetTotalAttackPowerValue(BASE_ATTACK));
                 spell_bonus += int32(0.13f*m_caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)));
+				fixed_bonus += irand(0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MINDAMAGE)),0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MAXDAMAGE)));
             }
             break;
         }
