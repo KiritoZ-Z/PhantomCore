@@ -2495,15 +2495,6 @@ float Unit::CalculateLevelPenalty(SpellEntry const* spellProto) const
 {
     if (spellProto->spellLevel <= 0 || spellProto->spellLevel >= spellProto->maxLevel)
         return 1.0f;
-		
-	switch(spellProto->Id)
-	{
-		case 31117: // Unstable Affliction dispel proc
-		case 64085: // Vampiric Touch dispel proc
-		case 33110: // Prayer of Mending
-			return 1.0f;
-		default:break;
-	}
 
     float LvlPenalty = 0.0f;
 
