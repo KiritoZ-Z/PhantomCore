@@ -1024,6 +1024,22 @@ void AuraEffect::Update(uint32 diff, Unit * caster)
 {
     if (m_isPeriodic && (GetBase()->GetDuration() >=0 || GetBase()->IsPassive() || GetBase()->IsPermanent()))
     {
+        while (diff > m_amplitude && m_tickNumber < GetTotalTicks() - 1)
+		{
+            diff -= m_amplitude;
+
+            ++m_tickNumber;
+
+            UpdatePeriodic(caster);
+            UnitList effectTargets;
+            GetTargetList(effectTargets);
+            // tick on targets of effects
+            if (!caster || !caster->hasUnitState(UNIT_STAT_ISOLATED))
+            {
+                for (UnitList::iterator targetItr = effectTargets.begin(); targetItr != effectTargets.end(); ++targetItr)
+                    PeriodicTick(*targetItr, caster);
+            }
+        }
         if (m_periodicTimer > diff)
             m_periodicTimer -= diff;
         else // tick also at m_periodicTimer == 0 to prevent lost last tick in case max m_duration == (max m_periodicTimer)*N
