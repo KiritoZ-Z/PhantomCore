@@ -50,6 +50,8 @@ enum WintergraspWorldStatesAndSpells
     WS_WINTERGRASP_SHOP_CNT_HORDE       = 90007,            // Wintergrasp: Workshop count Horde
     WS_WINTERGRASP_TOWER_DEST_ALLY      = 90008,            // Wintergrasp: Tower destroyed Ally
     WS_WINTERGRASP_TOWER_DEST_HORDE     = 90009,            // Wintergrasp: Tower destroyed Horde
+	WS_WINTERGRASP_VEHICLE_CNT_ALLY     = 90010,            // Wintergrasp: Vehicle count Ally
+    WS_WINTERGRASP_VEHICLE_CNT_HORDE    = 90011,            // Wintergrasp: Vehicle count Horde
     // Special spells
     SPELL_ESSENCE_OF_WINTERGRASP_WINNER = 58045,            // Only within wintergrasp
     SPELL_ESSENCE_OF_WINTERGRASP_WORLD  = 57940             // For entire northrend
