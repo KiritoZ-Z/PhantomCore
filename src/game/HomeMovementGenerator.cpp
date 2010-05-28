@@ -61,6 +61,7 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
 		travel_time = i_destinationHolder.SetDestination(traveller, travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 	}
 	else
+	owner.GetPosition(x,y,z);
 	travel_time = i_destinationHolder.SetDestination(traveller, x, y, z);
 		
     modifyTravelTime(travel_time);
