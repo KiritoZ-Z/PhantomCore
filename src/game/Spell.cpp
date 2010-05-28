@@ -4567,7 +4567,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             {
                 // Not allow banish not self target
                 if (m_spellInfo->Mechanic == MECHANIC_BANISH)
-                    if (target->GetTypeId() == TYPEID_UNIT &&
+                    if (target->GetTypeId() == TYPEID_UNIT && !target->ToCreature()->isPet() &&
                         !m_caster->ToPlayer()->isAllowedToLoot(target->ToCreature()))
                         return SPELL_FAILED_CANT_CAST_ON_TAPPED;
 
