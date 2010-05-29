@@ -6303,7 +6303,9 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                             {
                                 int32 TickCount = aurEff->GetTotalTicks();
                                 spellId = 53353; // 53353 Chimera Shot - Serpent
-                                basePoint = aurEff->GetAmount() * TickCount * 40 / 100;
+                                basePoint = aurEff->GetAmount();
+                                basePoint = m_caster->SpellDamageBonus(unitTarget, aurEff->GetSpellProto(), basePoint, DOT);
+                                basePoint*=(TickCount*40/100);
                             }
                             // Viper Sting - Instantly restores mana to you equal to 60% of the total amount drained by your Viper Sting.
                             else if (familyFlag[1] & 0x00000080)
