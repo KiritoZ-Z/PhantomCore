@@ -1,0 +1,12 @@
+DELETE FROM script_texts WHERE entry>=-1665892 AND entry<=-1665901;
+DELETE FROM script_texts WHERE entry>=-1665902 AND entry<=-1665918;
+DELETE FROM script_texts WHERE entry>=-1665919 AND entry<=-1665959;
+DELETE FROM script_texts WHERE entry>=-1665960 AND entry<=-1666003;
+DELETE FROM script_texts WHERE entry>=-1666004 AND entry<=-1666014;
+DELETE FROM script_texts WHERE entry>=-1666015 AND entry<=-1666025;
+DELETE FROM script_texts WHERE entry>=-1666026 AND entry<=-1666034;
+DELETE FROM script_texts WHERE entry>=-1666035 AND entry<=-1666053;
+DELETE FROM script_texts WHERE entry>=-1666054 AND entry<=-1666062;
+DELETE FROM script_texts WHERE entry>=-1666063 AND entry<=-1666070;
+DELETE FROM script_texts WHERE entry>=-1666071 AND entry<=-1666079;
+DELETE FROM script_texts WHERE entry>=-1810001 AND entry<=-1810031;

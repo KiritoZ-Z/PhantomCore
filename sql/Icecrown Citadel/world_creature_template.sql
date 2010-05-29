@@ -1,0 +1,10 @@
+UPDATE `creature_template` SET `ScriptName` = 'boss_valithria' WHERE `entry` = 36789;
+UPDATE `creature_template` SET `faction_A` = '35', `faction_H` = '35', `unit_flags` = '8', `type_flags` = '67113038' WHERE `entry` IN(36789,10067,10068,10069);
+UPDATE `creature_template` SET `ScriptName` = 'npc_skellmage' WHERE `entry` = 37868;
+UPDATE `creature_template` SET `ScriptName` = 'npc_fireskell' WHERE `entry` = 36791;
+UPDATE `creature_template` SET `ScriptName` = 'npc_suppressor' WHERE `entry` = 37863;
+UPDATE `creature_template` SET `ScriptName` = 'npc_manavoid' WHERE `entry` = 36068;
+UPDATE `creature_template` SET `ScriptName` = 'npc_glutabomination' WHERE `entry` = 37886;
+UPDATE `creature_template` SET `ScriptName` = 'npc_blistzombie' WHERE `entry` = 37934;
+UPDATE `creature_template` SET `ScriptName` = 'npc_dreamcloud' WHERE `entry` = 37985;
+UPDATE `creature_template` SET `ScriptName` = 'npc_dreamportal' WHERE `entry` = 37945;
