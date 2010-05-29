@@ -347,19 +347,20 @@ void AddSC_instance_trial_of_the_crusader();
 void AddSC_boss_lord_jaraksus();
 void AddSC_boss_champions();
 void AddSC_boss_twin_fjola();
-void AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
-void AddSC_boss_saurfang();
-void AddSC_Boss_Festergut();
-void AddSC_boss_Deahtwisper();
-void AddSC_boss_Marrowgar();
-void AddSC_Boss_ProfessorPutricide();
-void AddSC_Boss_Sindragosa();
-void AddSC_boss_lichking();
-void AddSC_icecrown_teleporter();
-void AddSC_boss_Rotface();
-void AddSC_boss_Rat_des_Blutes();
-void AddSC_LowerSpireTrash();
-void AddSC_Blood_Queen_Lanathel();
+void AddSC_instance_icecrown_citadel(); //Icecrown Citadel 
+void AddSC_boss_saurfang(); 
+void AddSC_boss_festergut(); 
+void AddSC_boss_deahtwisper(); 
+void AddSC_boss_marrowgar(); 
+void AddSC_boss_professor_putricide(); 
+void AddSC_boss_sindragosa(); 
+void AddSC_boss_lichking(); 
+void AddSC_icecrown_teleporter(); 
+void AddSC_boss_rotface(); 
+void AddSC_boss_rat_des_blutes(); 
+void AddSC_lower_spire_trash(); 
+void AddSC_boss_blood_queen_lanathel();
+void AddSC_boss_valithria();  
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
@@ -869,19 +870,20 @@ void AddScripts()
     AddSC_boss_lord_jaraksus();
     AddSC_boss_champions();
     AddSC_boss_twin_fjola();
-    AddSC_instance_icecrown_citadel(); //Icecrown Citadel by Lordron
+    AddSC_instance_icecrown_citadel(); //Icecrown Citadel
     AddSC_boss_saurfang();
-    AddSC_Boss_Festergut();
-    AddSC_boss_Deahtwisper();
-    AddSC_boss_Marrowgar();
-    AddSC_Boss_ProfessorPutricide();
-    AddSC_Boss_Sindragosa();
-    AddSC_boss_lichking();
-    AddSC_icecrown_teleporter();
-    AddSC_boss_Rotface();
-    AddSC_boss_Rat_des_Blutes();
-    AddSC_LowerSpireTrash();
-    AddSC_Blood_Queen_Lanathel();
+    AddSC_boss_festergut();
+    AddSC_boss_deahtwisper();
+    AddSC_boss_marrowgar();
+    AddSC_boss_professor_putricide();
+    AddSC_boss_sindragosa();
+    AddSC_boss_lichking(); 
+    AddSC_icecrown_teleporter(); 
+    AddSC_boss_rotface(); 
+    AddSC_boss_rat_des_blutes(); 
+    AddSC_lower_spire_trash(); 
+    AddSC_boss_blood_queen_lanathel();
+    AddSC_boss_valithria();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();
@@ -973,8 +975,6 @@ void AddScripts()
     AddSC_halls_of_reflection();
     AddSC_boss_falric();
     AddSC_boss_marwyn();
-
-	AddSC_Blood_Queen_Lanathel(); //Icecrown Citadel
 
     AddSC_dalaran();
     AddSC_borean_tundra();

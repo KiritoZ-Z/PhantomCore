@@ -65,6 +65,10 @@ struct instance_icecrown_citadel : public ScriptedInstance
     uint64 uiDragonDoor1;
     uint64 uiDragonDoor2;
     uint64 uiDragonDoor3;
+    uint64 uiRoostDoor1;
+    uint64 uiRoostDoor2;
+    uint64 uiRoostDoor3;
+    uint64 uiRoostDoor4;
     uint64 m_uiDreamwalkerCacheGUID; 
     uint64 uiSindragosaDoor1;
     uint64 uiSindragosaDoor2;
@@ -121,6 +125,10 @@ struct instance_icecrown_citadel : public ScriptedInstance
         uiDragonDoor1           = 0;
         uiDragonDoor2           = 0;
         uiDragonDoor3           = 0;
+        uiRoostDoor1            = 0;
+        uiRoostDoor2            = 0;
+        uiRoostDoor3            = 0;
+        uiRoostDoor4            = 0;
         uiSindragosaDoor1       = 0;
         uiSindragosaDoor2       = 0;
         uiIceShard1             = 0;
@@ -191,19 +199,24 @@ struct instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case 202220:
 				uiLadyDeathwisperTransporter = pGo->GetGUID();
-				if (auiEncounter[1] == DONE)
-                    HandleGameObject(NULL,true,pGo);
+				if (auiEncounter[1] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
                 break;
 			case 201825:
 				uiSaurfangDoor = pGo->GetGUID();
 				if (auiEncounter[3] == NOT_STARTED)
                     HandleGameObject(NULL,false,pGo);
 				break;
-			case 201920:
+			case 201919:
 				uiBloodwingDoor = pGo->GetGUID();
-				if (auiEncounter[3] == NOT_STARTED)
-                    HandleGameObject(NULL,false,pGo);
-				break;
+				if (auiEncounter[3] == DONE)
+                    HandleGameObject(NULL,true,pGo);
+                        break;
+			case 201920:
+				uiFrostwingDoor = pGo->GetGUID();
+				if (auiEncounter[3] == DONE)
+                    HandleGameObject(NULL,true,pGo);
+                        break;
 			case 201371:
 				uiOrangeMonsterDoor = pGo->GetGUID();
 				if (auiEncounter[4] == DONE)
@@ -246,13 +259,8 @@ struct instance_icecrown_citadel : public ScriptedInstance
                         break;
 			case 201755:
 				uiBloodQueenTransporter = pGo->GetGUID();
-				if (auiEncounter[8] == DONE)
-                    HandleGameObject(NULL,true,pGo);
-                        break;
-			case 201919:
-				uiFrostwingDoor = pGo->GetGUID();
-				if (auiEncounter[8] == DONE)
-                    HandleGameObject(NULL,true,pGo);
+				if (auiEncounter[8] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
                         break;
 			case 201375:
 				uiDragonDoor1 = pGo->GetGUID();
@@ -266,6 +274,26 @@ struct instance_icecrown_citadel : public ScriptedInstance
                         break;
 			case 201379:
 				uiDragonDoor3 = pGo->GetGUID();
+				if (auiEncounter[9] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
+                        break;
+			case 201380:
+				uiRoostDoor1 = pGo->GetGUID();
+				if (auiEncounter[9] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
+                        break;
+			case 201381:
+				uiRoostDoor2 = pGo->GetGUID();
+				if (auiEncounter[9] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
+                        break;
+			case 201382:
+				uiRoostDoor3 = pGo->GetGUID();
+				if (auiEncounter[9] == NOT_STARTED)
+                    HandleGameObject(NULL,false,pGo);
+                        break;
+			case 201383:
+				uiRoostDoor4 = pGo->GetGUID();
 				if (auiEncounter[9] == NOT_STARTED)
                     HandleGameObject(NULL,false,pGo);
                         break;
@@ -384,8 +412,8 @@ struct instance_icecrown_citadel : public ScriptedInstance
             {
 			case DONE:
 				HandleGameObject(uiMarrowgarDoor1,true);
-				HandleGameObject(uiMarrowgarDoor2,true); // true -> Close
-				HandleGameObject(uiMarrowgarDoor3,true); // false -> Open   вход в залы
+				HandleGameObject(uiMarrowgarDoor2,true);
+				HandleGameObject(uiMarrowgarDoor3,true);
                 HandleGameObject(uiFirstTp,true);
                 HandleGameObject(uiMarrowgarTp,true);
 			    if (GameObject* pFirstTp = instance->GetGameObject(uiFirstTp))
@@ -434,16 +462,13 @@ struct instance_icecrown_citadel : public ScriptedInstance
 			        }
 				break;
 			case IN_PROGRESS:
-				HandleGameObject(uiOratoryDoor,false);
+		        HandleGameObject(uiOratoryDoor,false);
                 HandleGameObject(uiSaurfangTp,false);
-				HandleGameObject(uiLadyDeathwisperTransporter,false);
+		        HandleGameObject(uiLadyDeathwisperTransporter,false);
                 HandleGameObject(uiFlightWarTp,false);
 				break;
             case NOT_STARTED:
                 HandleGameObject(uiOratoryDoor,true);
-                HandleGameObject(uiSaurfangTp,false);
-				HandleGameObject(uiLadyDeathwisperTransporter,false);
-                HandleGameObject(uiFlightWarTp,false);
 				break;
 			}
 			auiEncounter[1] = data;
@@ -460,7 +485,7 @@ struct instance_icecrown_citadel : public ScriptedInstance
 				break;
 			}
 			auiEncounter[2] = data;
-                        break;
+			break;
 ////////////////////////////////////////////////////
 			case DATA_SAURFANG_EVENT:
             switch(data)
@@ -473,6 +498,7 @@ struct instance_icecrown_citadel : public ScriptedInstance
 			        }
  			    HandleGameObject(uiSaurfangDoor,true);
  			    HandleGameObject(uiBloodwingDoor,true);
+ 			    HandleGameObject(uiFrostwingDoor,true);
  			    HandleGameObject(uiCitadelTp, true);
 			    if (GameObject* pCitadelTp = instance->GetGameObject(uiCitadelTp))
 			        if (pCitadelTp && pCitadelTp->isSpawned()) 
@@ -482,11 +508,13 @@ struct instance_icecrown_citadel : public ScriptedInstance
                         break;
             case NOT_STARTED:
                HandleGameObject(uiSaurfangDoor,false);
- 		   HandleGameObject(uiBloodwingDoor,false);
+ 			    HandleGameObject(uiBloodwingDoor,false);
+ 			    HandleGameObject(uiFrostwingDoor,false);
 				break;
 			case IN_PROGRESS:
                 HandleGameObject(uiSaurfangDoor,false);
- 		   HandleGameObject(uiBloodwingDoor,false);
+ 			    HandleGameObject(uiBloodwingDoor,false);
+ 			    HandleGameObject(uiFrostwingDoor,false);
 				break;
 			}
 				auiEncounter[3] = data;
@@ -570,14 +598,12 @@ struct instance_icecrown_citadel : public ScriptedInstance
 			{
 			case DONE:
  			    HandleGameObject(uiBloodQueenTransporter,true);
- 			    HandleGameObject(uiFrostwingDoor,true);
 				break;
             case NOT_STARTED:
  			    HandleGameObject(uiBloodQueenTransporter,false);
- 			    HandleGameObject(uiFrostwingDoor,false);
 				break;
 			case IN_PROGRESS:
- 			    HandleGameObject(uiFrostwingDoor,false);
+ 			   HandleGameObject(uiBloodQueenTransporter,false);
 				break;
 			}
 				auiEncounter[8] = data;
@@ -595,14 +621,36 @@ struct instance_icecrown_citadel : public ScriptedInstance
  			    HandleGameObject(uiDragonDoor1,true);
  			    HandleGameObject(uiDragonDoor2,true);
 			    HandleGameObject(uiDragonDoor3,true);
+ 			    HandleGameObject(uiRoostDoor1,false);
+ 			    HandleGameObject(uiRoostDoor2,false);
+			    HandleGameObject(uiRoostDoor3,false);
+ 			    HandleGameObject(uiRoostDoor4,false);
 				break;
             case NOT_STARTED:
  			    HandleGameObject(uiDragonDoor1,true);
  			    HandleGameObject(uiDragonDoor2,false);
 				HandleGameObject(uiDragonDoor3,false);
+ 			    HandleGameObject(uiRoostDoor1,false);
+ 			    HandleGameObject(uiRoostDoor2,false);
+			    HandleGameObject(uiRoostDoor3,false);
+ 			    HandleGameObject(uiRoostDoor4,false);
 				break;
 			case IN_PROGRESS:
- 			    HandleGameObject(uiDragonDoor1,false);
+		if (Difficulty()  == RAID_DIFFICULTY_10MAN_NORMAL ||
+		    Difficulty()  == RAID_DIFFICULTY_10MAN_HEROIC)
+          {
+                HandleGameObject(uiDragonDoor1,false);
+ 			    HandleGameObject(uiRoostDoor3,true);
+ 			    HandleGameObject(uiRoostDoor2,true);
+			    HandleGameObject(uiRoostDoor1,false);
+ 			    HandleGameObject(uiRoostDoor4,false);
+				break;
+		  }
+                HandleGameObject(uiDragonDoor1,false);
+ 			    HandleGameObject(uiRoostDoor1,true);
+ 			    HandleGameObject(uiRoostDoor2,true);
+			    HandleGameObject(uiRoostDoor3,true);
+ 			    HandleGameObject(uiRoostDoor4,true);
 				break;
 			}
 				auiEncounter[9] = data;

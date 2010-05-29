@@ -17,7 +17,7 @@
  */
 
 /*
-Complete: 60%
+Complete: 70%
 Created by Lordronn
 */
 
@@ -32,17 +32,8 @@ Created by Lordronn
 #define PLAGUEWORKS   9995
 #define CRIMSONHALL   9996
 #define FWHALLS     9997
-#define SINDRAGOSA  70861
+#define QUEEN       70861
 #define LICHKING    70860
-
-/* Dont know if this is right, but we're going
-Lights Hammer auto-unlocked
-Kill Marrowgar opens Lady Deathwhisper
-Kill LD unlocks Rampart of Skulls and Saurfang(since the Gunship Battle doesnt work we'll skip it)
-Killing Saurfang opens Crimson Halls and Plagueworks
-Killing Putricide & Blood-Queen Lana'thel opens Frostwing Halls
-Killing Sindragosa opens the Lich King's Lair
-*/
 
 bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
 {
@@ -54,7 +45,7 @@ bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
     if(pInstance->GetData(DATA_MARROWGAR_EVENT) == DONE || pPlayer->isGameMaster())
 	{
         pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Oratory of the Damned", GOSSIP_SENDER_MAIN, ORATORY);
-        if(pInstance->GetData(DATA_MARROWGAR_EVENT) == DONE || pPlayer->isGameMaster())
+        if(pInstance->GetData(DATA_DEATHWHISPER_EVENT) == DONE || pPlayer->isGameMaster())
 		{
             pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Rampart of Skulls", GOSSIP_SENDER_MAIN, RAMPART);
             pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to Deathbringer's Rise", GOSSIP_SENDER_MAIN, DEATHBRINGER);
@@ -62,11 +53,10 @@ bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
 			{
                   pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Plagueworks", GOSSIP_SENDER_MAIN, PLAGUEWORKS);
                   pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Crimson Halls", GOSSIP_SENDER_MAIN, CRIMSONHALL);
-                  if(pInstance->GetData(DATA_PROFESSOR_PUTRICIDE_EVENT) == DONE &&
-					 pInstance->GetData(DATA_BLOOD_QUEEN_LANATHEL_EVENT) == DONE || pPlayer->isGameMaster())
+                  pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Frostwing Halls", GOSSIP_SENDER_MAIN, FWHALLS);
+                  if(pInstance->GetData(DATA_VALITHRIA_DREAMWALKER_EVENT) == DONE || pPlayer->isGameMaster())
 				  {
-                         pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Frostwing Halls", GOSSIP_SENDER_MAIN, FWHALLS);
-                         pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to Sindragosa Lair", GOSSIP_SENDER_MAIN, SINDRAGOSA);
+                         pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to The Frost Queens's Lair", GOSSIP_SENDER_MAIN, QUEEN);
                          if(pInstance->GetData(DATA_SINDRAGOSA_EVENT) == DONE || pPlayer->isGameMaster())
 						 { 
                             pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Frozen Throne", GOSSIP_SENDER_MAIN, LICHKING);
@@ -92,42 +82,42 @@ bool GOSelect_icecrown_teleporter( Player *pPlayer, GameObject *pGO, uint32 send
     switch(action)
     {
     case LIGHTS_HAMMER:
-        pPlayer->TeleportTo(631, -17.071068, 2211.468750, 30.054554, 3.12149);
+        pPlayer->TeleportTo(631, -17.856115, 2211.640137, 30.115812, 3.12149);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case ORATORY:
-        pPlayer->TeleportTo(631, -503.593414, 2211.468750, 62.762070, 3.139313);
+        pPlayer->TeleportTo(631, -503.632599, 2211.219971, 62.823246, 3.139313);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case RAMPART:
-        pPlayer->TeleportTo(631, -615.146118, 2211.471924, 199.908508, 6.26832);
+        pPlayer->TeleportTo(631, -615.098267, 2211.509766, 199.973083, 6.26832);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case DEATHBRINGER:
-        pPlayer->TeleportTo(631, -549.073486, 2211.289307, 539.223450, 6.275452);
+        pPlayer->TeleportTo(631, -549.151001, 2211.463967, 539.290222, 6.275452);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case PLAGUEWORKS:
-        pPlayer->TeleportTo(631, 4357.033691, 2864.192627, 349.337006, 1.559445);
+        pPlayer->TeleportTo(631, 4356.780273, 2863.636230, 349.337982, 1.559445);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case CRIMSONHALL:
-        pPlayer->TeleportTo(631, 4452.79785, 2769.291504, 349.350342, 0.023817);
+        pPlayer->TeleportTo(631, 4453.248535, 2769.325684, 349.347473, 0.023817);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
     case FWHALLS:
-        pPlayer->TeleportTo(631, 4357.003906, 2674.260010, 349.342346, 4.736377);
+        pPlayer->TeleportTo(631, 4356.853516, 2674.143311, 349.340118, 4.736377);
         pPlayer->CLOSE_GOSSIP_MENU();
 		break;
 
-    case SINDRAGOSA:
-        pPlayer->TeleportTo(631, 4356.581543, 2565.748291, 220.401520, 4.886216);
+    case QUEEN:
+        pPlayer->TeleportTo(631, 4356.527344, 2402.710205, 220.462723, 4.886216);
         pPlayer->CLOSE_GOSSIP_MENU(); 
 		break;
 

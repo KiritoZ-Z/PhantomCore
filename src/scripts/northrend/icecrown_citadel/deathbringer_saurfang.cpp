@@ -40,14 +40,12 @@ enum SaurfangSpells
 	SPELL_CLEAVE				= 15284,
 	SPELL_RENDING_THROW			= 70309,
     N_10_SPELL_FALLEN_CHAMPION  = 72293,
-    SPELL_BOILING_BLOOD			= 72385, // Melees
-
+    SPELL_BOILING_BLOOD			= 72385,
     N_10_SPELL_BLOOD_NOVA       = 72380,
 	N_25_SPELL_BLOOD_NOVA		= 72438,
 	H_10_SPELL_BLOOD_NOVA		= 72380,
 	H_25_SPELL_BLOOD_NOVA		= 72380,
     N_SPELL_RUNE_OF_BLOOD       = 72408,
-
 };
 
 Creature* pSaurfang;
@@ -56,7 +54,7 @@ enum BloodBeastSpells
 {
 	SPELL_BLOOD_LINK_BEAST	=	72176,
 	SPELL_RESISTAN_SKIN		=	72723,
-	SPELL_SCENT_OF_BLOOD	=	72769, // Hardmode
+	SPELL_SCENT_OF_BLOOD	=	72769,
 };
 
 enum Creatures
@@ -252,17 +250,19 @@ struct npc_bloodbeastAI : public ScriptedAI
     npc_bloodbeastAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		DoCast(me, SPELL_BLOOD_LINK_BEAST);
-		DoCast(me, SPELL_RESISTAN_SKIN);
     }
 
     ScriptedInstance* m_pInstance;
 
 		uint32 m_uiSetPowerTimer;
+		uint32 m_uiScentOfBloodTimer;
+		uint32 m_uiResistanSkinTimer;
 
     void Reset()
     {
 		m_uiSetPowerTimer = 2000;
+		m_uiScentOfBloodTimer = 7000;
+		m_uiResistanSkinTimer = 10000;
     }
 
     void EnterCombat(Unit* pWho)
@@ -282,11 +282,26 @@ struct npc_bloodbeastAI : public ScriptedAI
        if(!UpdateVictim())
             return;
 
-	   		if (m_uiSetPowerTimer <= uiDiff)
+	   	if (m_uiSetPowerTimer <= uiDiff)
 		{
 			pSaurfang->ModifyPower(pSaurfang->getPowerType(), +1);
 			m_uiSetPowerTimer = 2000;
 		} else m_uiSetPowerTimer -= uiDiff;
+
+	if (getDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || getDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC)
+       {
+	   	   if (m_uiScentOfBloodTimer <= uiDiff)
+		       {
+	               DoCast(SPELL_SCENT_OF_BLOOD);
+	               m_uiScentOfBloodTimer = 7000;
+		       } else m_uiScentOfBloodTimer -= uiDiff;
+	   }
+
+		if (m_uiResistanSkinTimer <= uiDiff)
+		    {
+	            DoCast(me, SPELL_RESISTAN_SKIN);
+	            m_uiResistanSkinTimer = 10000;
+		    } else m_uiResistanSkinTimer -= uiDiff;
 
 		DoMeleeAttackIfReady();
     }

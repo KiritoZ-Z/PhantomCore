@@ -31,31 +31,24 @@ enum Yells
 	SAY_DEATH		=	-1666033,
 };
 
-enum Spells
+enum ProfessorSpells
 {
-	// Professor All Phase Spells
 	SPELL_UNSTABLE_EXPERIMENT			=	71968,
-
-	// Phase Change Spells
-	N_SPELL_TEAR_GAS					=	71617,	// Phasenchange Spell
-	N_SPELL_CREATE_CONCOTION			=	71621,	// Phase 1 to 2.
-	N_SPELL_GUZZLE_POTIONS				=	73122,	// Phase 2 to 3.
-
-	// 80% - 35%
+	N_SPELL_TEAR_GAS					=	71617,
+	N_SPELL_CREATE_CONCOTION			=	71621,
+	N_SPELL_GUZZLE_POTIONS				=	73122,
 	N_10_SPELL_MALLEABLE_GOO			=	72296,
 	N_25_SPELL_MALLEABLE_GOO			=	70852,
-
-	// 35% - 0%
 	N_10_SPELL_MUTATED_STRENGTH			=	71603,
 	N_10_MUTATED_PLAGUE					=	72672,
+};
 
-	// Ooze Spells
+enum OozeSpells
+{
 	N_10_SPELL_OOZE_ERUPTION			=	70492,
 	N_10_SPELL_OOZE_ADHESIV				=	70447,
-	// Gas Cloude Spells
-	// Choking Gas Spells
-	N_10_SPELL_CHOKING_GAS				=	71278, // Wenn Gas Spawnt.
-	N_10_SPELL_CHOKING_GAS_EXPLOSION	=	71279, // 20 Sek.
+	N_10_SPELL_CHOKING_GAS				=	71278,
+	N_10_SPELL_CHOKING_GAS_EXPLOSION	=	71279,
 };
 
 enum Summons
@@ -68,7 +61,7 @@ enum Achievements
 {
 };
 
-#define EMOTE_UNSTABLE_EXPERIMENT "Professor Seuchenmord beginnt Unstabiles Experiment zu wirken!"
+#define EMOTE_UNSTABLE_EXPERIMENT "Professor Putricide begins unstable experiment!"
 
 struct Boss_ProfessorPutricideAI : public ScriptedAI
 {
@@ -184,13 +177,13 @@ struct VolatileOozeAI : public ScriptedAI
 			return;
 
         if (me->getVictim()->GetTypeId() != TYPEID_PLAYER) 
-			return; // Only cast the below on players.
+			return; 
 
         if (!me->getVictim()->HasAura(N_10_SPELL_OOZE_ADHESIV))
         {
 			if (OozeAdhesivTimer < diff)
 			{
-				uint32 count = RAID_MODE(1,1,1,1); // 10 Normal x1 / 25 Normal 3x / 10 Heroic 1x / 25 Heroic 3x
+				uint32 count = RAID_MODE(1,3,1,3);
                 for (uint8 i = 1; i <= count; i++)
                 {
 					DoCast(me->getVictim(), N_10_SPELL_OOZE_ADHESIV, true);
@@ -231,7 +224,7 @@ CreatureAI* GetAI_Boss_ProfessorPutricide(Creature* pCreature)
     return new Boss_ProfessorPutricideAI(pCreature);
 }
 
-void AddSC_Boss_ProfessorPutricide()
+void AddSC_boss_professor_putricide()
 {
     Script* NewScript;
 

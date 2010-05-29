@@ -296,7 +296,7 @@ CreatureAI* GetAI_npc_OozeLittle(Creature* pCreature)
     return new npc_OozeLittleAI(pCreature);
 }
 
-void AddSC_boss_Rotface()
+void AddSC_boss_rotface()
 {
     Script* NewScript;
 

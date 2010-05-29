@@ -39,14 +39,14 @@ enum Spells
 	N_10_SPELL_PUNGENT_BLIGHT		=	69195, 
 	N_10_SPELL_GASTRIC_EXPLOSION	=	72227, 
 	SPELL_INHALE_BLIGHT				=	69165,
-	N_10_SPELL_VILE_GAS				=	72272, //
-	N_10_SPELL_GASTRIC_BLOAT		=	72219, //
-	SPELL_GAS_VISUAL_SMAL			=	69154, //
-	SPELL_GAS_VISUAL_MIDDEL			=	69152, //
-	SPELL_GAS_VISUAL_BIG			=	69126, // 
-	SPELL_GAS_SPORES				=	69279, // 10 Version 2 Player 25 Version 3 Player
-	SPELL_BERSERK					=	47008, //
-	SPELL_INOCULATED				=	72103, //
+	N_10_SPELL_VILE_GAS				=	72272,
+	N_10_SPELL_GASTRIC_BLOAT		=	72219,
+	SPELL_GAS_VISUAL_SMAL			=	69154,
+	SPELL_GAS_VISUAL_MIDDEL			=	69152,
+	SPELL_GAS_VISUAL_BIG			=	69126, 
+	SPELL_GAS_SPORES				=	69279,
+	SPELL_BERSERK					=	47008,
+	SPELL_INOCULATED				=	72103,
 	SPELL_BLIGHTED_SPORES			=	69290, 
 };
 
@@ -184,7 +184,7 @@ CreatureAI* GetAI_Boss_Festergut(Creature* pCreature)
     return new Boss_FestergutAI(pCreature);
 }
 
-void AddSC_Boss_Festergut()
+void AddSC_boss_festergut()
 {
     Script* NewScript;
 

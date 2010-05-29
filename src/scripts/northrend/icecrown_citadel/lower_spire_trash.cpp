@@ -76,7 +76,6 @@
 #define SPELL_SHADOWCLEAVE                RAID_MODE(70670,72006)
 #define SPELL_VAMPIRICMIGHT               RAID_MODE(70674,70674)
 
-/****************************************EVENTS************************************/
 //Nerub'ar Broodkeeper
 #define EVENT_CRYPTSCARABS          1
 #define EVENT_DARKMENDING           2
@@ -130,8 +129,6 @@
 #define EVENT_SHADOWCLEAVE          28
 #define EVENT_VAMPIRICMIGHT         29
 
-
-/*****************************MARROWGAR TRASH****************************/
 struct  npc_NerubarBroodkeeperAI: public ScriptedAI
 {
     npc_NerubarBroodkeeperAI(Creature *c) : ScriptedAI(c)
@@ -153,7 +150,6 @@ struct  npc_NerubarBroodkeeperAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -208,10 +204,8 @@ struct  npc_TheDamnedAI: public ScriptedAI
 	DoCastAOE(SPELL_SHATTEREDBONES);
 	}
 
-
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -253,7 +247,6 @@ struct  npc_ServantoftheThroneAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -295,7 +288,6 @@ struct  npc_AncientSkeletalSoldierAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -338,7 +330,6 @@ struct  npc_DeathboundWardAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -365,7 +356,6 @@ struct  npc_DeathboundWardAI: public ScriptedAI
     }
 };
 
-/*****************************DEATHWHISPER TRASH****************************/
 struct  npc_DeathspeakerAttedantAI: public ScriptedAI
 {
     npc_DeathspeakerAttedantAI(Creature *c) : ScriptedAI(c)
@@ -386,7 +376,6 @@ struct  npc_DeathspeakerAttedantAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -433,7 +422,6 @@ struct  npc_DeathspeakerDiscipleAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -489,7 +477,6 @@ struct  npc_DeathspeakerHighPriestAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -534,7 +521,6 @@ struct  npc_DeathspeakerServantAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -587,7 +573,6 @@ struct  npc_DeathspeakerZealotAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -640,8 +625,6 @@ struct  npc_CultAdherentAI: public ScriptedAI
         me->SetInCombatWithZone();
     }
 
-
-
     void EnterCombat(Unit* who)
     {
     events.ScheduleEvent(EVENT_CURSEOFTRPOR, 10000);
@@ -654,7 +637,6 @@ struct  npc_CultAdherentAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -722,7 +704,6 @@ struct  npc_CultFanaticAI: public ScriptedAI
         me->SetInCombatWithZone();
     }
 
-
     void EnterCombat(Unit* who)
     {
     events.ScheduleEvent(EVENT_DARKMARTYRDOM, 45000);
@@ -743,7 +724,6 @@ struct  npc_CultFanaticAI: public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-         //Return since we have no target
         if (!UpdateVictim())
             return;
 
@@ -779,8 +759,6 @@ struct  npc_CultFanaticAI: public ScriptedAI
     }
 };
 
-
-/*****************************MARROWGAR TRASH****************************/
 CreatureAI* GetAI_npc_NerubarBroodkeeperAI(Creature* pCreature)
 {
     return new npc_NerubarBroodkeeperAI (pCreature);
@@ -842,9 +820,8 @@ CreatureAI* GetAI_npc_CultFanaticAI(Creature* pCreature)
     return new npc_CultFanaticAI (pCreature);
 }
 
-void AddSC_LowerSpireTrash()
+void AddSC_lower_spire_trash()
 {
-/*****************************MARROWGAR TRASH****************************/
     Script *newscript;
     newscript = new Script;
     newscript->Name="npc_NerubarBroodkeeper";
@@ -871,7 +848,6 @@ void AddSC_LowerSpireTrash()
     newscript->GetAI = &GetAI_npc_DeathboundWardAI;
     newscript->RegisterSelf();
 
-/*****************************DEATHWHISPER TRASH**************************/
     newscript = new Script;
     newscript->Name="npc_DeathspeakerAttedant";
     newscript->GetAI = &GetAI_npc_DeathspeakerAttedantAI;

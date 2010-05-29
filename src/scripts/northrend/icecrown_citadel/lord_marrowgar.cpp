@@ -30,7 +30,7 @@ enum Yells
 	SAY_SLAY_2           =    -1665899,
 	SAY_DEATH            =    -1665900,
 	SAY_ENRAGE           =    -1665901,
-	SAY_EMOTE_BONE_STORM =	  -1666901, // %T erschafft einen wirbelnden Knochensturm!
+	SAY_EMOTE_BONE_STORM =	  -1666901,
 };
 
 enum Spells
@@ -39,23 +39,18 @@ enum Spells
 	SPELL_SABER_SLASH_25_NORMAL = 71021,
 	SPELL_SABER_SLASH_10_HEROIC = 70814,
 	SPELL_SABER_SLASH_25_HEROIC = 70814,
-
 	SPELL_COLD_FLAME_10_NORMAL = 69146,
 	SPELL_COLD_FLAME_25_NORMAL = 70823,
 	SPELL_COLD_FLAME_10_HEROIC = 70824,
 	SPELL_COLD_FLAME_25_HEROIC = 70825,
-
 	SPELL_COLD_FLAME_SPAWN	   = 69138,
-
 	SPELL_BONE_SPIKE_GRAVEYARD = 69057,
 	SPELL_BONE_SPIKE_IMPALING  = 69065,
-
 	SPELL_BONE_STORM_CHANNEL	=	69076,
 	SPELL_BONE_STORM_10_NORMAL	=	69075,
 	SPELL_BONE_STORM_25_NORMAL	=	70835,
 	SPELL_BONE_STORM_10_HEROIC	=	70834,
 	SPELL_BONE_STORM_25_HEROIC	=	70836,
-	
 	SPELL_BERSERK				=   47008,
 };
 
@@ -64,7 +59,6 @@ enum NPC
 	CREATURE_BONE_SPIKE	=	38711,
 	CREATURE_COLD_FLAME	=	36672,
 };
-
 
 struct BoneSpikeAI : public Scripted_NoMovementAI
 {
@@ -237,7 +231,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 				uint32 count = RAID_MODE(1,3,1,3); 
                 for (uint8 i = 1; i <= count; i++)
                 {
-					Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1); // Nicht am Tank
+					Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1);
 					if (pTarget && !pTarget->HasAura(SPELL_BONE_SPIKE_IMPALING))
 						{
 							Creature* Bone = me->SummonCreature(CREATURE_BONE_SPIKE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 999999);
@@ -277,7 +271,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 						case 1: DoScriptText(SAY_BONESPIKE_2, me); break;
 						case 2: DoScriptText(SAY_BONESPIKE_3, me); break;
 					}
-					uint32 count = RAID_MODE(1,3,1,3); // 10 Normal x1 / 25 Normal 3x / 10 Heroic 1x / 25 Heroic 3x
+					uint32 count = RAID_MODE(1,3,1,3);
 					for (uint8 i = 1; i <= count; i++)
 					{
 					Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM, 0, 200, true);
@@ -354,7 +348,7 @@ CreatureAI* GetAI_BoneSpike(Creature* pCreature)
     return new BoneSpikeAI(pCreature);
 }
 
-void AddSC_boss_Marrowgar()
+void AddSC_boss_marrowgar()
 {
     Script* NewScript;
     NewScript = new Script;

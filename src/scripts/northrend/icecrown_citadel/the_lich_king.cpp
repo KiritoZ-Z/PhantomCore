@@ -16,8 +16,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-// Todo: Frostmourne Room / Cleanup / Frost Throne Support.
-
 #include "ScriptedPch.h"
 #include "icecrown_citadel.h"
 
@@ -67,6 +65,7 @@ enum Creatures
 	CREATURE_VALKYR					=	36609,
 	CREATURE_DEFILE					=	38757,
 	CREATURE_RAGING_SPIRIT			=	36701,
+	CREATURE_TRIGGER                =   30494,
 };
 
 enum Models
@@ -74,10 +73,8 @@ enum Models
 	MODEL_INVISIBLE					=	11686,
 };
 
-enum Spells
+enum LichKingSpells
 {
-	/*************** Lich King Spells **************/
-
 			  /***** Phase 1 Spells *****/
 	SPELL_SUMMON_SHAMBLING_HORROR	=	70372,
 	SPELL_SUMMON_DRUDGE_GHOULS		=	70358,
@@ -100,16 +97,16 @@ enum Spells
 	SPELL_HARVEST_SOULS				=	68980,
 	SPELL_HARVEST_SOUL_TELEPORT		=	71372,
 	SPELL_SUMMON_VILE_SPIRIT		=	70498,
-
-	/************ Spell Difficulty ************/
 	N_25_SPELL_HARVEST_SOULS		=	74325,
-		
-	/************** Other Spells *************/
+};
+
+enum OtherSpells
+{
 	SPELL_QUAKE						=	72262,
 	SPELL_CHANNEL_KING				=	71769,
 	SPELL_BROKEN_FROSTMOURNE		=	72398,
 	SPELL_BOOM_VISUAL				=	72726,
-	SPELL_ICEBLOCK_TRIGGER			=	71614, // Cast by Lich King
+	SPELL_ICEBLOCK_TRIGGER			=	71614,
 	SPELL_TIRION_LIGHT				=	71797,
 	SPELL_FROSTMOURNE_TRIGGER		=	72405,
 	SPELL_SUMMON_BROKEN_FROSTMOURNE	=	72406,
@@ -119,21 +116,12 @@ enum Spells
 	SPELL_REVIVE					=	51918,
 	SPELL_CLONE_PLAYER              =	57507,
 	SPELL_BERSERK					=	47008,
-
-	/******************* Valkyr Spells ******************/
-	/*************** Shambling Horror Spells ************/
 	SPELL_RAGING_SPIRIT_VISUAL	=	69198,
-	/***************** Vile Spirits Spells **************/
-	/******************** Defile Spells *****************/
 	SPELL_DAMAGE_DEFILE				=	72743,
 	SPELL_SPAWN_DEFILE				=	72762,
-
-	/******************** Frostmourne Spells *************/
-	/******************** Ice Spehre *********************/
 	SPELL_ICE_SPHERE_VISUAL			=	69090,
 	SPELL_ICE_PULSE					=	69091,
 	SPELL_ICE_BURST					=	69108,
-	
 };
 
 enum DefileDamage
@@ -182,7 +170,6 @@ struct boss_lich_kingAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-	/******************* Phasen  ******************/
 	bool m_bIsDeathPhase;
 	bool m_bIsTirionSpawned;
 	bool m_bIsTriggerSpawned;
@@ -219,47 +206,44 @@ struct boss_lich_kingAI : public ScriptedAI
 	uint32 m_uiQuakeTimer;
 	uint32 m_uiIcePulsSummonTimer;
 	uint32 m_uiSummonSpiritTimer;
-
-	/******************* Random Speech Timer ******************/
 	uint32 m_uiRandomSpeechTimer;
 
 	SummonList summons;
 
     void Reset()
     {
-		/*************** Unit State *******************/
 		me->SetReactState(REACT_PASSIVE);
 
 		/******************* Phasen  ******************/
 		m_uiPhase = 0;
-		m_uiRandomSpeechTimer = urand(25*IN_MILISECONDS,35*IN_MILISECONDS);
-		m_uiBerserkTimer =	15*MINUTE*IN_MILISECONDS;
+		m_uiRandomSpeechTimer = urand(25*IN_MILISECONDS,35*IN_MILISECONDS); 
+		m_uiBerserkTimer =	900000;
 
 		/******************* Spells Phase 1 ********************/
-		m_uiSummonShamblingHorrorTimer	= 20*IN_MILISECONDS;
-		m_uiSummonDrudgeGhoulsTimer		= 10*IN_MILISECONDS;
-		m_uiInfestTimer					= 30*IN_MILISECONDS;
-		m_uiNecroticPlagueTimer			= urand(29*IN_MILISECONDS,30*IN_MILISECONDS);
-		m_uiPlagueSiphonTimer			= 5*IN_MILISECONDS;
-		m_uiTirionSpawneTimer			= 5*IN_MILISECONDS;
+		m_uiSummonShamblingHorrorTimer	= 20000;
+		m_uiSummonDrudgeGhoulsTimer		= 20000;
+		m_uiInfestTimer					= 30000;
+		m_uiNecroticPlagueTimer			= 30000;
+		m_uiPlagueSiphonTimer			= 5000;
+		m_uiTirionSpawneTimer			= 5000;
 
 		/****************** Spells Phase 1.5 & Phase 2.5 **************/
-		m_uiRemorselesWinterTimer = 5*IN_MILISECONDS;
-		m_uiQuakeTimer = 70*IN_MILISECONDS;
-		m_uiIcePulsSummonTimer	= 10*IN_MILISECONDS;
+		m_uiRemorselesWinterTimer = 5000;
+		m_uiQuakeTimer = 70000;
+		m_uiIcePulsSummonTimer	= 10000;
 		m_uiPainandSufferingTimer = urand(10*IN_MILISECONDS,11*IN_MILISECONDS);
-		m_uiSummonSpiritTimer = 18*IN_MILISECONDS;
+		m_uiSummonSpiritTimer = 18000;
 
 		/******************* Spells Phase 2 *********************/
-		m_uiSummonValkyrTimer	= 20*IN_MILISECONDS;
-		m_uiSoulReaperTimer		= 15*IN_MILISECONDS;
-		m_uiDefileTimer			= 25*IN_MILISECONDS;
-		m_uiInfestTimer			= 40*IN_MILISECONDS;
+		m_uiSummonValkyrTimer	= 20000;
+		m_uiSoulReaperTimer		= 15000;
+		m_uiDefileTimer			= 25000;
+		m_uiInfestTimer			= 40000;
 
 		/******************* Spells Phase 3 **********************/
-		m_uiSummonVileSpiritTimer = 30*IN_MILISECONDS;
-		m_uiHarvestSoulTimer = 70*IN_MILISECONDS;
-		m_uiFrostGramPortTimer = 900*IN_MILISECONDS;
+		m_uiSummonVileSpiritTimer = 30000;
+		m_uiHarvestSoulTimer = 70000;
+		m_uiFrostGramPortTimer = 900000;
 
 		/*********************** Other ***********************/
 		m_bIsDeathPhase = false;
@@ -292,7 +276,6 @@ struct boss_lich_kingAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH_KING, me);
 
-		//play movie after lich king's death
 		Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
 
 		if (PlList.isEmpty())
@@ -394,28 +377,28 @@ struct boss_lich_kingAI : public ScriptedAI
 			if (m_uiInfestTimer < uiDiff)
             {
 				DoCast(me, SPELL_INFEST);
-                m_uiInfestTimer = urand(30*IN_MILISECONDS,35*IN_MILISECONDS);
+                m_uiInfestTimer = 30000;
             }
             else m_uiInfestTimer -= uiDiff;
 
 			if (m_uiPlagueSiphonTimer < uiDiff)
             {
 				DoCast(me, SPELL_PLAGUE_SIPHON);
-                m_uiPlagueSiphonTimer = urand(29*IN_MILISECONDS,30*IN_MILISECONDS);
+                m_uiPlagueSiphonTimer = 30000;
             }
             else m_uiPlagueSiphonTimer -= uiDiff;
 
 			if (m_uiSummonDrudgeGhoulsTimer < uiDiff)
             {
 				DoCast(me, SPELL_SUMMON_DRUDGE_GHOULS);
-                m_uiSummonDrudgeGhoulsTimer = urand(20*IN_MILISECONDS,21*IN_MILISECONDS);
+                m_uiSummonDrudgeGhoulsTimer = 20000;
             }
             else m_uiSummonDrudgeGhoulsTimer -= uiDiff;
 
 			if (m_uiSummonShamblingHorrorTimer < uiDiff)
             {
 				DoCast(me, SPELL_SUMMON_SHAMBLING_HORROR);
-                m_uiSummonShamblingHorrorTimer = urand(60*IN_MILISECONDS,61*IN_MILISECONDS);
+                m_uiSummonShamblingHorrorTimer = 60000;
             }
             else m_uiSummonShamblingHorrorTimer -= uiDiff;
 
@@ -423,7 +406,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, SPELL_NECROTIC_PLAGUE);
-                m_uiNecroticPlagueTimer = urand(5*IN_MILISECONDS,10*IN_MILISECONDS);
+                m_uiNecroticPlagueTimer = 5000;
             }
             else m_uiNecroticPlagueTimer -= uiDiff;
 		}
@@ -435,7 +418,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
 				DoScriptText(SAY_REMORSELESS_WINTER, me);
                 DoCast(me, SPELL_REMORSELES_WINTER);
-                m_uiRemorselesWinterTimer = 90*IN_MILISECONDS;
+                m_uiRemorselesWinterTimer = 90000;
             }
             else m_uiRemorselesWinterTimer -= uiDiff;
 
@@ -443,14 +426,14 @@ struct boss_lich_kingAI : public ScriptedAI
             {
 				if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, SPELL_SUMMON_RAGING_SPIRIT);
-				m_uiSummonSpiritTimer	= 16*IN_MILISECONDS;
+				m_uiSummonSpiritTimer	= 16000;
             }
             else m_uiSummonSpiritTimer -= uiDiff;
 
 			if (m_uiIcePulsSummonTimer < uiDiff)
             {
                 DoCast(me, SPELL_SUMMON_ICE_SPEHERE);
-				m_uiIcePulsSummonTimer	= 15*IN_MILISECONDS;
+				m_uiIcePulsSummonTimer	= 15000;
             }
             else m_uiIcePulsSummonTimer -= uiDiff;
 
@@ -458,7 +441,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(target, SPELL_PAIN_AND_SUFFERING);
-				m_uiPainandSufferingTimer = urand(1.5*IN_MILISECONDS,2.0*IN_MILISECONDS);
+				m_uiPainandSufferingTimer = 2000;
             }
             else m_uiPainandSufferingTimer -= uiDiff;
 
@@ -482,7 +465,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, SPELL_SPAWN_DEFILE);
-                m_uiDefileTimer = 20*IN_MILISECONDS;
+                m_uiDefileTimer = 20000;
             }
             else m_uiDefileTimer -= uiDiff;
 
@@ -491,14 +474,14 @@ struct boss_lich_kingAI : public ScriptedAI
 				DoScriptText(SAY_SUMMON_VALKYR, me);
 				me->SummonCreature(CREATURE_VALKYR, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()+10, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 99999999);
                 //DoCast(me, SPELL_SUMMON_VALKYR);
-                m_uiSummonValkyrTimer = 20*IN_MILISECONDS;
+                m_uiSummonValkyrTimer = 20000;
             }
             else m_uiSummonValkyrTimer -= uiDiff;
 
 			if (m_uiSoulReaperTimer < uiDiff)
             {
                 DoCast(me->getVictim(), SPELL_SOUL_REAPER);
-                m_uiSoulReaperTimer = 20*IN_MILISECONDS;
+                m_uiSoulReaperTimer = 20000;
             }
             else m_uiSoulReaperTimer -= uiDiff;
 
@@ -517,7 +500,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
 				DoScriptText(SAY_REMORSELESS_WINTER, me);
                 DoCast(me, SPELL_REMORSELES_WINTER);
-                m_uiRemorselesWinterTimer = 90*IN_MILISECONDS;
+                m_uiRemorselesWinterTimer = 90000;
             }
             else m_uiRemorselesWinterTimer -= uiDiff;
 
@@ -525,14 +508,14 @@ struct boss_lich_kingAI : public ScriptedAI
             {
 				if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, SPELL_SUMMON_RAGING_SPIRIT);
-				m_uiSummonSpiritTimer = 16*IN_MILISECONDS;
+				m_uiSummonSpiritTimer = 16000;
             }
             else m_uiSummonSpiritTimer -= uiDiff;
 
 			if (m_uiIcePulsSummonTimer < uiDiff)
             {
                 DoCast(me, SPELL_SUMMON_ICE_SPEHERE);
-				m_uiIcePulsSummonTimer	= 15*IN_MILISECONDS;
+				m_uiIcePulsSummonTimer	= 15000;
             }
             else m_uiIcePulsSummonTimer -= uiDiff;
 
@@ -540,7 +523,7 @@ struct boss_lich_kingAI : public ScriptedAI
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, SPELL_PAIN_AND_SUFFERING);
-				m_uiPainandSufferingTimer = urand(2*IN_MILISECONDS,4*IN_MILISECONDS);
+				m_uiPainandSufferingTimer = 3000;
             }
             else m_uiPainandSufferingTimer -= uiDiff;
 	
@@ -562,7 +545,7 @@ struct boss_lich_kingAI : public ScriptedAI
 				if (m_uiSummonVileSpiritTimer < uiDiff)
 				{
 					DoCast(me, SPELL_SUMMON_VILE_SPIRIT);
-					m_uiSummonVileSpiritTimer = 30*IN_MILISECONDS;
+					m_uiSummonVileSpiritTimer = 30000;
 				}
 				else m_uiSummonVileSpiritTimer -= uiDiff;
 
@@ -571,7 +554,7 @@ struct boss_lich_kingAI : public ScriptedAI
 					DoScriptText(SAY_HARVEST_SOUL, me);
 					Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1);
 					DoCast(pTarget, SPELL_HARVEST_SOULS);
-					m_uiHarvestSoulTimer = 70*IN_MILISECONDS;
+					m_uiHarvestSoulTimer = 70000;
 				}
 				else m_uiHarvestSoulTimer -= uiDiff;
 			}
@@ -594,18 +577,18 @@ struct boss_lich_kingAI : public ScriptedAI
 		if (HealthBelowPct(40) && !m_bIsSwitchPhase2)
 		{
 			m_uiPhase = 4;
-			m_uiRemorselesWinterTimer = 5*IN_MILISECONDS;
-			m_uiQuakeTimer = 70*IN_MILISECONDS;
-			m_uiIcePulsSummonTimer	= 10*IN_MILISECONDS;
-			m_uiPainandSufferingTimer = urand(10*IN_MILISECONDS,11*IN_MILISECONDS);
-			m_uiSummonSpiritTimer = 18*IN_MILISECONDS;
+			m_uiRemorselesWinterTimer = 5000;
+			m_uiQuakeTimer = 70000;
+			m_uiIcePulsSummonTimer	= 10000;
+			m_uiPainandSufferingTimer = 10000;
+			m_uiSummonSpiritTimer = 18000;
 			Phasenswitch();
 			m_bIsSwitchPhase2 = true;
 		}
 		else /************* Save Trigger Spawned ************/
 		if (HealthBelowPct(11) && !m_bIsTriggerSpawned)
 		{
-			pSafeZone = me->SummonCreature(30494, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 360000); //safe zone.. raid do not leave combat while mounting
+			pSafeZone = me->SummonCreature(CREATURE_TRIGGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 360000);
             pSafeZone->AI()->AttackStart(me);
 			pSafeZone->SetDisplayId(MODEL_INVISIBLE);
 			m_bIsTriggerSpawned = true;
@@ -660,7 +643,7 @@ struct boss_lich_kingAI : public ScriptedAI
 					break;
 				case 3: 
 					DoScriptText(SAY_ENDING_1_KING, me);
-					KingEnding(25000);
+					KingEnding(24000);
 					break;
 				case 4: 
 					DoScriptText(SAY_ENDING_2_KING, me);
@@ -789,7 +772,7 @@ struct boss_TirionCitadellAI : public ScriptedAI
 
 	void StartEvent()
     {
-		m_uiIntroTimer = 1*IN_MILISECONDS;
+		m_uiIntroTimer = 1000;
 		m_uiIntroPhase = 1;
 		Intro(); 
     }
@@ -849,7 +832,7 @@ struct boss_TirionCitadellAI : public ScriptedAI
 					KingIntro(4000);
 					break;
 				case 9:
-					pTirion->CastSpell(pTirion, SPELL_ICEBLOCK_TRIGGER, false);
+					pLichKing->CastSpell(pTirion, SPELL_ICEBLOCK_TRIGGER, false);
 					KingIntro(2000);
 					break;
 				case 10:
@@ -896,8 +879,8 @@ struct mob_IcePulsAI : public ScriptedAI
 
 	void Reset()
     {
-		m_uiIcePulseTimer	= 2*IN_MILISECONDS;
-		m_uiIceBurstCheckTimer	= 2*IN_MILISECONDS;
+		m_uiIcePulseTimer	= 2000;
+		m_uiIceBurstCheckTimer	= 2000;
     }
 
     void EnterCombat(Unit *who) 
@@ -923,7 +906,7 @@ struct mob_IcePulsAI : public ScriptedAI
 		{
 			if (me->IsWithinDistInMap(me->getVictim(), 3))
             DoCast(me->getVictim(), SPELL_ICE_BURST);
-			m_uiIceBurstCheckTimer = 2*IN_MILISECONDS;
+			m_uiIceBurstCheckTimer = 2000;
 		}
 		else m_uiIceBurstCheckTimer -= uiDiff;
     }
@@ -945,9 +928,9 @@ struct mob_ValkyrAI : public ScriptedAI
 	void Reset()
     {
 		me->SetFlying(true);
-		m_uiGrabTimer = 2*IN_MILISECONDS;
-		m_uiMovementTimer = 3*IN_MILISECONDS;
-		m_uiFallPlayerTimer = 10*IN_MILISECONDS;
+		m_uiGrabTimer = 2000;
+		m_uiMovementTimer = 3000;
+		m_uiFallPlayerTimer = 10000;
     }
 
     void EnterCombat(Unit *who) 
@@ -966,21 +949,21 @@ struct mob_ValkyrAI : public ScriptedAI
 			{
 				pTarget->EnterVehicle(vehicle);
 			}
-            m_uiGrabTimer = 120*IN_MILISECONDS;
+            m_uiGrabTimer = 120000;
          } 
 		else m_uiGrabTimer -= uiDiff;
 
 		if (m_uiMovementTimer < uiDiff)
         {
 			me->GetMotionMaster()->MovePoint(0, ValkyrMoveMent);
-			m_uiMovementTimer = 120*IN_MILISECONDS;
+			m_uiMovementTimer = 120000;
         } 
 		else m_uiMovementTimer -= uiDiff;
 
 		if (m_uiFallPlayerTimer < uiDiff)
         {
 			vehicle->RemoveAllPassengers();
-			m_uiFallPlayerTimer = 120*IN_MILISECONDS;;
+			m_uiFallPlayerTimer = 120000;
         } 
 		else m_uiFallPlayerTimer -= uiDiff;
     }
@@ -1221,3 +1204,4 @@ void AddSC_boss_lichking()
     NewScript->GetAI = &GetAI_mob_RagingSpirit;
     NewScript->RegisterSelf();
 }
+

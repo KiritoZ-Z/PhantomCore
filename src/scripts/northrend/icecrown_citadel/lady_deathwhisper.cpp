@@ -19,9 +19,8 @@
 #include "ScriptedPch.h"
 #include "icecrown_citadel.h"
 
-enum Spells
+enum DeathwhisperSpells
 {
-	/******** Lady Deathwhisper Spell *********/
 	SPELL_DEATH_AND_DECAY			=	72108,
 	SPELL_DOMINATE_MIND				=	71289,
 	SPELL_SHADOW_BOLT				=   71254,
@@ -34,18 +33,18 @@ enum Spells
 	SPELL_INSIGNIFICANCE			=	71204,
 	SPELL_ROOT						=	42716,
 	SPELL_BERSERK					=	47008,
-	
-	/********* Cult Adherents & Reanimated Adherents Spells *********/
-	SPELL_FROST_FEVER				=	71129,
-	SPELL_DEATHCHILL_BOLT			=	70594,
-	SPELL_DEATHCHILL_BLAST			=	70906,
-	SPELL_DARK_MARTYRDROM			=	70903,
-	SPELL_CURSE_OF_TOPOR			=	71237,
-	SPELL_SHORUD_OF_THE_OCCULUT		=	70768,
-	SPELL_ADHERENTS_DETERMINIATION	=	71234,
-	SPELL_PORT_VISUAL				=	41236,
+};
 
-	/******* Difficulty Spells *******/
+enum CultSpells
+{
+	SPELL_FROST_FEVER				    =	71129,
+	SPELL_DEATHCHILL_BOLT			    =	70594,
+	SPELL_DEATHCHILL_BLAST			    =	70906,
+	SPELL_DARK_MARTYRDROM			    =	70903,
+	SPELL_CURSE_OF_TOPOR			    =	71237,
+	SPELL_SHORUD_OF_THE_OCCULUT		    =	70768,
+	SPELL_ADHERENTS_DETERMINIATION 	    =	71234,
+	SPELL_PORT_VISUAL				    =	41236,
 	SPELL_DEATH_AND_DECAY_25			=	72110,
 	SPELL_SHADOW_BOLT_25				=	72008,
 	H_SPELL_SHADOW_BOLT_10				=	72008,	
@@ -68,7 +67,7 @@ enum Spells
 	H_25_SPELL_DEATHCHILL_BLAST			=	72487,
 	H_10_SPELL_DARK_MARTYRDROM			=	72497,
 	N_25_SPELL_DARK_MARTYRDROM			=	72497,
-      H_25_SPELL_DARK_MARTYRDROM			=     72497,
+    H_25_SPELL_DARK_MARTYRDROM			=   72497,
 };
 
 enum Summons
@@ -87,7 +86,6 @@ enum Yells
 	SAY_INTRO_5			=	-1665904,
 	SAY_INTRO_6			=	-1665905,
 	SAY_INTRO_7			=	-1665906,
-
 	SAY_AGGRO			=	-1665909,
 	SAY_PHASE_2			=	-1665910,
 	SAY_EMPOWERMENT		=	-1665911,
@@ -101,19 +99,19 @@ enum Yells
 
 float SpawnLoc[6][3] =
 {
-    {-620.197449f, 2272.062256f, 50.848679f}, // 1 Right Door 1
-    {-598.636353f, 2272.062256f, 50.848679f}, // 2 Right Door 2
-    {-578.495728f, 2272.062256f, 50.848679f}, // 3 Right Door 3
-    {-578.495728f, 2149.211182f, 50.848679f}, // 4 Left Door 1
-    {-598.636353f, 2149.211182f, 50.848679f}, // 5 Left Door 2
-    {-620.197449f, 2149.211182f, 50.848679f}, // 6 Left Door 3
+    {-620.197449f, 2272.062256f, 50.848679f},
+    {-598.636353f, 2272.062256f, 50.848679f},
+    {-578.495728f, 2272.062256f, 50.848679f},
+    {-578.495728f, 2149.211182f, 50.848679f},
+    {-598.636353f, 2149.211182f, 50.848679f},
+    {-620.197449f, 2149.211182f, 50.848679f},
 };
 
 float HeroicSpawnLoc[3][3] =
 {
-	{-517.652466f, 2216.611328f, 62.823681f}, // 7 Upper marsh 1
-    {-517.652466f, 2211.611328f, 62.823681f}, // 8 Upper marsh 2
-    {-517.652466f, 2206.611328f, 62.823681f}, // 9 Upper marsh 3
+	{-517.652466f, 2216.611328f, 62.823681f},
+    {-517.652466f, 2211.611328f, 62.823681f},
+    {-517.652466f, 2206.611328f, 62.823681f}, 
 };
 
 struct NotCharmedTargetSelector : public std::unary_function<Unit *, bool> 
@@ -210,7 +208,6 @@ struct Boss_Lady_DeathwisperAI : public ScriptedAI
             me->SetPower(POWER_MANA, me->GetPower(POWER_MANA)>damage ? me->GetPower(POWER_MANA)-damage : 0);
         }
     }
-
 	
 	void AdherentList(Unit* me)
 	{
@@ -393,97 +390,12 @@ CreatureAI* GetAI_Boss_Lady_Deathwisper(Creature* pCreature)
     return new Boss_Lady_DeathwisperAI(pCreature);
 }
 
-struct CultAdherentsAI : public ScriptedAI
-{
-    CultAdherentsAI(Creature *pCreature) : ScriptedAI(pCreature) 
-	{
-	}
-
-	uint32 uiFrostFeverTimer;
-	uint32 uiDeathchillBoltTimer;
-	uint32 uiCurseofToporTimer;
-	uint32 uiPhaseTimer;
-
-	bool m_bIsDarkMartydrom; 
-	bool m_bIsPhase2;
-
-    void Reset() 
-	{
-		uiFrostFeverTimer	=	15000;
-		uiDeathchillBoltTimer	= 10000;
-		uiCurseofToporTimer	=	urand(10000,20000);
-		uiPhaseTimer = 120000;
-
-		m_bIsDarkMartydrom = false;
-		m_bIsPhase2 = false;
-	}
-
-    void EnterCombat(Unit* who) 
-	{
-		DoCast(me, SPELL_SHORUD_OF_THE_OCCULUT);
-	}
-
-    void UpdateAI(const uint32 uiDiff)
-    {
-        if (!UpdateVictim())
-            return;
-
-			if (uiFrostFeverTimer < uiDiff)
-            {
-				DoCast(me->getVictim(), SPELL_FROST_FEVER);
-				uiFrostFeverTimer = 15000;
-            }
-            else uiFrostFeverTimer -= uiDiff;
-			if (uiDeathchillBoltTimer < uiDiff)
-            {
-				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
-				DoCast(pTarget, RAND(SPELL_DEATHCHILL_BLAST, SPELL_DEATHCHILL_BOLT));
-				uiDeathchillBoltTimer = 5000;
-            }
-            else uiDeathchillBoltTimer -= uiDiff;
-			if (uiCurseofToporTimer < uiDiff)
-            {
-				Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM);
-				DoCast(pTarget, SPELL_CURSE_OF_TOPOR);
-				uiCurseofToporTimer = urand(10000,20000);
-            }
-            else uiCurseofToporTimer -= uiDiff;
-
-			if (HealthBelowPct(15) && !m_bIsDarkMartydrom)
-			{
-				me->CastStop();
-				DoCast(me, SPELL_DARK_MARTYRDROM);
-				m_bIsDarkMartydrom = true;
-				uiPhaseTimer = 5000;
-			}
-			if (uiPhaseTimer < uiDiff && !m_bIsPhase2)
-            {
-				me->SetHealth(me->GetMaxHealth());
-				DoCast(me, SPELL_ADHERENTS_DETERMINIATION);
-				m_bIsPhase2 = true;
-            }
-            else uiPhaseTimer -= uiDiff;
-
-	DoMeleeAttackIfReady();
-    }
-};
-
-CreatureAI* GetAI_CultAdherents(Creature* pCreature)
-{
-    return new CultAdherentsAI (pCreature);
-}
-
-void AddSC_boss_Deahtwisper()
+void AddSC_boss_deahtwisper()
 {
     Script* NewScript;
 
     NewScript = new Script;
     NewScript->Name = "Boss_Lady_Deathwisper";
     NewScript->GetAI = &GetAI_Boss_Lady_Deathwisper;
-    NewScript->RegisterSelf();
-
-	NewScript = new Script;
-    NewScript->Name = "mob_CultAdherents";
-    NewScript->GetAI = &GetAI_CultAdherents;
     NewScript->RegisterSelf();
 }

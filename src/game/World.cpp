@@ -1284,7 +1284,6 @@ void World::SetInitialWorldSettings()
     ///- Check the existence of the map files for all races' startup areas.
     if (!MapManager::ExistMapAndVMap(0,-6240.32f, 331.033f)
         ||!MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f)
-        ||!MapManager::ExistMapAndVMap(0,-8949.95f,-132.493f)
         ||!MapManager::ExistMapAndVMap(1,-618.518f,-4251.67f)
         ||!MapManager::ExistMapAndVMap(0, 1676.35f, 1677.45f)
         ||!MapManager::ExistMapAndVMap(1, 10311.3f, 832.463f)
@@ -1741,10 +1740,8 @@ void World::SetInitialWorldSettings()
         sLog.SetLogDB(true);
     }
     else
-    {
         sLog.SetLogDB(false);
-        sLog.SetLogDBLater(false);
-    }
+
     sScriptMgr.OnServerStartup();
     sLog.outString("WORLD: World initialized");
 }

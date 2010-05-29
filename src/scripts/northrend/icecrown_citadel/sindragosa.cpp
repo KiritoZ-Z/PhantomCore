@@ -38,7 +38,6 @@ enum Yells
 
 enum Spells
 {
-	// Land Spells
 	SPELL_FROST_AURA_10_NORMAL		=	70084,
 	SPELL_FROST_AURA_25_NORMAL		=	71050,
 	SPELL_CLEAVE					=	19983,
@@ -51,18 +50,12 @@ enum Spells
 	SPELL_ICY_TRIP_PULL				=	70122,
 	SPELL_BLISTERING_COLD_10_NORMAL	=	70123,
 	SPELL_BLISTERING_COLD_25_NORMAL	=	71047,
-
-	// Air Phase
-	SPELL_FROST_BOMB_TRIGGER		=	69846, // Spawnt Trigger Trigger casts Frost Bomb! :P
-	SPELL_FROST_BEACON				=	70126, // Marked 2 Players im 10 und 5 im 25
+	SPELL_FROST_BOMB_TRIGGER		=	69846,
+	SPELL_FROST_BEACON				=	70126,
 	SPELL_ICE_TOMB					=	70157, 
 	SPELL_ICE_TOMB_TRIGGER			=	69675, 
-	SPELL_FROST_BOMB				=	71053, // 4 Frost Bombs will be cast before the phase ends.
-
-	// Enrage Phase + Land Phase
+	SPELL_FROST_BOMB				=	71053,
 	SPELL_MYSTIC_BUFFED				=	70128,
-
-	// Other
 	SPELL_BERSERK					=	47008,
 };
 
@@ -74,11 +67,11 @@ enum Mobs
 	
 enum Phase
 {
-    PHASE_LAND     = 1, // Start Phase am Boden.
-    PHASE_FLY      = 2, // Hebt in die Luft ab und Friert 2 - 5 Leute ein.
-    PHASE_ENRAGE   = 3, // ab 35% Soft Enrage und es kommt keine Flyphase mehr.
+    PHASE_LAND     = 1,
+    PHASE_FLY      = 2, 
+    PHASE_ENRAGE   = 3,  
 };
-
+/*
 float IntroWays[8][3] =
 {
     {-11053.37,-1794.48,149},
@@ -90,7 +83,7 @@ float IntroWays[8][3] =
     {-11140   , -1915  ,122},
     {-11163   , -1903  ,91.473}
 };
-
+*/
 struct Boss_SindragosaAI : public ScriptedAI
 {
 	Boss_SindragosaAI(Creature*pCreature) : ScriptedAI (pCreature)
@@ -102,7 +95,6 @@ struct Boss_SindragosaAI : public ScriptedAI
 
 	uint8 Phase;
 
-	// Land Spells
 	uint32 m_uiBreathTimer;
 	uint32 m_uiCleaveTimer;
 	uint32 m_uiTailSmashTimer;
@@ -185,14 +177,13 @@ struct Boss_SindragosaAI : public ScriptedAI
 
         me->InterruptSpell(CURRENT_GENERIC_SPELL);
         me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
-        me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
+        /*me->AddUnitMovementFlag(MOVEMENTFLAG_LEVITATING);
         (*me).GetMotionMaster()->Clear(false);
-        (*me).GetMotionMaster()->MovePoint(0,IntroWays[2][0],IntroWays[2][1],IntroWays[2][2]);
+        (*me).GetMotionMaster()->MovePoint(0,IntroWays[2][0],IntroWays[2][1],IntroWays[2][2]);*/
 
-        FlyTimer = urand(45000,60000); //timer wrong between 45 and 60 seconds
+        FlyTimer = urand(45000,60000);
      }
 
-    
     void UpdateAI(const uint32 uiDiff)
     {
 		if (!UpdateVictim())
@@ -217,7 +208,7 @@ struct Boss_SindragosaAI : public ScriptedAI
 		if (m_uiTailSmashTimer <= uiDiff)
         {
 			TakeOff();//DoCast(me, SPELL_TAIL_SMASH);
-            m_uiTailSmashTimer = 50000;//urand(5000,10000);
+            m_uiTailSmashTimer = urand(5000,10000);
         } 
 		else m_uiTailSmashTimer -= uiDiff;
 
@@ -254,7 +245,6 @@ struct Boss_SindragosaAI : public ScriptedAI
 
 	if(Phase == PHASE_ENRAGE)
 	{
-	// Alle 5 sek Iceblock Count auf ein Random Spieler
 	}
 
 	if(Phase == PHASE_LAND || Phase == PHASE_FLY)
@@ -275,7 +265,7 @@ CreatureAI* GetAI_Boss_Sindragosa(Creature* pCreature)
     return new Boss_SindragosaAI(pCreature);
 }
 
-void AddSC_Boss_Sindragosa()
+void AddSC_boss_sindragosa()
 {
     Script *newscript;
     
@@ -284,25 +274,4 @@ void AddSC_Boss_Sindragosa()
     newscript->GetAI = &GetAI_Boss_Sindragosa;
     newscript->RegisterSelf();
 }
-
-
-		/* Für Später für die Mana spells
-		 std::vector<Unit*> unitList;
-                        std::list<HostilReference*> *threatList = &me->getThreatManager().getThreatList();
-                        for (std::list<HostilReference*>::const_iterator itr = threatList->begin(); itr != threatList->end(); ++itr)
-                        {
-                            if ((*itr)->getTarget()->GetTypeId() == TYPEID_PLAYER
-                                && (*itr)->getTarget()->getPowerType() == POWER_MANA
-                                && (*itr)->getTarget()->GetPower(POWER_MANA))
-                                unitList.push_back((*itr)->getTarget());
-                        }
-
-                        if (!unitList.empty())
-                        {
-                            std::vector<Unit*>::iterator itr = unitList.begin();
-                            advance(itr, rand()%unitList.size());
-                            DoCast(*itr, SPELL);
-                        }
-					}
-				*/
 

@@ -20,9 +20,9 @@
 #include "icecrown_citadel.h"
 
 /*HACK*/
-struct boss_ValanarAI : public ScriptedAI
+struct boss_blood_elf_ValanarAI : public ScriptedAI
 {
-    boss_ValanarAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_blood_elf_ValanarAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
 		m_pInstance = pCreature->GetInstanceData();
     }
@@ -69,9 +69,9 @@ struct boss_ValanarAI : public ScriptedAI
 	}
 };
 
-struct boss_TaldaramAI : public ScriptedAI
+struct boss_blood_elf_TaldaramAI : public ScriptedAI
 {
-    boss_TaldaramAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_blood_elf_TaldaramAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
 		m_pInstance = pCreature->GetInstanceData();
     }
@@ -100,9 +100,9 @@ struct boss_TaldaramAI : public ScriptedAI
 	}
 };
 
-struct boss_KelesetAI : public ScriptedAI
+struct boss_blood_elf_KelesetAI : public ScriptedAI
 {
-    boss_KelesetAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_blood_elf_KelesetAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
 		m_pInstance = pCreature->GetInstanceData();
     }
@@ -130,37 +130,37 @@ struct boss_KelesetAI : public ScriptedAI
 	}
 };
 
-CreatureAI* GetAI_boss_Valanar(Creature* pCreature)
+CreatureAI* GetAI_boss_blood_elf_Valanar(Creature* pCreature)
 {
-    return new boss_ValanarAI(pCreature);
+    return new boss_blood_elf_ValanarAI(pCreature);
 }
 
-CreatureAI* GetAI_boss_Taldaram(Creature* pCreature)
+CreatureAI* GetAI_boss_blood_elf_Taldaram(Creature* pCreature)
 {
-    return new boss_TaldaramAI(pCreature);
+    return new boss_blood_elf_TaldaramAI(pCreature);
 }
 
-CreatureAI* GetAI_boss_Keleset(Creature* pCreature)
+CreatureAI* GetAI_boss_blood_elf_Keleset(Creature* pCreature)
 {
-    return new boss_KelesetAI(pCreature);
+    return new boss_blood_elf_KelesetAI(pCreature);
 }
 
-void AddSC_boss_Rat_des_Blutes()
+void AddSC_boss_rat_des_blutes()
 {
     Script* NewScript;
 
     NewScript = new Script;
-    NewScript->Name = "boss_Valanar";
-    NewScript->GetAI = &GetAI_boss_Valanar;
+    NewScript->Name = "boss_blood_elf_Valanar";
+    NewScript->GetAI = &GetAI_boss_blood_elf_Valanar;
     NewScript->RegisterSelf();
 
 	NewScript = new Script;
-    NewScript->Name = "boss_Taldaram";
-    NewScript->GetAI = &GetAI_boss_Taldaram;
+    NewScript->Name = "boss_blood_elf_Taldaram";
+    NewScript->GetAI = &GetAI_boss_blood_elf_Taldaram;
     NewScript->RegisterSelf();
 
 	NewScript = new Script;
-    NewScript->Name = "boss_Keleset";
-    NewScript->GetAI = &GetAI_boss_Keleset;
+    NewScript->Name = "boss_blood_elf_Keleset";
+    NewScript->GetAI = &GetAI_boss_blood_elf_Keleset;
     NewScript->RegisterSelf();
 }

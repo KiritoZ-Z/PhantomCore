@@ -80,7 +80,6 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 
 	ScriptedInstance* m_pInstance;
 
-	/************ Phase 1 **********/ 
 	uint32 m_uiTwilightBloodboltTimer;
 	uint32 m_uiPhaseTimer;
 	uint32 m_uiVampBiteTimer;
@@ -88,12 +87,8 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 	uint32 m_uiPactofDarkfallenTimer;
     uint32 m_uiPactofDarkfallenExplodeTimer;
 	uint32 m_uiPactofDarkfallenExplosionCount;
-
-	/************ Other **********/ 
 	uint32 m_uiPhase;
-	uint32 m_uiBerserkTimer;
-		
-	/************ Phase 2 **********/ 
+	uint32 m_uiBerserkTimer;		
 	uint32 m_uiSetHoverTimer;
 	uint32 m_uiLandingTimer;
 	uint32 m_uiFlyingFalseTimer;
@@ -101,23 +96,20 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 
 	void Reset()
 	{
-		/************ Phase Switch **********/ 
-		m_uiPhaseTimer = 120000; // Erste mal 2 Min danach immer 1:30 Min.
+		m_uiPhaseTimer = 90000;
 
-		/************ Phase 1 **********/ 
-		m_uiTwilightBloodboltTimer = 10*IN_MILISECONDS;
-		m_uiVampBiteTimer	= 15*IN_MILISECONDS;
-		m_uiSwarmingShadowsTimer = 30*IN_MILISECONDS;
-		m_uiPactofDarkfallenTimer	= 5*IN_MILISECONDS;
-		/************ Phase 2 **********/ 
-		m_uiSetHoverTimer = 900*IN_MILISECONDS;
-		m_uiBloodboldSplashTimer = 900*IN_MILISECONDS;
-		m_uiLandingTimer = 900*IN_MILISECONDS;;
-		m_uiFlyingFalseTimer = 900*IN_MILISECONDS;;
+		m_uiTwilightBloodboltTimer = 10000;
+		m_uiVampBiteTimer	= 15000;
+		m_uiSwarmingShadowsTimer = 30000;
+		m_uiPactofDarkfallenTimer	= 5000;
+		m_uiSetHoverTimer = 90000;
+		m_uiBloodboldSplashTimer = 900000;
+		m_uiLandingTimer = 900000;
+		m_uiFlyingFalseTimer = 900000;
 		
 		/************ Other **********/
 		m_uiPhase = 1;
-		m_uiBerserkTimer	= 330000; // 5:30 Min
+		m_uiBerserkTimer	= 330000;
 		me->SetFlying(false);
 
 		me->SetReactState(REACT_AGGRESSIVE);
@@ -163,8 +155,8 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 
 					DoScriptText(SAY_PACT_DARKFALLEN, me);
 					m_uiPactofDarkfallenExplosionCount = 0;
-					m_uiPactofDarkfallenExplodeTimer = 2*IN_MILISECONDS;
-					m_uiPactofDarkfallenTimer = 25*IN_MILISECONDS;
+					m_uiPactofDarkfallenExplodeTimer = 2000;
+					m_uiPactofDarkfallenTimer = 25000;
 				} 
 				else m_uiPactofDarkfallenTimer -= uiDiff;
 
@@ -172,7 +164,7 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 				{
 					if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
 					DoCast(target, SPELL_SWARMING_SHADOWS);
-					m_uiSwarmingShadowsTimer  = 30*IN_MILISECONDS;
+					m_uiSwarmingShadowsTimer  = 30000;
 				}
 				else m_uiSwarmingShadowsTimer -= uiDiff;
 
@@ -180,16 +172,16 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 				{
 					if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 0))
 					DoCast(target, SPELL_TWILIGHT_BLOODBOLT);
-					m_uiTwilightBloodboltTimer  = urand(6*IN_MILISECONDS,12*IN_MILISECONDS);
+					m_uiTwilightBloodboltTimer  = 9000;
 				}
 				else m_uiTwilightBloodboltTimer -= uiDiff;
 
 				if (m_uiVampBiteTimer < uiDiff)
 				{
 					DoScriptText(RAND(SAY_VAMP_BITE_1,SAY_VAMP_BITE_2), me);
-					if (Unit* target = SelectUnit(SELECT_TARGET_TOPAGGRO/*SELECT_TARGET_RANDOM*/, 0))
+					if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM, 1))
 					DoCast(target, SPELL_VAMPIRIC_BITE);
-					m_uiVampBiteTimer	= urand(15*IN_MILISECONDS,60*IN_MILISECONDS);
+					m_uiVampBiteTimer	= 45000+rand()%20000;
 				}
 				else m_uiVampBiteTimer -= uiDiff;
 				
@@ -201,11 +193,11 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 					me->SetReactState(REACT_PASSIVE);
 					me->AttackStop();
 					m_uiPhase = 2;
-					m_uiPhaseTimer	= 90*IN_MILISECONDS;
-					m_uiSetHoverTimer = 5*IN_MILISECONDS;
-					m_uiBloodboldSplashTimer = 10*IN_MILISECONDS;
-					m_uiLandingTimer = 26*IN_MILISECONDS;
-					m_uiFlyingFalseTimer = 30*IN_MILISECONDS;
+					m_uiPhaseTimer	= 90000;
+					m_uiSetHoverTimer = 5000;
+					m_uiBloodboldSplashTimer = 10000;
+					m_uiLandingTimer = 26000;
+					m_uiFlyingFalseTimer = 30000;
 				}
 				else m_uiPhaseTimer -= uiDiff;
 			}
@@ -217,7 +209,7 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 				me->GetMotionMaster()->MovePoint(0, FlyPosition);
 				me->SetUnitMovementFlags(MOVEMENTFLAG_JUMPING);
 				me->SetFlying(true);
-				m_uiSetHoverTimer	= 90*IN_MILISECONDS;
+				m_uiSetHoverTimer	= 90000;
 			}
 			else m_uiSetHoverTimer -= uiDiff;
 
@@ -227,7 +219,7 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
                     SelectTargetList(pTargets, 5, SELECT_TARGET_RANDOM, 80, true);
                     for (std::list<Unit*>::const_iterator i = pTargets.begin(); i != pTargets.end(); ++i)
                         DoCast(*i, RAID_MODE(SPELL_TWILIGHT_BLOODBOLT,SPELL_TWILIGHT_BLOODBOLT));
-				m_uiBloodboldSplashTimer = 2*IN_MILISECONDS;
+				m_uiBloodboldSplashTimer = 2000;
 			}
 			else m_uiBloodboldSplashTimer -= uiDiff;
 
@@ -235,8 +227,8 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 			{
 				me->GetMotionMaster()->MovePoint(0, Phase2Position);
 				me->SetUnitMovementFlags(MOVEMENTFLAG_JUMPING);
-				m_uiLandingTimer	= 900*IN_MILISECONDS;
-				m_uiBloodboldSplashTimer = 900*IN_MILISECONDS;
+				m_uiLandingTimer	= 900000;
+				m_uiBloodboldSplashTimer = 900000;
 			}
 			else m_uiLandingTimer -= uiDiff;
 
@@ -247,7 +239,7 @@ struct boss_blood_queen_lanathelAI : public ScriptedAI
 				me->SetReactState(REACT_AGGRESSIVE);
 				me->GetMotionMaster()->MoveChase(me->getVictim());
 				m_uiPhase = 1;
-				m_uiFlyingFalseTimer = 900*IN_MILISECONDS;
+				m_uiFlyingFalseTimer = 900000;
 			}
 			else m_uiFlyingFalseTimer -= uiDiff;
 		}
@@ -286,27 +278,27 @@ struct npc_swarming_shadowsAI : public Scripted_NoMovementAI
     }
 };
 
-CreatureAI* GetAI_boss_blood_queen_lanathel(Creature* pCreature)
+CreatureAI* GetAIboss_blood_queen_lanathelAI(Creature* pCreature)
 {
-     return new boss_blood_queen_lanathelAI (pCreature);
+    return new boss_blood_queen_lanathelAI (pCreature);
 }
 
-CreatureAI* GetAI_npc_swarming_shadows(Creature* pCreature)
+CreatureAI* GetAInpc_swarming_shadowsAI(Creature* pCreature)
 {
-     return new npc_swarming_shadowsAI (pCreature);
+    return new npc_swarming_shadowsAI (pCreature);
 }
 
-void AddSC_Blood_Queen_Lanathel()
+void AddSC_boss_blood_queen_lanathel()
 {
      Script *newscript;
 
      newscript = new Script;
      newscript->Name = "boss_blood_queen_lanathel";
-     newscript->GetAI = &GetAI_boss_blood_queen_lanathel;
+     newscript->GetAI = &GetAIboss_blood_queen_lanathelAI;
      newscript->RegisterSelf();
 
-	 newscript = new Script;
+     newscript = new Script;
      newscript->Name = "npc_swarming_shadows";
-     newscript->GetAI = &GetAI_npc_swarming_shadows;
+     newscript->GetAI = &GetAInpc_swarming_shadowsAI;
      newscript->RegisterSelf();
 }

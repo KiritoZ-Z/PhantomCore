@@ -330,22 +330,22 @@ SET(scripts_STAT_SRCS
    northrend/azjol_nerub/ahnkahet/boss_herald_volazj.cpp
    northrend/azjol_nerub/ahnkahet/boss_amanitar.cpp
    northrend/azjol_nerub/ahnkahet/ahnkahet.h
-   northrend/icecrown_citadel/instance_icecrown_citadel.cpp
-   northrend/icecrown_citadel/icecrown_citadel.h
-   northrend/icecrown_citadel/icecrown_teleport.cpp
-   northrend/icecrown_citadel/blood-queen_lanathel.cpp
-   northrend/icecrown_citadel/deathbringer_saurfang.cpp
-   northrend/icecrown_citadel/festergut.cpp
-   northrend/icecrown_citadel/gunship_battle.cpp
-   northrend/icecrown_citadel/lady_deathwhisper.cpp
-   northrend/icecrown_citadel/lord_marrowgar.cpp
-   northrend/icecrown_citadel/professor_putricide.cpp
-   northrend/icecrown_citadel/rat_des_blutes.cpp
-   northrend/icecrown_citadel/rotface.cpp
-   northrend/icecrown_citadel/sindragosa.cpp
-   northrend/icecrown_citadel/the_lich_king.cpp
-   northrend/icecrown_citadel/valithria_dreamwalker.cpp
-   northrend/icecrown_citadel/lower_spire_trash.cpp
+   northrend/Icecrown_scripts/instance_icecrown_citadel.cpp
+   northrend/Icecrown_scripts/icecrown_citadel.h
+   northrend/Icecrown_scripts/icecrown_teleport.cpp
+   northrend/Icecrown_scripts/blood-queen_lana'thel.cpp
+   northrend/Icecrown_scripts/deathbringer_saurfang.cpp
+   northrend/Icecrown_scripts/festergut.cpp
+   northrend/Icecrown_scripts/gunship_battle.cpp
+   northrend/Icecrown_scripts/lady_deathwhisper.cpp
+   northrend/Icecrown_scripts/lord_marrowgar.cpp
+   northrend/Icecrown_scripts/professor_putricide.cpp
+   northrend/Icecrown_scripts/rat_des_blutes.cpp
+   northrend/Icecrown_scripts/rotface.cpp
+   northrend/Icecrown_scripts/sindragosa.cpp
+   northrend/Icecrown_scripts/the_lich_king.cpp
+   northrend/Icecrown_scripts/valithria_dreamwalker.cpp
+   northrend/Icecrown_scripts/lower_spire_trash.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_argent_challenge.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_black_knight.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/boss_grand_champions.cpp
