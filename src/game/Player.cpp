@@ -17835,13 +17835,12 @@ void Player::SaveToDB()
     // save stats can be out of transaction
     if (m_session->isLogingOut() || !sWorld.getConfig(CONFIG_STATS_SAVE_ONLY_ON_LOGOUT))
         _SaveStats();
+		
+	CharacterDatabase.CommitTransaction();
 
-
-    // save pet (hunter pet level and experience and all type pets health/mana).
+	// save pet (hunter pet level and experience and all type pets health/mana).
     if (Pet* pet = GetPet())
         pet->SavePetToDB(PET_SAVE_AS_CURRENT);
- 
- 	    CharacterDatabase.CommitTransaction();
 }
 
 // fast save function for item/money cheating preventing - save only inventory and money state
@@ -18015,9 +18014,8 @@ void Player::_SaveInventory()
                 CharacterDatabase.PExecute("INSERT INTO character_inventory (guid,bag,slot,item,item_template) VALUES ('%u', '%u', '%u', '%u', '%u')", GetGUIDLow(), bag_guid, item->GetSlot(), item->GetGUIDLow(), item->GetEntry());
                 break;
             case ITEM_CHANGED:
-				CharacterDatabase.BeginTransaction();
-				CharacterDatabase.PExecute("UPDATE character_inventory SET guid='%u', bag='%u', slot='%u', item_template='%u' WHERE item='%u'", GetGUIDLow(), bag_guid, item->GetSlot(), item->GetEntry(), item->GetGUIDLow());
-				CharacterDatabase.CommitTransaction();
+				CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item = '%u'", item->GetGUIDLow());
+				CharacterDatabase.PExecute("INSERT INTO character_inventory (guid,bag,slot,item,item_template) VALUES ('%u', '%u', '%u', '%u', '%u')", GetGUIDLow(), bag_guid, item->GetSlot(), item->GetGUIDLow(), item->GetEntry());
 				break;
             case ITEM_REMOVED:
                 CharacterDatabase.PExecute("DELETE FROM character_inventory WHERE item = '%u'", item->GetGUIDLow());
