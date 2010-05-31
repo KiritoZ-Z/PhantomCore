@@ -1863,6 +1863,12 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastCustomSpell(m_caster, 53479, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
                     return;
                 }
+				// Killing Spree
+                case 51690:                                 
+                {
+                    m_caster->CastSpell(m_caster, 61851, true);
+                    return;
+                }
                 // Master's Call
                 case 53271:
                 {
