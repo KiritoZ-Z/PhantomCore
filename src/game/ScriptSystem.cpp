@@ -45,13 +45,11 @@ void SystemMgr::LoadVersion()
 
         outstring_log("TSCR: Database version is: %s", pFields[0].GetString());
         outstring_log("");
-		delete pResult;
     }
     else
     {
         error_log("TSCR: Missing `version`.`script_version` information.");
         outstring_log("");
-		delete pResult;
     }
 }
 
@@ -174,7 +172,6 @@ void SystemMgr::LoadScriptTextsCustom()
             m_mTextDataMap[iId] = pTemp;
             ++uiCount;
         } while (Result->NextRow());
-		delete pResult;
         outstring_log("");
         outstring_log(">> Loaded %u additional Custom Texts data.", uiCount);
     }
