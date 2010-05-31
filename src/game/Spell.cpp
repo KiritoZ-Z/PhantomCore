@@ -1410,6 +1410,7 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
                        m_spellAura->Remove();
                        return SPELL_MISS_IMMUNE;
                    }
+				}
                 if (duration != m_spellAura->GetMaxDuration())
                 {
                     m_spellAura->SetMaxDuration(duration);
