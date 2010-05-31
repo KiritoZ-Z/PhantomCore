@@ -5223,7 +5223,8 @@ float Player::DodgeDiminishingReturn(float dodge)
 void Player::GetDodgeFromAgility(float &diminishing, float &nondiminishing)
 {
     // Table for base dodge values
-+    static const float dodge_base[MAX_CLASSES] = {
+    static const float dodge_base[MAX_CLASSES] = 
+	{
          0.036640f, // Warrior
          0.034943f, // Paladin
         -0.040873f, // Hunter
