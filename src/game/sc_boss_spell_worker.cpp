@@ -1,10 +1,12 @@
 /*PhantomCore */
+/* Copyright (C) 2009 - 2010 by /dev/rsa for ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
-#include "Sc_boss_spell_worker.h"
+#include "sc_boss_spell_worker.h"
 #include "ScriptedPch.h"
-#ifdef DEF_BOSS_SPELL_WORKER_H
 
-//extern DatabaseType SD2Database;
+#ifdef DEF_BOSS_SPELL_WORKER_H
 
 BossSpellWorker::BossSpellWorker(ScriptedAI* bossAI)
 {
@@ -65,7 +67,7 @@ void BossSpellWorker::LoadSpellTable()
 
             int32 bossEntry          = pFields[0].GetInt32();
 
-           for (uint8 j = 0; j < DIFFICULTY_LEVELS; ++j)
+            for (uint8 j = 0; j < DIFFICULTY_LEVELS; ++j)
                  m_BossSpell[uiCount].m_uiSpellEntry[j]  = pFields[1+j].GetUInt32();
 
             for (uint8 j = 0; j < DIFFICULTY_LEVELS; ++j)
@@ -81,7 +83,7 @@ void BossSpellWorker::LoadSpellTable()
             m_BossSpell[uiCount].LocData.y  = pFields[2+DIFFICULTY_LEVELS*4].GetFloat();
             m_BossSpell[uiCount].LocData.z  = pFields[3+DIFFICULTY_LEVELS*4].GetFloat();
 
-           m_BossSpell[uiCount].varData    = pFields[4+DIFFICULTY_LEVELS*4].GetInt32();
+            m_BossSpell[uiCount].varData    = pFields[4+DIFFICULTY_LEVELS*4].GetInt32();
 
             m_BossSpell[uiCount].StageMaskN = pFields[5+DIFFICULTY_LEVELS*4].GetUInt32();
             m_BossSpell[uiCount].StageMaskH = pFields[6+DIFFICULTY_LEVELS*4].GetUInt32();
@@ -140,7 +142,7 @@ CanCastResult BossSpellWorker::_BSWSpellSelector(uint8 m_uiSpellIdx, Unit* pTarg
         switch (pSpell->m_CastTarget) {
 
             case DO_NOTHING: 
-                  return CAST_OK;
+                   return CAST_OK;
 
             case CAST_ON_SELF:
                    if (!pSpell->m_IsBugged) return _DoCastSpellIfCan(boss, pSpell->m_uiSpellEntry[currentDifficulty]);
@@ -159,7 +161,7 @@ CanCastResult BossSpellWorker::_BSWSpellSelector(uint8 m_uiSpellIdx, Unit* pTarg
 
             case CAST_ON_RANDOM:
                    pTarget = SelectUnit(SELECT_TARGET_RANDOM);
-                  return _BSWCastOnTarget(pTarget, m_uiSpellIdx);
+                   return _BSWCastOnTarget(pTarget, m_uiSpellIdx);
                    break;
 
             case CAST_ON_BOTTOMAGGRO:
@@ -167,7 +169,7 @@ CanCastResult BossSpellWorker::_BSWSpellSelector(uint8 m_uiSpellIdx, Unit* pTarg
                    return _BSWCastOnTarget(pTarget, m_uiSpellIdx);
                    break;
 
-           case CAST_ON_TARGET:
+            case CAST_ON_TARGET:
                    return _BSWCastOnTarget(pTarget, m_uiSpellIdx);
                    break;
 
@@ -310,7 +312,7 @@ switch (_Difficulty) {
 
 BossSpellTableParameters BossSpellWorker::getBSWCastType(uint32 pTemp)
 {
-   switch (pTemp) {
+    switch (pTemp) {
                 case 0:  return DO_NOTHING;
                 case 1:  return CAST_ON_SELF;
                 case 2:  return CAST_ON_SUMMONS;
@@ -337,6 +339,7 @@ CanCastResult BossSpellWorker::_BSWDoCast(uint8 m_uiSpellIdx, Unit* pTarget)
     if (!pTarget->isAlive()) return CAST_FAIL_OTHER;
     SpellTable* pSpell = &m_BossSpell[m_uiSpellIdx];
     debug_log("BSW: Casting bugged spell number %u type %u",pSpell->m_uiSpellEntry[currentDifficulty], pSpell->m_CastTarget);
+    pTarget->InterruptNonMeleeSpells(false);
     pTarget->CastSpell(pTarget, pSpell->m_uiSpellEntry[currentDifficulty], false);
          return CAST_OK;
 };
@@ -374,7 +377,15 @@ Unit* BossSpellWorker::_doSummon(uint8 m_uiSpellIdx, TempSummonType summontype, 
     } else return boss->SummonCreature(pSpell->m_uiSpellEntry[currentDifficulty], pSpell->LocData.x, pSpell->LocData.y, pSpell->LocData.z, 0, summontype, delay);
 };
 
-bool BossSpellWorker::_doRemove(uint8 m_uiSpellIdx, Unit* pTarget)
+Unit* BossSpellWorker::_doSummonAtPosition(uint8 m_uiSpellIdx, TempSummonType summontype, uint32 delay, float fPosX, float fPosY, float fPosZ)
+{
+    SpellTable* pSpell = &m_BossSpell[m_uiSpellIdx];
+
+    debug_log("BSW: Summoning creature number %u type %u despawn delay %u at position %f %f %f",pSpell->m_uiSpellEntry[currentDifficulty], pSpell->m_CastTarget, delay, fPosX, fPosY, fPosZ);
+    return boss->SummonCreature(pSpell->m_uiSpellEntry[currentDifficulty], fPosX, fPosY, fPosZ, 0, summontype, delay);
+};
+
+bool BossSpellWorker::_doRemove(uint8 m_uiSpellIdx, Unit* pTarget, SpellEffectIndex index)
 {
     SpellTable* pSpell = &m_BossSpell[m_uiSpellIdx];
 
@@ -395,13 +406,13 @@ bool BossSpellWorker::_doRemove(uint8 m_uiSpellIdx, Unit* pTarget)
 
                 case CAST_ON_SUMMONS:
                 case CAST_ON_VICTIM:
-                case CAST_ON_RANDOM:
                 case CAST_ON_BOTTOMAGGRO:
                 case CAST_ON_TARGET:
                 case APPLY_AURA_TARGET:
                      if (!pTarget) return false;
                      break;
 
+                case CAST_ON_RANDOM:
                 case CAST_ON_ALLPLAYERS:
                   {
                     Map::PlayerList const& pPlayers = pMap->GetPlayers();
@@ -420,8 +431,8 @@ bool BossSpellWorker::_doRemove(uint8 m_uiSpellIdx, Unit* pTarget)
           if (pTarget) {
               if (pTarget->isAlive()) {
                   if ( pTarget->HasAura(pSpell->m_uiSpellEntry[currentDifficulty]) &&
-                       pTarget->GetAura(pSpell->m_uiSpellEntry[currentDifficulty], EFFECT_INDEX_0)->GetStackAmount() > 1) {
-                           if (pTarget->GetAura(pSpell->m_uiSpellEntry[currentDifficulty], EFFECT_INDEX_0)->ModStackAmount(-1)) 
+                       pTarget->GetAura(pSpell->m_uiSpellEntry[currentDifficulty], index)->GetStackAmount() > 1) {
+                           if (pTarget->GetAura(pSpell->m_uiSpellEntry[currentDifficulty], index)->ModStackAmount(-1)) 
                                          return true;
                                else return false;
                                }

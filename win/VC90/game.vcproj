@@ -104,6 +104,87 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP /Zm200"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\Database;..\..\src\shared\vmap;..\..\dep\ACE_wrappers;..\..\src\game\"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pchdef.h"
+				PrecompiledHeaderFile=".\game__$(PlatformName)_$(ConfigurationName)\game.pch"
+				AssemblerListingLocation=".\game__$(PlatformName)_$(ConfigurationName)\"
+				ObjectFile=".\game__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\game__$(PlatformName)_$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				CallingConvention="0"
+				CompileAs="0"
+				ForcedIncludeFiles="pchdef.h"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_SECURE_SCL=0"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile=".\game__$(PlatformName)_$(ConfigurationName)\game.lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Debug|x64"
 			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
 			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
@@ -168,87 +249,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
-				OutputFile=".\game__$(PlatformName)_$(ConfigurationName)\game.lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm200"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\Database;..\..\src\shared\vmap;..\..\dep\ACE_wrappers;..\..\src\game\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="pchdef.h"
-				PrecompiledHeaderFile=".\game__$(PlatformName)_$(ConfigurationName)\game.pch"
-				AssemblerListingLocation=".\game__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\game__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\game__$(PlatformName)_$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CallingConvention="0"
-				CompileAs="0"
-				ForcedIncludeFiles="pchdef.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_SECURE_SCL=0"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
 				OutputFile=".\game__$(PlatformName)_$(ConfigurationName)\game.lib"
 				SuppressStartupBanner="true"
 			/>
@@ -2944,14 +2944,14 @@
 						RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\boss_onyxia.cpp"
 						>
 					</File>
-                                        <File
-                                                RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\instance_onyxias_lair.cpp"
-                                                >
-                                        </File>
-                                        <File
-                                                RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\instance_onyxias_lair.h"
-                                                >
-                                        </File>
+					<File
+						RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\instance_onyxias_lair.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\kalimdor\onyxias_lair\instance_onyxias_lair.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Razorfen Downs"
@@ -3360,6 +3360,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\lower_spire_trash.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\professor_putricide.cpp"
 							>
 						</File>
@@ -3383,12 +3387,8 @@
 							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\valithria_dreamwalker.cpp"
 							>
 						</File>
-						<File
-							RelativePath="..\..\src\scripts\northrend\icecrown_citadel\lower_spire_trash.cpp"
-							>
-						</File>
 					</Filter>
-     				</Filter>
+				</Filter>
 				<Filter
 					Name="Gundrak"
 					>
@@ -3893,35 +3893,23 @@
 					Name="Trial of the Crusader"
 					>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_anubarak_toc.cpp"
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_anubarak_trial.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_champions.cpp"
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_faction_champions.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_dreadscale.cpp"
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_jaraxxus.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_fjola.cpp"
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_northrend_beasts.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_gormok.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_icehowl.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_lord_jaraksus.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\def.h"
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\boss_twin_valkyr.cpp"
 						>
 					</File>
 					<File
@@ -3930,6 +3918,10 @@
 					</File>
 					<File
 						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\trial_of_the_crusader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\scripts\northrend\crusaders_coliseum\trial_of_the_crusader\trial_of_the_crusader.h"
 						>
 					</File>
 				</Filter>
@@ -4408,7 +4400,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -4417,7 +4409,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

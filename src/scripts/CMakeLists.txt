@@ -352,16 +352,14 @@ SET(scripts_STAT_SRCS
    northrend/crusaders_coliseum/trial_of_the_champion/instance_trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.cpp
    northrend/crusaders_coliseum/trial_of_the_champion/trial_of_the_champion.h
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_anubarak_trial.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_faction_champions.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_jaraxxus.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_northrend_beasts.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/boss_twin_valkyr.cpp
    northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crusader.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_gormok.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_dreadscale.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_icehowl.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_lord_jaraksus.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_champions.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_fjola.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/boss_anubarak_toc.cpp
+   northrend/crusaders_coliseum/trial_of_the_crusader/trial_of_the_crusader.h
    northrend/crusaders_coliseum/trial_of_the_crusader/instance_trial_of_the_crusader.cpp
-   northrend/crusaders_coliseum/trial_of_the_crusader/def.h
    northrend/draktharon_keep/instance_drak_tharon_keep.cpp
    northrend/draktharon_keep/boss_trollgore.cpp
    northrend/draktharon_keep/boss_novos.cpp
