@@ -3246,6 +3246,7 @@ void Spell::EffectEnergize(uint32 i)
         case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command
+		case 71132:                                         // Glyph of Shadow Word: Pain 
             damage = damage * unitTarget->GetCreateMana() / 100;
             break;
         case 48542:                                         // Revitalize
