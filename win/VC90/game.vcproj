@@ -1638,6 +1638,14 @@
 		<Filter
 			Name="Scripts"
 			>
+			<File
+				RelativePath="..\..\src\game\sc_boss_spell_worker.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\sc_boss_spell_worker.h"
+				>
+			</File>
 			<Filter
 				Name="System"
 				>
