@@ -1400,12 +1400,16 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask, bool 
                 //mod duration of channeled aura by spell haste
                 if (IsChanneledSpell(m_spellInfo))
                     m_originalCaster->ModSpellCastTime(aurSpellInfo, duration, this);
-
- 	                if (duration == 0)
- 	                {
- 	                    m_spellAura->Remove();
- 	                    return SPELL_MISS_IMMUNE;
- 	                }
+                if (m_spellAura->GetId() == 66 || m_spellAura->GetId() == 32612)
+                {
+                }
+                else
+                {
+                   if (duration == 0)
+                   {
+                       m_spellAura->Remove();
+                       return SPELL_MISS_IMMUNE;
+                   }
                 if (duration != m_spellAura->GetMaxDuration())
                 {
                     m_spellAura->SetMaxDuration(duration);
