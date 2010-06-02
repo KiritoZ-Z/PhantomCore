@@ -1274,6 +1274,9 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player *plr, uint32 zone)
 
     if (isWarTime())
     {
+        plr->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
+        plr->RemoveAurasByType(SPELL_AURA_FLY);
+
         if (plr->getLevel() > 69)
         {
             if (!plr->HasAura(SPELL_RECRUIT) && !plr->HasAura(SPELL_CORPORAL) && !plr->HasAura(SPELL_LIEUTENANT))
