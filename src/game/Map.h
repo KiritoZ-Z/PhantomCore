@@ -379,6 +379,7 @@ class Map : public GridRefManager<NGridType>, public Trinity::ObjectLevelLockabl
 
         uint32 GetInstanceId() const { return i_InstanceId; }
         uint8 GetSpawnMode() const { return (i_spawnMode); }
+        uint32 GetMaxPlayers() const;                       // dependent from map difficulty
         virtual bool CanEnter(Player* /*player*/) { return true; }
         const char* GetMapName() const;
 

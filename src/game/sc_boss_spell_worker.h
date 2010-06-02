@@ -189,6 +189,8 @@ class BossSpellWorker
 
         Unit*         _doSummon(uint8 m_uiSpellIdx, TempSummonType type = TEMPSUMMON_CORPSE_TIMED_DESPAWN, uint32 delay = 60000);
 
+        Unit*         _doSelect(uint32 SpellID, bool spellsearchtype = false, float range = 100.0f);
+
         Unit*         _doSummonAtPosition(uint8 m_uiSpellIdx, TempSummonType type, uint32 delay, float fPosX, float fPosY, float fPosZ);
 
         CanCastResult _BSWDoCast(uint8 m_uiSpellIdx, Unit* pTarget);
