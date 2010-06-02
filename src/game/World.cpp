@@ -2651,7 +2651,8 @@ void World::InitRandomBGResetTime()
     if (curTime >= nextDayResetTime)
         nextDayResetTime += DAY;
 
-    // normalize reset time
+    time_t bgtime = uint64(sWorld.getWorldState(WS_BG_DAILY_RESET_TIME));
+    if (!bgtime)
     m_NextRandomBGReset = bgtime < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
