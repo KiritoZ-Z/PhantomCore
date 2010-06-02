@@ -21,7 +21,7 @@
 
 enum eTypes
 {
-    MAX_ENCOUNTER               = 14,
+    MAX_ENCOUNTER               = 15,
 
     TYPE_LEVIATHAN              = 0,
     TYPE_IGNIS                  = 1,
@@ -37,6 +37,7 @@ enum eTypes
     TYPE_VEZAX                  = 11,
     TYPE_YOGGSARON              = 12,
     TYPE_ALGALON                = 13,
+    TYPE_COLOSSUS               = 14,
 
     DATA_STEELBREAKER           = 20,
     DATA_MOLGEIM                = 21,
@@ -59,7 +60,12 @@ enum eTypes
     NPC_FREYA                   = 32906,
     NPC_VEZAX                   = 33271,
     NPC_YOGGSARON               = 33288,
-    NPC_ALGALON                 = 32871
+    NPC_ALGALON                 = 32871,
+
+    EVENT_TOWER_OF_STORM_DESTROYED     = 21031,
+    EVENT_TOWER_OF_FROST_DESTROYED     = 21032,
+    EVENT_TOWER_OF_FLAMES_DESTROYED    = 21033,
+    EVENT_TOWER_OF_NATURE_DESTROYED    = 21030
 };
 
 #endif

@@ -2034,6 +2034,9 @@ void World::Update(uint32 diff)
     sOutdoorPvPMgr.Update(diff);
     RecordTimeDiff("UpdateOutdoorPvPMgr");
 
+    sLFGMgr.Update(diff);
+    RecordTimeDiff("UpdateLFGMgr");
+
     // execute callbacks from sql queries that were queued recently
     UpdateResultQueue();
     RecordTimeDiff("UpdateResultQueue");
@@ -2649,7 +2652,7 @@ void World::InitRandomBGResetTime()
         nextDayResetTime += DAY;
 
     // normalize reset time
-    m_NextRandomBGReset = m_NextRandomBGReset < curTime ? nextDayResetTime - DAY : nextDayResetTime;
+    m_NextRandomBGReset = bgtime < curTime ? nextDayResetTime - DAY : nextDayResetTime;
 
     if (!result)
         CharacterDatabase.PExecute("UPDATE `worldstates` SET value = '"UI64FMTD"' WHERE entry = 20100", uint64(m_NextRandomBGReset));

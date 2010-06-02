@@ -34,7 +34,7 @@
 #include "InstanceSaveMgr.h"
 #include "MapInstanced.h"
 #include "Util.h"
-#include "LFG.h"
+#include "LFGMgr.h"
 
 Group::Group()
 {
@@ -352,6 +352,9 @@ uint32 Group::RemoveMember(const uint64 &guid, const uint8 &method)
 {
     BroadcastGroupUpdate();
 
+    if (!isBGGroup())
+        sLFGMgr.Leave(NULL, this);
+
     // remove member and change leader (if need) only if strong more 2 members _before_ member remove
     if (GetMembersCount() > (isBGGroup() ? 1 : 2))           // in BG group case allow 1 members group
     {
@@ -368,6 +371,7 @@ uint32 Group::RemoveMember(const uint64 &guid, const uint8 &method)
             if (method == 1)
             {
                 data.Initialize(SMSG_GROUP_UNINVITE, 0);
+                player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
                 player->GetSession()->SendPacket(&data);
             }
 
@@ -440,6 +444,7 @@ void Group::Disband(bool hideDestroy)
                 player->SetOriginalGroup(NULL);
             else
                 player->SetGroup(NULL);
+
             player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_GROUP_DISBAND);
             player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
         }
@@ -669,9 +674,6 @@ void Group::GroupLoot(Loot *loot, WorldObject* pLootedObject)
                 r->itemSlot = itemSlot;
                 if (item->DisenchantID && m_maxEnchantingLevel >= item->RequiredDisenchantSkill)
                     r->rollVoteMask |= ROLL_FLAG_TYPE_DISENCHANT;
-
-                if (item->Flags2 & ITEM_FLAGS_EXTRA_NEED_ROLL_DISABLED)
-                    r->rollVoteMask &= ~ROLL_FLAG_TYPE_NEED;
 
                 loot->items[itemSlot].is_blocked = true;
 

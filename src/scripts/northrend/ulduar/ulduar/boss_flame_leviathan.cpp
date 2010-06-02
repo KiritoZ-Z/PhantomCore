@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
+ * Copyright (C) 2008 - 2010 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+/*
+ * Comment: Tower Event support is not finished, there is missing code on triggers and
+ *          Lore Keeper and Brann Bronzebeard are not scripted yet. Lore Keeper's script
+ *          should activate the hard mode so is not possible to play hard-mode yet. Add a call to
+ *          Leviathan's DoAction(0) from Lore Keeper's script to activate hard-mode
  */
 
 #include "ScriptedPch.h"
@@ -36,9 +43,12 @@ enum Spells
     SPELL_SEARING_FLAME                         = 62402,
     SPELL_BLAZE                                 = 62292,
     SPELL_SMOKE_TRAIL                           = 63575,
-    SPELL_MIMIRON_INFERNO                       = 62910,
-    SPELL_HODIR_FURY                            = 62297,
     SPELL_ELECTROSHOCK                          = 62522,
+    //TOWER BUFF SPELLS
+    SPELL_THORIM_S_HAMMER                       = 62912, // Tower of Storms
+    SPELL_MIMIRON_S_INFERNO                       = 62910, // Tower of Flames
+    SPELL_HODIR_S_FURY                            = 62297, // Tower of Frost
+    SPELL_FREYA_S_WARD                          = 62906  // Tower of Nature
 };
 
 enum Creatures
@@ -56,8 +66,10 @@ enum Events
     EVENT_VENT,
     EVENT_SPEED,
     EVENT_SUMMON,
-    EVENT_MIMIRON_INFERNO, // Not Blizzlike
-    EVENT_HODIR_FURY,      // Not Blizzlike
+    EVENT_THORIM_S_HAMMER, // Tower of Storms
+    EVENT_MIMIRON_S_INFERNO, // Tower of Flames
+    EVENT_HODIR_S_FURY,      // Tower of Frost
+    EVENT_FREYA_S_WARD     // Tower of Nature
 };
 
 enum Seats
@@ -87,22 +99,57 @@ enum Yells
     SAY_OVERLOAD_3                              = -1603075,
 };
 
+enum eAchievementData
+{
+    //ACHIEV_CHAMPION_OF_ULDUAR                   = 10042,
+    //ACHIEV_CONQUEROR_OF_ULDUAR                  = 10352,
+    ACHIEV_10_NUKED_FROM_ORBIT                  = 10058,
+    ACHIEV_25_NUKED_FROM_ORBIT                  = 10060,
+    ACHIEV_10_ORBITAL_BOMBARDMENT               = 10056,
+    ACHIEV_25_ORBITAL_BOMBARDMENT               = 10061,
+    ACHIEV_10_ORBITAL_DEVASTATION               = 10057,
+    ACHIEV_25_ORBITAL_DEVASTATION               = 10059,
+    ACHIEV_10_ORBIT_UARY                        = 10218,
+    ACHIEV_25_ORBIT_UARY                        = 10219,
+    ACHIEV_10_SHUTOUT                           = 10054,
+    ACHIEV_25_SHUTOUT                           = 10055,
+    ACHIEV_10_SIEGE_OF_ULDUAR                   = 9999,
+    ACHIEV_25_SIEGE_OF_ULDUAR                   = 10003,
+    //ACHIEV_10_THREE_CAR_GARAGE                  = 10046, 10047, 10048, 
+    //ACHIEV_25_THREE_CAR_GARAGE                  = 10049, 10050, 10051,
+    ACHIEV_10_UNBROKEN                          = 10044,
+    ACHIEV_25_UNBROKEN                          = 10045,
+};
+
+static Position Center[]=
+{
+    {354.8771, -12.90240, 409.803650},
+};
+
 struct boss_flame_leviathanAI : public BossAI
 {
-    boss_flame_leviathanAI(Creature *pCreature) : BossAI(pCreature, TYPE_LEVIATHAN), vehicle(pCreature->GetVehicleKit())
+    boss_flame_leviathanAI(Creature* pCreature) : BossAI(pCreature, TYPE_LEVIATHAN), vehicle(pCreature->GetVehicleKit())
     {
         assert(vehicle);
+        if (pInstance)
+            pInstance = pCreature->GetInstanceData();
     }
 
-    Vehicle *vehicle;
+    Vehicle* vehicle;    
+    uint8 uiActiveTowers;
+    ScriptedInstance* pInstance;
 
     void Reset()
     {
         _Reset();
+        assert(vehicle);
+        uiActiveTowers = 0;
         me->SetReactState(REACT_AGGRESSIVE);
+        if (pInstance)
+            pInstance->SetData(TYPE_LEVIATHAN, NOT_STARTED);
     }
 
-    void EnterCombat(Unit * /*who*/)
+    void EnterCombat(Unit* /*who*/)
     {
         _EnterCombat();
         DoScriptText(SAY_AGGRO, me);
@@ -112,30 +159,52 @@ struct boss_flame_leviathanAI : public BossAI
         events.ScheduleEvent(EVENT_VENT, 20000);
         events.ScheduleEvent(EVENT_SPEED, 15000);
         events.ScheduleEvent(EVENT_SUMMON, 0);
-        //events.ScheduleEvent(EVENT_MIMIRON_INFERNO, urand(60000, 120000)); // Not Blizzlike
-        //events.ScheduleEvent(EVENT_HODIR_FURY, urand(60000, 120000));      // Not Blizzlike
+        if (pInstance)
+            pInstance->SetData(TYPE_LEVIATHAN, IN_PROGRESS);
         if (Creature *turret = CAST_CRE(vehicle->GetPassenger(SEAT_TURRET)))
             turret->AI()->DoZoneInCombat();
     }
 
     // TODO: effect 0 and effect 1 may be on different target
-    void SpellHitTarget(Unit *pTarget, const SpellEntry *spell)
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
     {
-        if (spell->Id == SPELL_PURSUED)
+        if (pSpell->Id == SPELL_PURSUED)
             AttackStart(pTarget);
     }
 
-    void JustDied(Unit * /*victim*/)
+    void JustDied(Unit* /*victim*/)
     {
         DoScriptText(SAY_DEATH, me);
-        _JustDied();
+        if (pInstance)
+        {
+            pInstance->SetData(TYPE_LEVIATHAN, DONE);
+            if (uiActiveTowers)
+            {
+                switch (uiActiveTowers)
+                {
+                case 4:
+                    pInstance->DoCompleteAchievement(RAID_MODE(ACHIEV_10_ORBIT_UARY, ACHIEV_25_ORBIT_UARY));
+                    break;
+                case 3:
+                    pInstance->DoCompleteAchievement(RAID_MODE(ACHIEV_10_NUKED_FROM_ORBIT, ACHIEV_25_NUKED_FROM_ORBIT));
+                    break;
+                case 2:
+                    pInstance->DoCompleteAchievement(RAID_MODE(ACHIEV_10_ORBITAL_DEVASTATION, ACHIEV_25_ORBITAL_DEVASTATION));
+                    break;
+                case 1:
+                    pInstance->DoCompleteAchievement(RAID_MODE(ACHIEV_10_ORBITAL_BOMBARDMENT, ACHIEV_25_ORBITAL_BOMBARDMENT));
+                    break;
+                }
+            }
+            _JustDied();
+        }
     }
 
-    void SpellHit(Unit * /*caster*/, const SpellEntry *spell)
+    void SpellHit(Unit* /*caster*/, const SpellEntry* pSpell)
     {
-        if (spell->Id == 62472)
+        if (pSpell->Id == 62472)
             vehicle->InstallAllAccessories();
-        else if (spell->Id == SPELL_ELECTROSHOCK)
+        else if (pSpell->Id == SPELL_ELECTROSHOCK)
             me->InterruptSpell(CURRENT_CHANNELED_SPELL);
     }
 
@@ -184,24 +253,85 @@ struct boss_flame_leviathanAI : public BossAI
                 return;
             case EVENT_SUMMON:
                 if (summons.size() < 15) // 4seat+1turret+10lift
-                    if (Creature *lift = DoSummonFlyer(MOB_MECHANOLIFT, me, urand(20,40), 50, 0))
-                        lift->GetMotionMaster()->MoveRandom(100);
+                    if (Creature* pLift = DoSummonFlyer(MOB_MECHANOLIFT, me, urand(20,40), 50, 0))
+                        pLift->GetMotionMaster()->MoveRandom(100);
                 events.RepeatEvent(2000);
                 return;
-            case EVENT_MIMIRON_INFERNO: // Not Blizzlike
-                DoCast(me->getVictim(), SPELL_MIMIRON_INFERNO);
+            case EVENT_THORIM_S_HAMMER: // Tower of Storms
+                DoCast(me, SPELL_THORIM_S_HAMMER);
                 events.RepeatEvent(urand(60000, 120000));
                 return;
-            case EVENT_HODIR_FURY:      // Not Blizzlike
-                DoCast(me->getVictim(), SPELL_HODIR_FURY);
+            case EVENT_MIMIRON_S_INFERNO: // Tower of Flames
+                DoCast(me->getVictim(), SPELL_MIMIRON_S_INFERNO);
+                events.RepeatEvent(urand(60000, 120000));
+                return;
+            case EVENT_HODIR_S_FURY:      // Tower of Frost
+                DoCast(me->getVictim(), SPELL_HODIR_S_FURY);
+                events.RepeatEvent(urand(60000, 120000));
+                return;
+            case EVENT_FREYA_S_WARD:    // Tower of Nature
+                DoCast(me, SPELL_FREYA_S_WARD);
                 events.RepeatEvent(urand(60000, 120000));
                 return;
             default:
                 events.PopEvent();
                 break;
         }
-
         DoSpellAttackIfReady(SPELL_BATTERING_RAM);
+    }
+
+    void DoAction(const int32 uiAction)
+    {
+        // Start encounter
+        if (uiAction == 10)
+        {
+            me->GetMotionMaster()->MovePoint(0, Center[0]);
+            me->SetReactState(REACT_AGGRESSIVE);
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            return;
+        }
+        /*
+        Tower event triggers
+            General TODO:
+                Yells
+
+            Actions:
+                DoAction(0): Activate hard-mode. Buff up leviathan's AP & health, schedule all the tower spells.
+                             Should be triggered on Lore Keeper's script
+                DoAction(1-4): A tower have been destroyed, debuff leviathan's AP & health
+                DoAction(1); Tower of Storms has been destroyed, deschedule spell Thorim's Hammer
+                DoAction(2): Tower of Flames has been destroyed, deschedule spell Mimiron's Inferno
+                DoAction(3): Tower of Frost has been destroyed, deschedule spell Hodir's Fury
+                DoAction(4): Tower of Nature has been destroyed, deschedule spell Freya's Ward
+        */
+
+        if (uiAction) // Tower destruction, debuff leviathan AP & health
+        {
+            --uiActiveTowers;
+        }
+        
+        switch (uiAction)
+        {
+        case 0:  // Activate hard-mode
+            events.ScheduleEvent(EVENT_THORIM_S_HAMMER, urand(30000,60000));
+            events.ScheduleEvent(EVENT_MIMIRON_S_INFERNO, urand(30000,60000));
+            events.ScheduleEvent(EVENT_HODIR_S_FURY, urand(30000,60000));
+            events.ScheduleEvent(EVENT_FREYA_S_WARD, urand(30000,60000));
+            uiActiveTowers=4;
+            break;
+        case 1:  // Tower of Storms destroyed
+            events.CancelEvent(EVENT_THORIM_S_HAMMER);
+            break;
+        case 2: // Tower of Flames destroyed
+            events.CancelEvent(EVENT_MIMIRON_S_INFERNO);
+            break;
+        case 3: // Tower of Frost destroyed
+            events.CancelEvent(EVENT_HODIR_S_FURY);
+            break;
+        case 4: // Tower of Nature destroyed
+            events.CancelEvent(EVENT_FREYA_S_WARD);
+            break;
+        }
     }
 };
 
@@ -217,7 +347,7 @@ struct boss_flame_leviathan_seatAI : public PassiveAI
 #endif
     }
 
-    Vehicle *vehicle;
+    Vehicle* vehicle;
 
 #ifdef BOSS_DEBUG
     void MoveInLineOfSight(Unit *who)
@@ -228,7 +358,7 @@ struct boss_flame_leviathan_seatAI : public PassiveAI
     }
 #endif
 
-    void PassengerBoarded(Unit *who, int8 seatId, bool apply)
+    void PassengerBoarded(Unit* who, int8 seatId, bool apply)
     {
         if (!me->GetVehicle())
             return;
@@ -238,13 +368,13 @@ struct boss_flame_leviathan_seatAI : public PassiveAI
             if (!apply)
                 return;
 
-            if (Creature *turret = CAST_CRE(vehicle->GetPassenger(SEAT_TURRET)))
+            if (Creature* turret = CAST_CRE(vehicle->GetPassenger(SEAT_TURRET)))
             {
                 turret->setFaction(me->GetVehicleBase()->getFaction());
                 turret->SetUInt32Value(UNIT_FIELD_FLAGS, 0); // unselectable
                 turret->AI()->AttackStart(who);
             }
-            if (Unit *device = vehicle->GetPassenger(SEAT_DEVICE))
+            if (Unit* device = vehicle->GetPassenger(SEAT_DEVICE))
             {
                 device->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
                 device->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -255,7 +385,7 @@ struct boss_flame_leviathan_seatAI : public PassiveAI
             if (apply)
                 return;
 
-            if (Unit *device = vehicle->GetPassenger(SEAT_DEVICE))
+            if (Unit* device = vehicle->GetPassenger(SEAT_DEVICE))
             {
                 device->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
                 device->SetUInt32Value(UNIT_FIELD_FLAGS, 0); // unselectable
@@ -268,7 +398,7 @@ struct boss_flame_leviathan_defense_turretAI : public TurretAI
 {
     boss_flame_leviathan_defense_turretAI(Creature *c) : TurretAI(c) {}
 
-    void DamageTaken(Unit *who, uint32 &damage)
+    void DamageTaken(Unit* who, uint32 &damage)
     {
         if (!CanAIAttack(who))
             damage = 0;
@@ -284,7 +414,7 @@ struct boss_flame_leviathan_defense_turretAI : public TurretAI
 
 struct boss_flame_leviathan_overload_deviceAI : public PassiveAI
 {
-    boss_flame_leviathan_overload_deviceAI(Creature *c) : PassiveAI(c) {}
+    boss_flame_leviathan_overload_deviceAI(Creature* pCreature) : PassiveAI(pCreature) {}
 
     void DoAction(const int32 param)
     {
@@ -294,12 +424,12 @@ struct boss_flame_leviathan_overload_deviceAI : public PassiveAI
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             if (me->GetVehicle())
             {
-                if (Unit *player = me->GetVehicle()->GetPassenger(SEAT_PLAYER))
+                if (Unit* pPlayer = me->GetVehicle()->GetPassenger(SEAT_PLAYER))
                 {
-                    player->ExitVehicle();
-                    me->GetVehicleBase()->CastSpell(player, SPELL_SMOKE_TRAIL, true);
-                    if (Unit *leviathan = me->GetVehicleBase()->GetVehicleBase())
-                        player->GetMotionMaster()->MoveKnockbackFrom(leviathan->GetPositionX(), leviathan->GetPositionY(), 30, 30);
+                    pPlayer->ExitVehicle();
+                    me->GetVehicleBase()->CastSpell(pPlayer, SPELL_SMOKE_TRAIL, true);
+                    if (Unit* leviathan = me->GetVehicleBase()->GetVehicleBase())
+                        pPlayer->GetMotionMaster()->MoveKnockbackFrom(leviathan->GetPositionX(), leviathan->GetPositionY(), 30, 30);
                 }
             }
         }
@@ -314,8 +444,8 @@ struct boss_flame_leviathan_safety_containerAI : public PassiveAI
     {
         if (id == me->GetEntry())
         {
-            if (Creature *liquid = DoSummon(MOB_LIQUID, me, 0))
-                liquid->CastSpell(liquid, 62494, true);
+            if (Creature* pLiquid = DoSummon(MOB_LIQUID, me, 0))
+                pLiquid->CastSpell(pLiquid, 62494, true);
             me->DisappearAndDie(); // this will relocate creature to sky
         }
     }
@@ -343,6 +473,32 @@ struct spell_pool_of_tarAI : public TriggerAI
     {
         if (spell->SchoolMask & SPELL_SCHOOL_MASK_FIRE && !me->HasAura(SPELL_BLAZE))
             me->CastSpell(me, SPELL_BLAZE, true);
+    }
+};
+
+struct npc_colossusAI : public ScriptedAI
+{
+    npc_colossusAI(Creature* pCreature) : ScriptedAI(pCreature) 
+    {
+        pInstance = pCreature->GetInstanceData();
+    }
+
+    ScriptedInstance *pInstance;
+    Position pPos;
+
+    void JustDied(Unit* /*Who*/)
+    {
+        if (me->GetHomePosition().IsInDist(Center,50.f))
+        {
+            if (pInstance)            
+                pInstance->SetData(TYPE_COLOSSUS,pInstance->GetData(TYPE_COLOSSUS)+1);                        
+        }
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!UpdateVictim())
+            return;
     }
 };
 
@@ -376,6 +532,11 @@ CreatureAI* GetAI_spell_pool_of_tar(Creature* pCreature)
     return new spell_pool_of_tarAI (pCreature);
 }
 
+CreatureAI* GetAI_npc_colossus(Creature* pCreature)
+{
+    return new  npc_colossusAI(pCreature);
+}
+
 void AddSC_boss_flame_leviathan()
 {
     Script *newscript;
@@ -407,5 +568,10 @@ void AddSC_boss_flame_leviathan()
     newscript = new Script;
     newscript->Name = "spell_pool_of_tar";
     newscript->GetAI = &GetAI_spell_pool_of_tar;
+    newscript->RegisterSelf();
+
+    newscript = new Script;
+    newscript->Name = "npc_colossus";
+    newscript->GetAI = &GetAI_npc_colossus;
     newscript->RegisterSelf();
 }
