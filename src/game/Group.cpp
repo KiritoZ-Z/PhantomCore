@@ -45,9 +45,9 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
-	m_guid              = 0;
+    m_guid              = 0;
     m_counter           = 0;
-	m_maxEnchantingLevel= 0;
+    m_maxEnchantingLevel= 0;
 
 
     for (uint8 i = 0; i < TARGETICONCOUNT; ++i)

@@ -3252,7 +3252,7 @@ void Spell::EffectEnergize(uint32 i)
         case 31930:                                         // Judgements of the Wise
         case 63375:                                         // Improved Stormstrike
         case 68082:                                         // Glyph of Seal of Command
-		case 71132:                                         // Glyph of Shadow Word: Pain 
+        case 71132:                                         // Glyph of Shadow Word: Pain 
             damage = damage * unitTarget->GetCreateMana() / 100;
             break;
         case 48542:                                         // Revitalize
@@ -4638,11 +4638,11 @@ void Spell::SpellDamageWeaponDmg(uint32 i)
         case SPELLFAMILY_PALADIN:
         {
             // Seal of Command Unleashed
-			if (m_spellInfo->Id == 20467)
+            if (m_spellInfo->Id == 20467)
             {
                 spell_bonus += int32(0.08f*m_caster->GetTotalAttackPowerValue(BASE_ATTACK));
                 spell_bonus += int32(0.13f*m_caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)));
-				fixed_bonus += irand(0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MINDAMAGE)),0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MAXDAMAGE)));
+                fixed_bonus += irand(0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MINDAMAGE)),0.19f*(m_caster->GetFloatValue(UNIT_FIELD_MAXDAMAGE)));
             }
             break;
         }

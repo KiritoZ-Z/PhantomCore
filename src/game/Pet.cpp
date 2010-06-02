@@ -939,7 +939,8 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                 {
                     if (!pInfo)
                         SetCreateHealth(30 + 30*petlevel);
-					int32 bonus_dmg=m_owner->SpellBaseDamageBonus(SPELL_SCHOOL_MASK_NATURE)*0.15f;
+
+                    int32 bonus_dmg=m_owner->SpellBaseDamageBonus(SPELL_SCHOOL_MASK_NATURE)*0.15f;
                     SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel * 7.5f - (petlevel / 2)+bonus_dmg));
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel * 7.5f + (petlevel / 2)+bonus_dmg));
                     break;

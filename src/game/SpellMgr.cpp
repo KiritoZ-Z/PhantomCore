@@ -758,7 +758,7 @@ bool SpellMgr::_isPositiveEffect(uint32 spellId, uint32 effIndex, bool deep) con
         case 61987:                                         // Avenging Wrath Marker
         case 61988:                                         // Divine Shield exclude aura
         case 50524:                                         // Runic Power Feed
-		case 34709:                                         // Shadow Sight
+        case 34709:                                         // Shadow Sight
             return false;
         case 12042:                                         // Arcane Power
         case 30877:                                         // Tag Murloc
