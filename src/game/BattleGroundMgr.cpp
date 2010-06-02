@@ -1580,23 +1580,6 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
             return NULL;
         }
     }
-	
-    bool isRandom = false;
-
-    if (bgTypeId == BATTLEGROUND_RB)
-    {
-        BattleGroundTypeId random_bgs[] = {BATTLEGROUND_AV, BATTLEGROUND_WS, BATTLEGROUND_AB, BATTLEGROUND_EY/*, BATTLEGROUND_SA, BATTLEGROUND_IC*/};
-        uint32 bg_num = urand(0,3/*5*/);
-        bgTypeId = random_bgs[bg_num];
-        bg_template = GetBattleGroundTemplate(bgTypeId);
-        if (!bg_template)
-        {
-            sLog.outError("BattleGround: CreateNewBattleGround - bg template not found for %u", bgTypeId);
-            return NULL;
-        }
-        isRandom = true;
-    }
-
     BattleGround *bg = NULL;
     // create a copy of the BG template
     switch(bgTypeId)
