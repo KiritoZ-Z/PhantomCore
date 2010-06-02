@@ -413,6 +413,14 @@ void Spell::SpellDamageSchoolDmg(uint32 effect_idx)
                         if (!unitTarget->HasAura(27825))
                             return;
                         break;
+                    // percent max target health
+                    case 29142:                             // Eyesore Blaster
+                    case 35139:                             // Throw Boom's Doom
+                    case 49882:                             // Leviroth Self-Impale
+                    {
+                        damage = damage * unitTarget->GetMaxHealth() / 100;
+                        break;
+                    }
                     // Cataclysmic Bolt
                     case 38441:
                     {
