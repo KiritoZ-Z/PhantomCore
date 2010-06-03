@@ -127,6 +127,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 	uint32 m_uiBoneStormDamageTimer;
 	uint32 m_uiColdFlameTimer2;
 	uint32 m_uiBerserkTimer;
+	uint32 m_uiBoneStormCancelTimer;
 
 	bool Intro;
 
@@ -135,6 +136,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 		m_uiBoneSpikeGraveyardTimer	= 15000;
 		m_uiColdFlameTimer			= 7000;
 		m_uiBoneStormChannelTimer	= 45000;
+		m_uiBoneStormCancelTimer	= 70000;
 		m_uiColdFlameTimer2			= 4000;
 		m_uiBoneStormDamageTimer = urand(1500,2500);
 		m_uiBerserkTimer = 600000;
@@ -205,8 +207,11 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 		{
 			if (Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1))
 			{
+			    if (!me->IsWithinDistInMap(pTarget, 4))
+			    {
 				DoCast(pTarget, SPELL_COLD_FLAME_SPAWN);
 				m_uiColdFlameTimer = 7000;
+			    } 
 			}
 		} 
 		else m_uiColdFlameTimer -= uiDiff;
@@ -219,7 +224,12 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 			m_uiBoneStormChannelTimer = 50000;
 		} 
 		else m_uiBoneStormChannelTimer -= uiDiff;
-
+		if(m_uiBoneStormCancelTimer <= uiDiff)
+		{
+			me->RemoveAurasDueToSpell(SPELL_BONE_STORM_CHANNEL);
+			m_uiBoneStormCancelTimer = 75000;
+		}
+		else m_uiBoneStormCancelTimer -= uiDiff;
 			if (m_uiBoneSpikeGraveyardTimer < uiDiff)
             {
 				switch(urand(0, 2))
@@ -251,6 +261,8 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 				{
 					if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
 					{
+					    if (!me->IsWithinDistInMap(pTarget, 4))
+					    {
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()+20, me->GetPositionY()+20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()-20, me->GetPositionY()-20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()+20, me->GetPositionY()-20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
@@ -258,6 +270,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 						DoResetThreat();
 						me->AddThreat(pTarget, 5000000.0f);
 						m_uiColdFlameTimer2 = 4000;
+					    }
 					}
 				} 
 				else m_uiColdFlameTimer2 -= uiDiff;
@@ -308,9 +321,14 @@ struct Cold_FlameAI : public ScriptedAI
 	ScriptedInstance* m_pInstance;
 
 	uint32 m_uiColdFlameTimer;
+	uint32 despawn_timer, despawn_timer_h;
+	uint32 amovie_timer;
 
     void Reset()
     {
+        despawn_timer = 20000;
+	despawn_timer_h = 35000;
+	amovie_timer = 7000;
         float x, y, z;
         me->GetNearPoint(me, x, y, z, 1, 100, M_PI*2*rand_norm());
         me->GetMotionMaster()->MovePoint(0, x, y, z);
@@ -321,16 +339,44 @@ struct Cold_FlameAI : public ScriptedAI
 		m_uiColdFlameTimer = 1000;
     }
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
-		if(m_uiColdFlameTimer <= uiDiff)
+    
+	if (amovie_timer <= diff)
+	{
+		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+		amovie_timer = 7500;
+	}
+	else amovie_timer -= diff;
+        if (despawn_timer <= diff && (getDifficulty() != RAID_DIFFICULTY_10MAN_HEROIC || getDifficulty() != RAID_DIFFICULTY_25MAN_HEROIC))
+        {
+	        me->DisappearAndDie();
+                me->ForcedDespawn();
+	        despawn_timer = 25000;
+        } 
+        else despawn_timer -= diff;
+	    
+	    if (getDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || getDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC)
+	    {
+	        if (despawn_timer_h <= diff)
+	        {
+		        me->DisappearAndDie();
+		        me->ForcedDespawn();
+		        despawn_timer_h = 30000;
+	        } 
+	        else
+		        despawn_timer_h -= diff;
+    	    
+	    }
+	
+		if(m_uiColdFlameTimer <= diff)
 		{
 			DoCast(me, RAID_MODE(SPELL_COLD_FLAME_10_NORMAL,SPELL_COLD_FLAME_25_NORMAL,SPELL_COLD_FLAME_10_HEROIC,SPELL_COLD_FLAME_25_HEROIC));
 			m_uiColdFlameTimer = 1000;
 		} 
-		else m_uiColdFlameTimer -= uiDiff;
+		else m_uiColdFlameTimer -= diff;
+    }
 		
-	}
 };
 
 CreatureAI* GetAI_Cold_Flame(Creature* pCreature)
