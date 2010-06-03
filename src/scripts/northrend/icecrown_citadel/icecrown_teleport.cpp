@@ -122,7 +122,7 @@ bool GOSelect_icecrown_teleporter( Player *pPlayer, GameObject *pGO, uint32 send
 		break;
 
     case LICHKING:
-        pPlayer->TeleportTo(631, 529.3969, -2124.879883, 1041.86f, 0.120937);
+        pPlayer->TeleportTo(631, 529.3969, -2124.879883, 1061.86f, 0.120937);
         pPlayer->CLOSE_GOSSIP_MENU(); 
 		break;
     }

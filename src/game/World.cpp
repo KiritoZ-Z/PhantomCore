@@ -94,9 +94,9 @@ int32 World::m_visibility_notify_periodInBGArenas   = DEFAULT_VISIBILITY_NOTIFY_
 
 // movement anticheat
 bool World::m_EnableMvAnticheat = true;
-uint32 World::m_TeleportToPlaneAlarms = 50;
-uint32 World::m_MistimingAlarms = 200;
-uint32 World::m_MistimingDelta = 15000;
+uint32 World::m_TeleportToPlaneAlarms = 100;
+uint32 World::m_MistimingAlarms = 300;
+uint32 World::m_MistimingDelta = 30000;
 
 /// World constructor
 World::World()
@@ -606,21 +606,21 @@ void World::LoadConfigSettings(bool reload)
     // movement anticheat
     m_EnableMvAnticheat = sConfig.GetBoolDefault("Anticheat.Movement.Enable", true);
     m_TeleportToPlaneAlarms = sConfig.GetIntDefault("Anticheat.Movement.TeleportToPlaneAlarms", 50);
-    if (m_TeleportToPlaneAlarms < 20)
+    if (m_TeleportToPlaneAlarms < 200)
     {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be >= 20. Using 20 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 20;
+        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be >= 20. Using 200 instead.", m_TeleportToPlaneAlarms);
+        m_TeleportToPlaneAlarms = 200;
     }
-    if (m_TeleportToPlaneAlarms > 100)
+    if (m_TeleportToPlaneAlarms > 10000)
     {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be <= 100. Using 100 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 100;
+        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be <= 100. Using 10000 instead.", m_TeleportToPlaneAlarms);
+        m_TeleportToPlaneAlarms = 10000;
     }
-    m_MistimingDelta = sConfig.GetIntDefault("Anticheat.Movement.MistimingDelta", 15000);
-    if (m_MistimingDelta < 5000)
+    m_MistimingDelta = sConfig.GetIntDefault("Anticheat.Movement.MistimingDelta", 30000);
+    if (m_MistimingDelta < 10000)
     {
         sLog.outError("Anticheat.Movement.m_MistimingDelta (%d) must be >= 5000ms. Using 5000ms instead.", m_MistimingDelta);
-        m_MistimingDelta = 5000;
+        m_MistimingDelta = 10000;
     }
     if (m_MistimingDelta > 50000)
     {
@@ -628,15 +628,15 @@ void World::LoadConfigSettings(bool reload)
         m_MistimingDelta = 50000;
     }
     m_MistimingAlarms = sConfig.GetIntDefault("Anticheat.Movement.MistimingAlarms", 200);
-    if (m_MistimingAlarms < 100)
+    if (m_MistimingAlarms < 1000)
     {
-        sLog.outError("Anticheat.Movement.MistimingAlarms (%d) must be >= 100. Using 100 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 100;
+        sLog.outError("Anticheat.Movement.MistimingAlarms (%d) must be >= 100. Using 1000 instead.", m_MistimingAlarms);
+        m_MistimingAlarms = 1000;
     }
-    if (m_MistimingAlarms > 500)
+    if (m_MistimingAlarms > 5000)
     {
-        sLog.outError("Anticheat.Movement.m_MistimingAlarms (%d) must be <= 500. Using 500 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 500;
+        sLog.outError("Anticheat.Movement.m_MistimingAlarms (%d) must be <= 500. Using 5000 instead.", m_MistimingAlarms);
+        m_MistimingAlarms = 5000;
     }
     ///- Read other configuration items from the config file
 
