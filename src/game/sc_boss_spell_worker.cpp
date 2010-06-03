@@ -594,8 +594,8 @@ Unit* BossSpellWorker::_doSelect(uint32 SpellID, bool spellsearchtype, float ran
 
 #if defined( __GNUC__ )
     Unit* _list[pMap->GetMaxPlayers()];
-#else
-    Unit* _list[INSTANCE_MAX_PLAYERS];
+//#else
+//    Unit* _list[INSTANCE_MAX_PLAYERS];
 #endif
     uint8 _count = 0;
 

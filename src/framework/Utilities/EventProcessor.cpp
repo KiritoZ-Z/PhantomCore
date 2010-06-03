@@ -44,6 +44,9 @@ void EventProcessor::Update(uint32 p_time)
         BasicEvent* Event = i->second;
         m_events.erase(i);
 
+		if (!Event)
+			continue;
+
         if (!Event->to_Abort)
         {
             if (Event->Execute(m_time, p_time))
