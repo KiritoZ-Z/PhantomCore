@@ -48,12 +48,12 @@ bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
         if(pInstance->GetData(DATA_DEATHWHISPER_EVENT) == DONE || pPlayer->isGameMaster())
 		{
             pPlayer->ADD_GOSSIP_ITEM(0, "Черепной вал", GOSSIP_SENDER_MAIN, RAMPART);
-            pPlayer->ADD_GOSSIP_ITEM(0, "Цитадель Ледяной Короны", GOSSIP_SENDER_MAIN, DEATHBRINGER);
+            pPlayer->ADD_GOSSIP_ITEM(0, "Подъем Смертоносного", GOSSIP_SENDER_MAIN, DEATHBRINGER);
             if(pInstance->GetData(DATA_SAURFANG_EVENT) == DONE || pPlayer->isGameMaster())
 			{
                   pPlayer->ADD_GOSSIP_ITEM(0, "Чумодельня", GOSSIP_SENDER_MAIN, PLAGUEWORKS);
                   pPlayer->ADD_GOSSIP_ITEM(0, "Святилище крови", GOSSIP_SENDER_MAIN, CRIMSONHALL);
-                  pPlayer->ADD_GOSSIP_ITEM(0, "Логово Королевы льда", GOSSIP_SENDER_MAIN, FWHALLS);
+                  pPlayer->ADD_GOSSIP_ITEM(0, "Залы Ледокрылых", GOSSIP_SENDER_MAIN, FWHALLS);
                   if(pInstance->GetData(DATA_VALITHRIA_DREAMWALKER_EVENT) == DONE || pPlayer->isGameMaster())
 				  {
                          pPlayer->ADD_GOSSIP_ITEM(0, "Логово Королевы льда", GOSSIP_SENDER_MAIN, QUEEN);
