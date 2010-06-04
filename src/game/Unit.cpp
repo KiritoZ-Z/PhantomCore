@@ -659,15 +659,6 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
         return 0;
     }
-	
-    WeaponAttackType attType = GetWeaponAttackType(spellProto);
-    
-    // on weapon hit casts, proc from melee damage implemented in DealMeleeDamage() (sent with spellProto == NULL, which determines possible double proc)
-    if(GetTypeId() == TYPEID_PLAYER &&
-       spellProto &&
-       (spellProto->DmgClass == SPELL_DAMAGE_CLASS_MELEE ||
-       spellProto->DmgClass == SPELL_DAMAGE_CLASS_RANGED))
-        this->ToPlayer()->CastItemCombatSpell(pVictim, attType);
 
     // no xp,health if type 8 /critters/
     if (pVictim->GetTypeId() != TYPEID_PLAYER && pVictim->GetCreatureType() == CREATURE_TYPE_CRITTER)
