@@ -3,8 +3,6 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
- * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -180,9 +178,9 @@ public:
             std::string stringip = sConfig.GetStringDefault ("Ra.IP", "0.0.0.0");
             ipaddr_t raip;
             if (!Utility::u2ip (stringip, raip))
-                sLog.outError ("Phantom RA can not bind to ip %s", stringip.c_str ());
+                sLog.outError ("Trinity RA can not bind to ip %s", stringip.c_str ());
             else if (RAListenSocket.Bind (raip, raport))
-                sLog.outError ("Phantom RA can not bind to port %d on %s", raport, stringip.c_str ());
+                sLog.outError ("Trinity RA can not bind to port %d on %s", raport, stringip.c_str ());
             else
             {
                 h.Add (&RAListenSocket);
@@ -240,7 +238,6 @@ int Master::Run()
     sLog.outString( "      \\/_/\\/_/   \\/_/\\/_/\\/_/\\/_/\\/__/ `/___/> \\");
     sLog.outString( "                                 C O R E  /\\___/");
     sLog.outString( "http://TrinityCore.org                    \\/__/\n");
-	sLog.outString( "http://Phantom-Project.org                        ");
 
     /// worldd PID file creation
     std::string pidfile = sConfig.GetStringDefault("PidFile", "");
@@ -250,7 +247,6 @@ int Master::Run()
         if( !pid )
         {
             sLog.outError( "Cannot create PID file %s.\n", pidfile.c_str() );
-			Log::WaitBeforeContinueIfNeed();
             return 1;
         }
 
@@ -259,10 +255,7 @@ int Master::Run()
 
     ///- Start the databases
     if (!_StartDB())
-    {
-        Log::WaitBeforeContinueIfNeed();
         return 1;
-    }
 
     ///- Initialize the World
     sWorld.SetInitialWorldSettings();
@@ -340,7 +333,7 @@ int Master::Run()
         if(Prio)
         {
             if(SetPriorityClass(hProcess,HIGH_PRIORITY_CLASS))
-                sLog.outString("PhantomCore process priority class set to HIGH");
+                sLog.outString("TrinityCore process priority class set to HIGH");
             else
                 sLog.outError("ERROR: Can't set Trinityd process priority class.");
             sLog.outString("");
@@ -350,8 +343,6 @@ int Master::Run()
 
     uint32 realCurrTime, realPrevTime;
     realCurrTime = realPrevTime = getMSTime();
-
-    uint32 socketSelecttime = sWorld.getConfig(CONFIG_SOCKET_SELECTTIME);
 
     ///- Start up freeze catcher thread
     if(uint32 freeze_delay = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
@@ -369,7 +360,6 @@ int Master::Run()
     if (sWorldSocketMgr->StartNetwork (wsport, bind_ip.c_str ()) == -1)
     {
         sLog.outError ("Failed to start network");
-		Log::WaitBeforeContinueIfNeed();
         World::StopNow(ERROR_EXIT_CODE);
         // go down and shutdown the server
     }
@@ -431,7 +421,7 @@ int Master::Run()
         b[3].Event.KeyEvent.wVirtualScanCode = 0x1c;
         b[3].Event.KeyEvent.wRepeatCount = 1;
         DWORD numb;
-        BOOL ret = WriteConsoleInput(hStdIn, b, 4, &numb);
+        WriteConsoleInput(hStdIn, b, 4, &numb);
 
         cliThread->wait();
 

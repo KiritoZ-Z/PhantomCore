@@ -26,6 +26,7 @@
 #include "DestinationHolderImp.h"
 #include "World.h"
 #include "Unit.h"
+#include "Pet.h"
 
 #define SMALL_ALPHA 0.05f
 
@@ -101,7 +102,8 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
             if (stop)
             {
 				float myx,myy,myz;
-				if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
+				pet * GetCreatureType()->Pet;
+				if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1 && !pet )
 				{
 					owner.GetPosition(myx,myy,myz);
 					owner.GetPosition(x,y,z);
