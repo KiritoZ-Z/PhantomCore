@@ -3,8 +3,6 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
- * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -36,6 +34,7 @@
 #include "RealmAcceptor.h"
 
 #include <ace/Dev_Poll_Reactor.h>
+#include <ace/TP_Reactor.h>
 #include <ace/ACE.h>
 #include <ace/Sig_Handler.h>
 
@@ -43,13 +42,13 @@
 #include <openssl/crypto.h>
 
 #ifndef _TRINITY_REALM_CONFIG
-# define _TRINITY_REALM_CONFIG  "PhantomRealm.conf"
+# define _TRINITY_REALM_CONFIG  "TrinityRealm.conf"
 #endif //_TRINITY_REALM_CONFIG
 
 #ifdef WIN32
 #include "ServiceWin32.h"
-char serviceName[] = "PhantomRealm";
-char serviceLongName[] = "Phantom realm service";
+char serviceName[] = "TrinityRealm";
+char serviceLongName[] = "Trinity realm service";
 char serviceDescription[] = "Massive Network Game Object Server";
 /*
  * -1 - not in service mode
@@ -62,11 +61,9 @@ int m_ServiceStatus = -1;
 
 bool StartDB();
 
-
 bool stopEvent = false;                                     ///< Setting it to true stops the server
 
-
-DatabaseType LoginDatabase;     
+DatabaseType LoginDatabase;                                 ///< Accessor to the realm server database
 
 /// Handle realmd's termination signals
 class RealmdSignalHandler : public Trinity::SignalHandler
@@ -89,7 +86,6 @@ class RealmdSignalHandler : public Trinity::SignalHandler
             }
         }
 };
-                            ///< Accessor to the realm server database
 
 /// Print out the usage string for this program on the console.
 void usage(const char *prog)
@@ -120,7 +116,6 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: -c option requires an input argument");
                 usage(argv[0]);
-				Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
             else
@@ -137,7 +132,6 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: -s option requires an input argument");
                 usage(argv[0]);
-				Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
             if (strcmp(argv[c],"install") == 0)
@@ -156,7 +150,6 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: unsupported option %s",argv[c]);
                 usage(argv[0]);
-				Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
         }
@@ -172,7 +165,6 @@ extern int main(int argc, char **argv)
     if (!sConfig.SetSource(cfg_file))
     {
         sLog.outError("Could not find configuration file %s.", cfg_file);
-		Log::WaitBeforeContinueIfNeed();
         return 1;
     }
     sLog.Initialize();
@@ -185,6 +177,8 @@ extern int main(int argc, char **argv)
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);
+#else
+    ACE_Reactor::instance(new ACE_Reactor(new ACE_TP_Reactor(), true), true);
 #endif
 
     sLog.outBasic("Max allowed open files is %d", ACE::max_handles());
@@ -197,7 +191,6 @@ extern int main(int argc, char **argv)
         if (!pid)
         {
             sLog.outError("Cannot create PID file %s.\n", pidfile.c_str());
-			Log::WaitBeforeContinueIfNeed();
             return 1;
         }
 
@@ -206,10 +199,7 @@ extern int main(int argc, char **argv)
 
     ///- Initialize the database connection
     if (!StartDB())
-	{
-		Log::WaitBeforeContinueIfNeed();
         return 1;
-	}
 
     ///- Initialize the log database
     sLog.SetLogDBLater(sConfig.GetBoolDefault("EnableLogDB", false)); // set var to enable DB logging once startup finished.
@@ -221,13 +211,12 @@ extern int main(int argc, char **argv)
     if (sRealmList->size() == 0)
     {
         sLog.outError("No valid realms specified.");
-		Log::WaitBeforeContinueIfNeed();
         return 1;
     }
 
     ///- Launch the listening network socket
     RealmAcceptor acceptor;
-    
+
     uint16 rmport = sConfig.GetIntDefault("RealmServerPort", DEFAULT_REALMSERVER_PORT);
     std::string bind_ip = sConfig.GetStringDefault("BindIP", "0.0.0.0");
 
@@ -235,8 +224,7 @@ extern int main(int argc, char **argv)
 
     if (acceptor.open(bind_addr, ACE_Reactor::instance(), ACE_NONBLOCK) == -1)
     {
-        sLog.outError("Phantom realm can not bind to %s:%d", bind_ip.c_str(), rmport);
-		Log::WaitBeforeContinueIfNeed();
+        sLog.outError("Trinity realm can not bind to %s:%d", bind_ip.c_str(), rmport);
         return 1;
     }
 
@@ -289,7 +277,7 @@ extern int main(int argc, char **argv)
         if (Prio)
         {
             if (SetPriorityClass(hProcess,HIGH_PRIORITY_CLASS))
-                sLog.outString("PhantomRealm process priority class set to HIGH");
+                sLog.outString("TrinityRealm process priority class set to HIGH");
             else
                 sLog.outError("ERROR: Can't set realmd process priority class.");
             sLog.outString();

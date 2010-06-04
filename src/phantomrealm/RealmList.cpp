@@ -26,6 +26,7 @@
 #include "RealmList.h"
 #include "Database/DatabaseEnv.h"
 
+
 extern DatabaseType LoginDatabase;
 
 RealmList::RealmList() : m_UpdateInterval(0), m_NextUpdateTime(time(NULL))
