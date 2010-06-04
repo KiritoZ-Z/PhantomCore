@@ -1,7 +1,7 @@
 
 ########### next target ###############
 
-SET(trinity-core_SRCS
+SET(phantom-core_SRCS
 CliRunnable.cpp
 CliRunnable.h
 Main.cpp
@@ -24,22 +24,22 @@ include_directories(
   ${MYSQL_INCLUDE_DIR}
 )
 
-SET(trinity-core_LINK_FLAGS "")
+SET(phantom-core_LINK_FLAGS "")
 
-add_executable(trinity-core ${trinity-core_SRCS})
+add_executable(phantom-core ${phantom-core_SRCS})
 add_definitions(
--D_TRINITY_CORE_CONFIG='"${CONF_DIR}/trinitycore.conf"'
+-D_PHANTOM_CORE_CONFIG='"${CONF_DIR}/phantomcore.conf"'
 )
 IF (DO_MYSQL)
-    SET(trinity-core_LINK_FLAGS "-pthread ${trinity-core_LINK_FLAGS}")
+    SET(phantom-core_LINK_FLAGS "-pthread ${phantom-core_LINK_FLAGS}")
 ENDIF(DO_MYSQL)
 
 IF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-    SET(trinity-core_LINK_FLAGS "-framework Carbon ${trinity-core_LINK_FLAGS}")
+    SET(phantom-core_LINK_FLAGS "-framework Carbon ${phantom-core_LINK_FLAGS}")
     SET(SCRIPT_LIB "")
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Darwin")
 
-SET_TARGET_PROPERTIES(trinity-core PROPERTIES LINK_FLAGS "${trinity-core_LINK_FLAGS}")
+SET_TARGET_PROPERTIES(phantom-core PROPERTIES LINK_FLAGS "${phantom-core_LINK_FLAGS}")
 
 if(DO_SCRIPTS)
     SET(SCRIPT_LIB "scripts")
@@ -48,18 +48,21 @@ else(DO_SCRIPTS)
 endif(DO_SCRIPTS)
 
 target_link_libraries(
-trinity-core
+phantom-core
 game
 shared
 zlib
-trinityframework
-trinitysockets
-trinitydatabase
-trinityauth
-trinityconfig
+phantomframework
+phantomsockets
+phantomdatabase
+phantomauth
+phantomconfig
 vmaps
 g3dlite
-jmalloc
+pathfind
+recast
+detour
+#jmalloc
 ${SCRIPT_LIB}
 ${READLINE_LIBRARY}
 ${TERMCAP_LIBRARY}
@@ -70,10 +73,10 @@ ${ZLIB}
 ${OSX_LIBS}
 )
 
-install(TARGETS trinity-core DESTINATION bin)
+install(TARGETS phantom-core DESTINATION bin)
 
 
 ########### install files ###############
 
-install(FILES  trinitycore.conf.dist DESTINATION etc)
+install(FILES  phantomcore.conf.dist DESTINATION etc)
 

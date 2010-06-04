@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
+ * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -33,14 +35,14 @@
 #include "Log.h"
 #include "Master.h"
 
-#ifndef _TRINITY_CORE_CONFIG
-# define _TRINITY_CORE_CONFIG  "TrinityCore.conf"
-#endif //_TRINITY_CORE_CONFIG
+#ifndef _PHANTOM_CORE_CONFIG
+# define _PHANTOM_CORE_CONFIG  "PhantomCore.conf"
+#endif //_PHANTOM_CORE_CONFIG
 
 #ifdef WIN32
 #include "ServiceWin32.h"
-char serviceName[] = "TrinityCore";
-char serviceLongName[] = "Trinity core service";
+char serviceName[] = "PhantomCore";
+char serviceLongName[] = "Phantom core service";
 char serviceDescription[] = "Massive Network Game Object Server";
 /*
  * -1 - not in service mode
@@ -75,7 +77,7 @@ void usage(const char *prog)
 extern int main(int argc, char **argv)
 {
     ///- Command line parsing to get the configuration file name
-    char const* cfg_file = _TRINITY_CORE_CONFIG;
+    char const* cfg_file = _PHANTOM_CORE_CONFIG;
     int c=1;
     while( c < argc )
     {
@@ -101,6 +103,7 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: -s option requires an input argument");
                 usage(argv[0]);
+				Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
             if( strcmp(argv[c],"install") == 0)
@@ -119,6 +122,7 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: unsupported option %s",argv[c]);
                 usage(argv[0]);
+				Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
         }

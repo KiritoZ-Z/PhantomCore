@@ -587,4 +587,40 @@ Unit* BossSpellWorker::SelectLowHPFriendly(float fRange, uint32 uiMinHPDiff)
     return pUnit;
 }
 
+Unit* BossSpellWorker::_doSelect(uint32 SpellID, bool spellsearchtype, float range)
+{
+    Map::PlayerList const &pList = pMap->GetPlayers();
+          if (pList.isEmpty()) return NULL;
+
+#if defined( __GNUC__ )
+    Unit* _list[pMap->GetMaxPlayers()];
+#else
+    Unit* _list[INSTANCE_MAX_PLAYERS];
+#endif
+    uint8 _count = 0;
+
+    memset(&_list, 0, sizeof(_list));
+
+
+          for(Map::PlayerList::const_iterator i = pList.begin(); i != pList.end(); ++i)
+          {
+              if (Player* player = i->getSource())
+                 {
+                  if (player->isGameMaster()) continue;
+
+                  if ( player->isAlive()
+                       && player->IsWithinDistInMap(boss, range)
+                       && (SpellID == 0 || (player->HasAura(SpellID) == spellsearchtype))
+                     )
+                     {
+                     _list[_count] = (Unit*)player;
+                     ++_count;
+                     }
+                 }
+           }
+    debug_log("BSW: search result for random player, count = %u ",_count);
+    if (_count == 0) return NULL;
+    else return _list[urand(0,_count)];
+};
+
 #endif
