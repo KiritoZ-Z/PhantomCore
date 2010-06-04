@@ -117,7 +117,6 @@ class Log : public Trinity::Singleton<Log, Trinity::ClassLevelLockable<Log, ACE_
 
         static void outTimestamp(FILE* file);
         static std::string GetTimestampStr();
-		static void WaitBeforeContinueIfNeed();
 		
         void SetLogLevel(char * Level);
         void SetLogFileLevel(char * Level);
