@@ -31,9 +31,9 @@ Created by Lordronn
 #define DEATHBRINGER  70858
 #define PLAGUEWORKS   9995
 #define CRIMSONHALL   9996
-#define FWHALLS     9997
-#define QUEEN       70861
-#define LICHKING    70860
+#define FWHALLS       9997
+#define QUEEN         70861
+#define LICHKING      70860
 
 bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
 {
@@ -41,25 +41,25 @@ bool GoHello_icecrown_teleporter( Player *pPlayer, GameObject *pGO )
     if(!pInstance) return true;
 
 
-    pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to Light's Hammer", GOSSIP_SENDER_MAIN, LIGHTS_HAMMER);
+    pPlayer->ADD_GOSSIP_ITEM(0, "Молот света", GOSSIP_SENDER_MAIN, LIGHTS_HAMMER);
     if(pInstance->GetData(DATA_MARROWGAR_EVENT) == DONE || pPlayer->isGameMaster())
 	{
-        pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Oratory of the Damned", GOSSIP_SENDER_MAIN, ORATORY);
+        pPlayer->ADD_GOSSIP_ITEM(0, "Молельня проклятых", GOSSIP_SENDER_MAIN, ORATORY);
         if(pInstance->GetData(DATA_DEATHWHISPER_EVENT) == DONE || pPlayer->isGameMaster())
 		{
-            pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Rampart of Skulls", GOSSIP_SENDER_MAIN, RAMPART);
-            pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to Deathbringer's Rise", GOSSIP_SENDER_MAIN, DEATHBRINGER);
+            pPlayer->ADD_GOSSIP_ITEM(0, "Черепной вал", GOSSIP_SENDER_MAIN, RAMPART);
+            pPlayer->ADD_GOSSIP_ITEM(0, "Цитадель Ледяной Короны", GOSSIP_SENDER_MAIN, DEATHBRINGER);
             if(pInstance->GetData(DATA_SAURFANG_EVENT) == DONE || pPlayer->isGameMaster())
 			{
-                  pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Plagueworks", GOSSIP_SENDER_MAIN, PLAGUEWORKS);
-                  pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Crimson Halls", GOSSIP_SENDER_MAIN, CRIMSONHALL);
-                  pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Frostwing Halls", GOSSIP_SENDER_MAIN, FWHALLS);
+                  pPlayer->ADD_GOSSIP_ITEM(0, "Чумодельня", GOSSIP_SENDER_MAIN, PLAGUEWORKS);
+                  pPlayer->ADD_GOSSIP_ITEM(0, "Святилище крови", GOSSIP_SENDER_MAIN, CRIMSONHALL);
+                  pPlayer->ADD_GOSSIP_ITEM(0, "Логово Королевы льда", GOSSIP_SENDER_MAIN, FWHALLS);
                   if(pInstance->GetData(DATA_VALITHRIA_DREAMWALKER_EVENT) == DONE || pPlayer->isGameMaster())
 				  {
-                         pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to The Frost Queens's Lair", GOSSIP_SENDER_MAIN, QUEEN);
+                         pPlayer->ADD_GOSSIP_ITEM(0, "Логово Королевы льда", GOSSIP_SENDER_MAIN, QUEEN);
                          if(pInstance->GetData(DATA_SINDRAGOSA_EVENT) == DONE || pPlayer->isGameMaster())
 						 { 
-                            pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Frozen Throne", GOSSIP_SENDER_MAIN, LICHKING);
+                            pPlayer->ADD_GOSSIP_ITEM(0, "Ледяной трон", GOSSIP_SENDER_MAIN, LICHKING);
 						    
 						 }
 				  }
