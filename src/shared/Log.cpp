@@ -3,8 +3,6 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
- * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -25,13 +23,9 @@
 #include "Policies/SingletonImp.h"
 #include "Config/ConfigEnv.h"
 #include "Util.h"
-#include "ProgressBar.h"
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <fstream>
-#include <iostream>
-
 
 INSTANTIATE_SINGLETON_1( Log );
 
@@ -909,29 +903,6 @@ void Log::outRemote(const char * str, ...)
         fflush(raLogfile);
     }
     fflush(stdout);
-}
- 
-void Log::WaitBeforeContinueIfNeed()
-{
-    int mode = sConfig.GetIntDefault("WaitAtStartupError",0);
-
-    if (mode < 0)
-    {
-        printf("\nPress <Enter> for continue\n");
-
-        std::string line;
-		std::getline (std::cin, line);
-    }
-    else if (mode > 0)
-    {
-        printf("\nWait %u secs for continue.\n",mode);
-        barGoLink bar(mode);
-        for(int i = 0; i < mode; ++i)
-        {
-            bar.step();
-            ACE_OS::sleep(1);
-        }
-    }
 }
 
 void Log::outChat(const char * str, ...)
