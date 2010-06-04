@@ -18,6 +18,7 @@ enum
   DIFFICULTY_LEVELS = 4,
   MAX_BOSS_SPELLS   = 16,
   SPELL_INDEX_ERROR = 255,
+  INSTANCE_MAX_PLAYERS = 40,
 };
 
 enum BossSpellFlag
@@ -45,7 +46,11 @@ enum BossSpellTableParameters
   CAST_ON_ALLPLAYERS        = 12,
   CAST_ON_FRENDLY           = 13,
   CAST_ON_FRENDLY_LOWHP     = 14,
+  CAST_ON_RANDOM_POINT      = 15,
+  CAST_ON_RANDOM_PLAYER     = 16,
   SPELLTABLEPARM_NUMBER
+
+
 };
 
 struct Locations
