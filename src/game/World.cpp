@@ -72,6 +72,7 @@
 #include "ScriptMgr.h"
 #include "AddonMgr.h"
 #include "LFGMgr.h"
+#include "ConditionMgr.h"
 
 INSTANTIATE_SINGLETON_1(World);
 
@@ -1235,6 +1236,7 @@ void World::LoadConfigSettings(bool reload)
         sLog.outString("Using DataDir %s",m_dataPath.c_str());
     }
 
+    m_configs[CONFIG_VMAP_INDOOR_CHECK] = sConfig.GetBoolDefault("vmap.enableIndoorCheck", 0);
     bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", false);
     bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", false);
     std::string ignoreMapIds = sConfig.GetStringDefault("vmap.ignoreMapIds", "");
@@ -1441,12 +1443,6 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading Creature templates...");
     objmgr.LoadCreatureTemplates();
 
-    sLog.outString("Loading SpellsScriptTarget...");
-    spellmgr.LoadSpellScriptTarget();                       // must be after LoadCreatureTemplates and LoadGameobjectInfo
-
-    sLog.outString("Loading ItemRequiredTarget...");
-    objmgr.LoadItemRequiredTarget();
-
     sLog.outString("Loading Creature Reputation OnKill Data...");
     objmgr.LoadReputationOnKill();
 
@@ -1638,6 +1634,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading Creature Formations...");
     formation_mgr.LoadCreatureFormations();
+
+    sLog.outString("Loading Conditions...");
+    sConditionMgr.LoadConditions();
 
     sLog.outString("Loading GM tickets...");
     objmgr.LoadGMTickets();

@@ -2136,220 +2136,105 @@ float Map::GetHeight(float x, float y, float z, bool pUseVmaps) const
     }
 }
 
-float Map::GetVmapHeight(float x, float y, float z) const
+inline bool IsOutdoorWMO(uint32 mogpFlags, int32 adtId, int32 rootId, int32 groupId, WMOAreaTableEntry const* wmoEntry, AreaTableEntry const* atEntry)
 {
-    float mapHeight;
+    bool outdoor = true;
 
-    mapHeight = GetHeight(x, y, z, false);
-    if (fabs(mapHeight - z) < 0.1)
-        return mapHeight;
-
-    VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
-    if (!vmgr->isLineOfSightCalcEnabled())
-        return mapHeight;
-
-    float vmapHeight = vmgr->getHeight(GetId(), x, y, z + 2.0f, z + 2.0f - mapHeight);
-    if (vmapHeight > VMAP_INVALID_HEIGHT_VALUE)
-        return vmapHeight;
-
-    return mapHeight;
-}
-
-uint16 Map::GetAreaFlag(float x, float y, float z) const
-{
-    uint16 areaflag;
-    if (GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
-        areaflag = gmap->getArea(x, y);
-    // this used while not all *.map files generated (instances)
-    else
-        areaflag = GetAreaFlagByMapId(GetId());
-
-    //FIXME: some hacks for areas above or underground for ground area
-    //       required for area specific spells/etc, until map/vmap data
-    //       not provided correct areaflag with this hacks
-    switch(areaflag)
+    if(wmoEntry && atEntry)
     {
-        case 2817: // Argent Tournament Grounds (Icecrown)
-            if (x < 8445.0f &&  x > 8390.0f && y > 640.0f && y < 689.0f && 548.0f < z && z < 562.0f)
-                areaflag = 2875; // Sunreaver Pavilion (Icecrown)
-            else if (x > 8587.0f && x < 8629.0f && y > 646.0f && y < 686.0f && 548.0f < z && z < 562.0f)
-                areaflag = 2879; // Silver Covenant Pavilion (Icecrown)
-            break;
-        case 2227:                                          // The Foot Steppes (Storm Peaks)
-        case 2207:                                          // Sifreldar Village (Storm Peaks)
-            if (6924.0f < x && x < 6980.0f && -1520.0f < y && y < -1432.0f && 838.0f < z && z < 843.0f)
-                areaflag = 2213;                            // The Forlorn Mine (Storm Peaks)
-            break;
-        case 2209:                                          // Brunnhildar Village (Storm Peaks)
-            if (6885.0f < x && x < 6938.0f && -1200.0f < y && y < -1138.0f && 801.0f < z && z < 809.0f)
-                areaflag = 2213;                            // The Forlorn Mine (Storm Peaks)
-            break;
-        case 166:                                           // Storm Peaks
-            if (6812.0f < x && x < 7048.0f && -1463.0f < y && y < -1200.0f && 807.0f < z && z < 843.0f)
-                areaflag = 2213;                            // The Forlorn Mine (Storm Peaks)
-            break;
-        case 446:                                           // (Stonelaton Mountains)
-        case 944:                                           // Boulderslide Ravine (Stonelaton Mountains)
-            if (-128.0f < x && x < 35.0f && 221.0f < y && y < 456.0f && 87.0f < z && z < 130.0f)
-                areaflag = 1019;                            // Boulderslide Cavern (Stonelaton Mountains)
-            break;
-        case 272:                                           // Palemane Rock (Mulgore)
-            if (-2466.0f < x && x < -2295.0f && 366.0f < y && y < 530.0f && 40.0f < z && z < 70.0f)
-                areaflag = 668;                             // Palemane Rock (Mulgore)
-            break;
-        case 65535:                                         // Multipe places.
-            if (-128.0f < x && x < 35.0f && 221.0f < y && y < 456.0f && 87.0f < z && z < 130.0f)
-                areaflag = 1019;                            // Boulderslide Cavern (Stonelaton Mountains)
-            else if (-2466.0f < x && x < -2295.0f && 366.0f < y && y < 530.0f && 40.0f < z && z < 70.0f)
-                areaflag = 668;                             // Palemane Rock (Mulgore)
-            break;
-        // Acherus: The Ebon Hold (Plaguelands: The Scarlet Enclave)
-        case 1984:                                          // Plaguelands: The Scarlet Enclave
-        case 2076:                                          // Death's Breach (Plaguelands: The Scarlet Enclave)
-        case 2745:                                          // The Noxious Pass (Plaguelands: The Scarlet Enclave)
-            if (z > 350.0f) areaflag = 2048; break;
-        // Acherus: The Ebon Hold (Eastern Plaguelands)
-        case 856:                                           // The Noxious Glade (Eastern Plaguelands)
-        case 2456:                                          // Death's Breach (Eastern Plaguelands)
-            if (z > 350.0f) areaflag = 1950; break;
-        // Dalaran
-        case 2492:                                          // Forlorn Woods (Crystalsong Forest)
-        case 2371:                                          // Valley of Echoes (Icecrown Glacier)
-            if (x > 5568.0f && x < 6022.0f && y > 374.0f && y < 918.0f && z > 563.0f)
-            {
-                areaflag = 2153;
-                if (y - 1.41f * x + 7649.55f > 0)            // Violet Hold
-                {
-                    if (y < 595.0f)
-                        areaflag = 2540;
-                }
-                else if (y + 2.91 * x - 17522.57f < 0)      // Krasus landing
-                    areaflag = 2531;
-            }
-            break;
-        // The Violet Citadel (Dalaran) or Dalaran
-        case 2484:                                          // The Twilight Rivulet (Crystalsong Forest)
-        case 1593:                                          // Crystalsong Forest
-            // Dalaran
-            if (x > 5568.0f && x < 6116.0f && y > 282.0f && y < 918.0f && z > 563.0f)
-            {
-                // The Violet Citadel (Dalaran), fast check
-                if (x > 5721.1f && x < 5884.66f && y > 764.4f && y < 948.0f)
-                {
-                    // The Violet Citadel (Dalaran)
-                    if ((x-5803.0f)*(x-5803.0f)+(y-846.18f)*(y-846.18f) < 6690.0f)
-                    {
-                        areaflag = 2696;
-                        break;
-                    }
-                }
-
-                // The Eventide (Dalaran), fast check against diagonal box with lower limit
-                if (z > 635.0f && x+y < 6375.0f && x+y > 6295.0f && x-y < 5106.0f && x-y > 4972.0f)
-                {
-                    areaflag = 2543;
-                    break;
-                }
-
-                // The Violet Hold (Dalaran), fast check
-                if (x < 5791.0f && y > 404.0f && y < 595.0f)
-                {
-                    areaflag = 2540;
-                    break;
-                }
-
-                // Dalaran
-                areaflag = 2153;
-            }
-            break;
-        // Vargoth's Retreat (Dalaran) or The Violet Citadel (Dalaran) or Dalaran
-        case 2504:                                          // Violet Stand (Crystalsong Forest)
-            // Dalaran
-            if (x > 5568.0f && x < 6116.0f && y > 282.0f && y < 982.0f && z > 563.0f)
-            {
-                // The Violet Citadel (Dalaran), fast check
-                if (x > 5721.1f && x < 5884.66f && y > 764.4f && y < 948.0f)
-                {
-                    // Vargoth's Retreat (Dalaran), nice slow circle with upper limit
-                    if (z < 898.0f && (x-5765.0f)*(x-5765.0f)+(y-862.4f)*(y-862.4f) < 262.0f)
-                    {
-                        areaflag = 2748;
-                        break;
-                    }
-
-                    // The Violet Citadel (Dalaran)
-                    if ((x-5803.0f)*(x-5803.0f)+(y-846.18f)*(y-846.18f) < 6690.0f)
-                    {
-                        areaflag = 2696;
-                        break;
-                    }
-                }
-
-                // Dalaran
-                areaflag = 2153;
-            }
-            break;
-        // Maw of Neltharion (cave)
-        case 164:                                           // Dragonblight
-        case 1797:                                          // Obsidian Dragonshrine (Dragonblight)
-            if (x > 4364.0f && x < 4632.0f && y > 1545.0f && y < 1886.0f && z < 200.0f) areaflag = 1853; break;
-        // Undercity (sewers enter and path)
-        case 179:                                           // Tirisfal Glades
-            if (x > 1595.0f && x < 1699.0f && y > 535.0f && y < 643.5f && z < 30.5f) areaflag = 685; break;
-        // Undercity (Royal Quarter)
-        case 210:                                           // Silverpine Forest
-        case 316:                                           // The Shining Strand (Silverpine Forest)
-        case 438:                                           // Lordamere Lake (Silverpine Forest)
-            if (x > 1237.0f && x < 1401.0f && y > 284.0f && y < 440.0f && z < -40.0f) areaflag = 685; break;
-        // Undercity (cave and ground zone, part of royal quarter)
-        case 607:                                           // Ruins of Lordaeron (Tirisfal Glades)
-            // ground and near to ground (by city walls)
-            if (z > 0.0f)
-            {
-                if (x > 1510.0f && x < 1839.0f && y > 29.77f && y < 433.0f) areaflag = 685;
-            }
-            // more wide underground, part of royal quarter
-            else
-            {
-                if (x > 1299.0f && x < 1839.0f && y > 10.0f && y < 440.0f) areaflag = 685;
-            }
-            break;
-        // The Makers' Perch (ground) and Makers' Overlook (ground and cave)
-        case 1335:                                          // Sholazar Basin
-            // The Makers' Perch ground (fast box)
-            if (x > 6100.0f && x < 6250.0f && y > 5650.0f && y < 5800.0f)
-            {
-                // nice slow circle
-                if ((x-6183.0f)*(x-6183.0f)+(y-5717.0f)*(y-5717.0f) < 2500.0f)
-                    areaflag = 2189;
-            }
-            // Makers' Overlook (ground and cave)
-            else if (x > 5634.48f && x < 5774.53f  && y < 3475.0f && z > 300.0f)
-            {
-                if (y > 3380.26f || (y > 3265.0f && z < 360.0f))
-                    areaflag = 2187;
-            }
-            break;
-        // The Makers' Perch (underground)
-        case 2147:                                          // The Stormwright's Shelf (Sholazar Basin)
-            if (x > 6199.0f && x < 6283.0f && y > 5705.0f && y < 5817.0f && z < 38.0f) areaflag = 2189; break;
-        // Makers' Overlook (deep cave)
-        case 267:                                           // Icecrown
-            if (x > 5684.0f && x < 5798.0f && y > 3035.0f && y < 3367.0f && z < 358.0f) areaflag = 2187; break;
-        // Wyrmrest Temple (Dragonblight)
-        case 1814:                                          // Path of the Titans (Dragonblight)
-        case 1897:                                          // The Dragon Wastes (Dragonblight)
-            // fast box
-            if (x > 3400.0f && x < 3700.0f && y > 130.0f && y < 420.0f)
-            {
-                // nice slow circle
-                if ((x-3546.87f)*(x-3546.87f)+(y-272.71f)*(y-272.71f) < 19600.0f) areaflag = 1791;
-            }
-            break;
+        if(atEntry->flags & AREA_FLAG_OUTSIDE)
+            return true;
+        if(atEntry->flags & AREA_FLAG_INSIDE)
+            return false;
     }
 
-    return areaflag;
+    outdoor = mogpFlags&0x8;
+
+    if(wmoEntry)
+    {
+        if(wmoEntry->Flags & 4)
+            return true;
+        if((wmoEntry->Flags & 2)!=0)
+            outdoor = false;
+    }
+    return outdoor;
 }
+
+bool Map::IsOutdoors(float x, float y, float z) const
+{
+    uint32 mogpFlags;
+    int32 adtId, rootId, groupId;
+
+    // no wmo found? -> outside by default
+    if(!GetAreaInfo(x, y, z, mogpFlags, adtId, rootId, groupId))
+        return true;
+
+    AreaTableEntry const* atEntry = 0;
+    WMOAreaTableEntry const* wmoEntry= GetWMOAreaTableEntryByTripple(rootId, adtId, groupId);
+    if(wmoEntry)
+    {
+        DEBUG_LOG("Got WMOAreaTableEntry! flag %u, areaid %u", wmoEntry->Flags, wmoEntry->areaId);
+        atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+    }
+    return IsOutdoorWMO(mogpFlags, adtId, rootId, groupId, wmoEntry, atEntry);
+}
+
+bool Map::GetAreaInfo(float x, float y, float z, uint32 &flags, int32 &adtId, int32 &rootId, int32 &groupId) const
+{
+    float vmap_z = z;
+    VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
+    if (vmgr->getAreaInfo(GetId(), x, y, vmap_z, flags, adtId, rootId, groupId))
+    {
+        // check if there's terrain between player height and object height
+        if(GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
+        {
+            float _mapheight = gmap->getHeight(x,y);
+            // z + 2.0f condition taken from GetHeight(), not sure if it's such a great choice...
+            if(z + 2.0f > _mapheight &&  _mapheight > vmap_z)
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
+{
+    uint32 mogpFlags;
+    int32 adtId, rootId, groupId;
+    WMOAreaTableEntry const* wmoEntry = 0;
+    AreaTableEntry const* atEntry = 0;
+    bool haveAreaInfo = false;
+
+    if (GetAreaInfo(x, y, z, mogpFlags, adtId, rootId, groupId))
+    {
+        haveAreaInfo = true;
+        if (wmoEntry = GetWMOAreaTableEntryByTripple(rootId, adtId, groupId))
+            atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+    }
+
+    uint16 areaflag;
+
+    if (atEntry)
+        areaflag = atEntry->exploreFlag;
+    else
+    {
+        if (GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
+            areaflag = gmap->getArea(x, y);
+        // this used while not all *.map files generated (instances)
+        else
+            areaflag = GetAreaFlagByMapId(i_mapEntry->MapID);
+    }
+
+    if (isOutdoors)
+    {
+        if (haveAreaInfo)
+            *isOutdoors = IsOutdoorWMO(mogpFlags, adtId, rootId, groupId, wmoEntry, atEntry);
+        else
+            *isOutdoors = true;
+    }
+    return areaflag;
+ }
 
 uint8 Map::GetTerrainType(float x, float y) const
 {
@@ -2361,10 +2246,51 @@ uint8 Map::GetTerrainType(float x, float y) const
 
 ZLiquidStatus Map::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, LiquidData *data) const
 {
-    if (GridMap* gmap = const_cast<Map*>(this)->GetGrid(x, y))
-        return gmap->getLiquidStatus(x, y, z, ReqLiquidType, data);
-    else
-        return LIQUID_MAP_NO_WATER;
+    ZLiquidStatus result = LIQUID_MAP_NO_WATER;
+    VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
+    float liquid_level, ground_level = INVALID_HEIGHT;
+    uint32 liquid_type;
+    if (vmgr->GetLiquidLevel(GetId(), x, y, z, ReqLiquidType, liquid_level, ground_level, liquid_type))
+    {
+        sLog.outDebug("getLiquidStatus(): vmap liquid level: %f ground: %f type: %u", liquid_level, ground_level, liquid_type);
+        // Check water level and ground level
+        if (liquid_level > ground_level && z > ground_level - 2)
+        {
+            // All ok in water -> store data
+            if (data)
+            {
+                data->type  = liquid_type;
+                data->level = liquid_level;
+                data->depth_level = ground_level;
+            }
+
+            // For speed check as int values
+            int delta = int((liquid_level - z) * 10);
+
+            // Get position delta
+            if (delta > 20)                   // Under water
+                return LIQUID_MAP_UNDER_WATER;
+            if (delta > 0 )                   // In water
+                return LIQUID_MAP_IN_WATER;
+            if (delta > -1)                   // Walk on water
+                return LIQUID_MAP_WATER_WALK;
+            result = LIQUID_MAP_ABOVE_WATER;
+        }
+    }
+
+    if(GridMap* gmap = const_cast<Map*>(this)->GetGrid(x, y))
+    {
+        LiquidData map_data;
+        ZLiquidStatus map_result = gmap->getLiquidStatus(x, y, z, ReqLiquidType, &map_data);
+        // Not override LIQUID_MAP_ABOVE_WATER with LIQUID_MAP_NO_WATER:
+        if (map_result != LIQUID_MAP_NO_WATER && (map_data.level > ground_level))
+        {
+            if (data)
+                *data = map_data;
+            return map_result;
+        }
+    }
+    return result;
 }
 
 float Map::GetWaterLevel(float x, float y) const
@@ -2403,17 +2329,15 @@ void Map::GetZoneAndAreaIdByAreaFlag(uint32& zoneid, uint32& areaid, uint16 area
     zoneid = entry ? ((entry->zone != 0) ? entry->zone : entry->ID) : 0;
 }
 
-bool Map::IsInWater(float x, float y, float pZ, float min_depth) const
+bool Map::IsInWater(float x, float y, float pZ, LiquidData *data) const
 {
     // Check surface in x, y point for liquid
     if (const_cast<Map*>(this)->GetGrid(x, y))
     {
         LiquidData liquid_status;
-        if (getLiquidStatus(x, y, pZ, MAP_ALL_LIQUIDS, &liquid_status))
-        {
-            if (liquid_status.level - liquid_status.depth_level > min_depth)
+        LiquidData *liquid_ptr = data ? data : &liquid_status;
+        if (getLiquidStatus(x, y, pZ, MAP_ALL_LIQUIDS, liquid_ptr))
                 return true;
-        }
     }
     return false;
 }
@@ -3326,7 +3250,7 @@ void Map::ScriptsProcess()
 
         if (step.sourceGUID)
         {
-            switch(GUID_HIPART(step.sourceGUID))
+            switch (GUID_HIPART(step.sourceGUID))
             {
                 case HIGHGUID_ITEM:
                 // case HIGHGUID_CONTAINER: == HIGHGUID_ITEM
@@ -3376,7 +3300,7 @@ void Map::ScriptsProcess()
 
         if (step.targetGUID)
         {
-            switch(GUID_HIPART(step.targetGUID))
+            switch (GUID_HIPART(step.targetGUID))
             {
                 case HIGHGUID_UNIT:
                     target = HashMapHolder<Creature>::Find(step.targetGUID);
@@ -3410,45 +3334,52 @@ void Map::ScriptsProcess()
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_TALK call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_TALK (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
 
-                if (source->GetTypeId() != TYPEID_UNIT)
+                Creature* cSource = NULL;
+                cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_TALK call for non-creature (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
-                    break;
-                }
-                if (step.script->datalong > 4)
-                {
-                    sLog.outError("SCRIPT_COMMAND_TALK invalid chat type (%u), skipping.",step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_TALK (script id: %u) call for non supported source (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(), source->GetEntry(), source->GetGUIDLow());
                     break;
                 }
 
+                if (step.script->datalong > CHAT_TYPE_WHISPER)
+                {
+                    sLog.outError("SCRIPT_COMMAND_TALK (script id: %u) invalid chat type (%u), skipping.", step.script->id, step.script->datalong);
+                    break;
+                }
+                
                 uint64 unit_target = target ? target->GetGUID() : 0;
 
                 //datalong 0=normal say, 1=whisper, 2=yell, 3=emote text, 4=boss emote text
-                switch(step.script->datalong)
+                //TODO: Update for more chat types
+                switch (step.script->datalong)
                 {
-                    case 0:                                 // Say
-                        source->ToCreature()->Say(step.script->dataint, LANG_UNIVERSAL, unit_target);
+                    case CHAT_TYPE_SAY:         // Say
+                        cSource->Say(step.script->dataint, LANG_UNIVERSAL, unit_target);
                         break;
-                    case 1:                                 // Whisper
-                        if (!unit_target)
+                    case CHAT_TYPE_YELL:        // Yell
+                        cSource->Yell(step.script->dataint, LANG_UNIVERSAL, unit_target);
+                        break;
+                    case CHAT_TYPE_TEXT_EMOTE:  // Emote text
+                        cSource->TextEmote(step.script->dataint, unit_target);
+                        break;
+                    case CHAT_TYPE_BOSS_EMOTE:  // Boss Emote text
+                        cSource->MonsterTextEmote(step.script->dataint, unit_target, true);
+                        break;
+                    case CHAT_TYPE_WHISPER:     // Whisper
+                        if (!unit_target || !IS_PLAYER_GUID(unit_target))
                         {
-                            sLog.outError("SCRIPT_COMMAND_TALK attempt to whisper (%u) NULL, skipping.",step.script->datalong);
+                            sLog.outError("SCRIPT_COMMAND_TALK (script id: %u) attempt to whisper (%u) NULL, skipping.", step.script->id, 
+                            step.script->datalong);
                             break;
                         }
-                        source->ToCreature()->Whisper(step.script->dataint,unit_target);
-                        break;
-                    case 2:                                 // Yell
-                        source->ToCreature()->Yell(step.script->dataint, LANG_UNIVERSAL, unit_target);
-                        break;
-                    case 3:                                 // Emote text
-                        source->ToCreature()->TextEmote(step.script->dataint, unit_target);
-                        break;
-                    case 4:                                 // Boss Emote text
-                        source->ToCreature()->MonsterTextEmote(step.script->dataint, unit_target, true);
+                        cSource->Whisper(step.script->dataint,unit_target);
                         break;
                     default:
                         break;                              // must be already checked at load
@@ -3457,84 +3388,129 @@ void Map::ScriptsProcess()
             }
 
             case SCRIPT_COMMAND_EMOTE:
+            {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_EMOTE call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_EMOTE (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
 
-                if (source->GetTypeId() != TYPEID_UNIT)
+                Creature* cSource = NULL;
+                cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_EMOTE call for non-creature (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
-                    break;
+                    sLog.outError("SCRIPT_COMMAND_TALK (script id: %u) call for non supported source (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(), source->GetEntry(), source->GetGUIDLow());
+					break;
                 }
 
                 if (step.script->datalong2)
-                    ((Creature *)source)->SetUInt32Value(UNIT_NPC_EMOTESTATE, step.script->datalong);
+                    cSource->SetUInt32Value(UNIT_NPC_EMOTESTATE, step.script->datalong);
                 else
-                    ((Creature *)source)->HandleEmoteCommand(step.script->datalong);
+                    cSource->HandleEmoteCommand(step.script->datalong);
                 break;
+			}
+            
             case SCRIPT_COMMAND_FIELD_SET:
+            {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_FIELD_SET call for NULL object.");
+                    sLog.outError("SCRIPT_COMMAND_FIELD_SET (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
-                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= source->GetValuesCount())
+                
+                Creature* cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_FIELD_SET call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
-                        step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_FIELD_SET (script id: %u) call for non-creature source.", step.script->id);
                     break;
                 }
 
-                source->SetUInt32Value(step.script->datalong, step.script->datalong2);
+                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= cSource->GetValuesCount())
+                {
+                    sLog.outError("SCRIPT_COMMAND_FIELD_SET (script id: %u) call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
+                    step.script->id, step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    break;
+                }
+
+                cSource->SetUInt32Value(step.script->datalong, step.script->datalong2);
                 break;
+            }
+
             case SCRIPT_COMMAND_MOVE_TO:
+            {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_MOVE_TO call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_MOVE_TO (script id: %u) call for NULL creature.", step.script->id);
                     break;
                 }
 
-                if (source->GetTypeId() != TYPEID_UNIT)
+                Creature* cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_MOVE_TO call for non-creature (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_MOVE_TO (script id: %u) call for non-creature (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
-                source->ToCreature()->SendMonsterMoveWithSpeed(step.script->x, step.script->y, step.script->z, step.script->datalong2);
-                source->ToCreature()->GetMap()->CreatureRelocation((source->ToCreature()), step.script->x, step.script->y, step.script->z, 0);
+                
+                cSource->SendMonsterMoveWithSpeed(step.script->x, step.script->y, step.script->z, step.script->datalong2);
+                cSource->GetMap()->CreatureRelocation(cSource, step.script->x, step.script->y, step.script->z, 0);
                 break;
+            }
+
             case SCRIPT_COMMAND_FLAG_SET:
+            {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_FLAG_SET call for NULL object.");
-                    break;
-                }
-                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= source->GetValuesCount())
-                {
-                    sLog.outError("SCRIPT_COMMAND_FLAG_SET call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
-                        step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_FLAG_SET (script id: %u) call for NULL object.", step.script->id);
                     break;
                 }
 
-                source->SetFlag(step.script->datalong, step.script->datalong2);
+                Creature* cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+                if (!cSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_FLAG_SET (script id: %u) call for non-creature source.", step.script->id);
+                    break; 
+                }                
+
+                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= cSource->GetValuesCount())
+                {
+                    sLog.outError("SCRIPT_COMMAND_FLAG_SET (script id: %u) call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
+                    step.script->id, step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    break;
+                }
+
+                cSource->SetFlag(step.script->datalong, step.script->datalong2);
                 break;
+            }
+            
             case SCRIPT_COMMAND_FLAG_REMOVE:
+            {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_FLAG_REMOVE call for NULL object.");
+                    sLog.outError("SCRIPT_COMMAND_FLAG_REMOVE (script id: %u) call for NULL object.", step.script->id);
                     break;
                 }
-                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= source->GetValuesCount())
+                
+                Creature* cSource = source->ToCreature() != NULL ? source->ToCreature() : target->ToCreature();
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_FLAG_REMOVE call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
-                        step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_FLAG_REMOVE (script id: %u) call for non-creature source.", step.script->id);
+                    break; 
+                } 
+                
+                if (step.script->datalong <= OBJECT_FIELD_ENTRY || step.script->datalong >= cSource->GetValuesCount())
+                {
+                    sLog.outError("SCRIPT_COMMAND_FLAG_REMOVE (script id: %u) call for wrong field %u (max count: %u) in object (TypeId: %u, Entry: %u, GUID: %u).",
+                    step.script->id, step.script->datalong,source->GetValuesCount(),source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
-                source->RemoveFlag(step.script->datalong, step.script->datalong2);
+                cSource->RemoveFlag(step.script->datalong, step.script->datalong2);
                 break;
-
+            }
+            
             case SCRIPT_COMMAND_TELEPORT_TO:
             {
                 // accept player in any one from target/source arg
@@ -3562,27 +3538,23 @@ void Map::ScriptsProcess()
                 // accept player in any one from target/source arg
                 if (!target && !source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_KILL_CREDIT call for NULL object.");
+                    sLog.outError("SCRIPT_COMMAND_KILL_CREDIT (script id: %u) call for NULL object.", step.script->id);
                     break;
                 }
 
+                Player* pSource = target->ToPlayer() != NULL ? target->ToPlayer() : source->ToPlayer();
                 // must be only Player
-                if ((!target || target->GetTypeId() != TYPEID_PLAYER) && (!source || source->GetTypeId() != TYPEID_PLAYER))
+                if (!pSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_KILL_CREDIT call for non-player (TypeIdSource: %u)(TypeIdTarget: %u), skipping.", source ? source->GetTypeId() : 0, target ? target->GetTypeId() : 0);
+                    sLog.outError("SCRIPT_COMMAND_KILL_CREDIT (script id: %u) call for non-player (TypeIdSource: %u)(TypeIdTarget: %u), skipping.",
+                    step.script->id, source ? source->GetTypeId() : 0, target ? target->GetTypeId() : 0);
                     break;
                 }
-
-                Player* pSource = target && target->GetTypeId() == TYPEID_PLAYER ? (Player*)target : (Player*)source;
 
                 if (step.script->datalong2)
-                {
                     pSource->RewardPlayerAndGroupAtEvent(step.script->datalong, pSource);
-                }
                 else
-                {
                     pSource->KilledMonsterCredit(step.script->datalong, 0);
-                }
 
                 break;
             }
@@ -3591,13 +3563,13 @@ void Map::ScriptsProcess()
             {
                 if (!step.script->datalong)                  // creature not specified
                 {
-                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE (script id: %u) call with no creature parameter.", step.script->id);
                     break;
                 }
 
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE call for NULL world object.");
+                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE (script id: %u) call for NULL source object.", step.script->id);
                     break;
                 }
 
@@ -3605,7 +3577,8 @@ void Map::ScriptsProcess()
 
                 if (!summoner)
                 {
-                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE call for non-WorldObject (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON_CREATURE (script id: %u) call for non-WorldObject (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
@@ -3617,7 +3590,7 @@ void Map::ScriptsProcess()
                 Creature* pCreature = summoner->SummonCreature(step.script->datalong, x, y, z, o,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,step.script->datalong2);
                 if (!pCreature)
                 {
-                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON failed for creature (entry: %u).",step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_TEMP_SUMMON (script id: %u) failed for creature (entry: %u).", step.script->id, step.script->datalong);
                     break;
                 }
 
@@ -3628,13 +3601,13 @@ void Map::ScriptsProcess()
             {
                 if (!step.script->datalong)                  // gameobject not specified
                 {
-                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT call for NULL gameobject.");
+                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT (script id: %u) call with no gameobject parameter.", step.script->id);
                     break;
                 }
 
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT call for NULL world object.");
+                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT (script id: %u) call for NULL source object.", step.script->id);
                     break;
                 }
 
@@ -3642,7 +3615,8 @@ void Map::ScriptsProcess()
 
                 if (!summoner)
                 {
-                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT call for non-WorldObject (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT (script id: %u) call for non-WorldObject (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
@@ -3661,7 +3635,7 @@ void Map::ScriptsProcess()
 
                 if (!go)
                 {
-                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT failed for gameobject(guid: %u).", step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT (script id: %u) failed for gameobject(guid: %u).", step.script->id, step.script->datalong);
                     break;
                 }
 
@@ -3670,7 +3644,8 @@ void Map::ScriptsProcess()
                     go->GetGoType() == GAMEOBJECT_TYPE_BUTTON      ||
                     go->GetGoType() == GAMEOBJECT_TYPE_TRAP)
                 {
-                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT can not be used with gameobject of type %u (guid: %u).", uint32(go->GetGoType()), step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_RESPAWN_GAMEOBJECT (script id: %u) can not be used with gameobject of type %u (guid: %u).", 
+                    step.script->id, uint32(go->GetGoType()), step.script->datalong);
                     break;
                 }
 
@@ -3687,45 +3662,47 @@ void Map::ScriptsProcess()
             {
                 if (!step.script->datalong)                  // door not specified
                 {
-                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR call for NULL door.");
+                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR (script id: %u) call for NULL target door.", step.script->id);
                     break;
                 }
 
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR call for NULL unit.");
+                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR (script id: %u) call for NULL source unit.", step.script->id);
                     break;
                 }
 
                 if (!source->isType(TYPEMASK_UNIT))          // must be any Unit (creature or player)
                 {
-                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR call for non-unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR (script id: %u) call for non-unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
-                Unit* caster = (Unit*)source;
-
                 GameObject *door = NULL;
+                WorldObject* wSource = (WorldObject*)source;
+
                 int32 time_to_close = step.script->datalong2 < 15 ? 15 : (int32)step.script->datalong2;
 
-                CellPair p(Trinity::ComputeCellPair(caster->GetPositionX(), caster->GetPositionY()));
+                CellPair p(Trinity::ComputeCellPair(wSource->GetPositionX(), wSource->GetPositionY()));
                 Cell cell(p);
                 cell.data.Part.reserved = ALL_DISTRICT;
 
-                Trinity::GameObjectWithDbGUIDCheck go_check(*caster,step.script->datalong);
-                Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck> checker(caster,door,go_check);
+                Trinity::GameObjectWithDbGUIDCheck go_check(*wSource, step.script->datalong);
+                Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck> checker(wSource, door, go_check);
 
                 TypeContainerVisitor<Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck>, GridTypeMapContainer > object_checker(checker);
-                cell.Visit(p, object_checker, *caster->GetMap());
+                cell.Visit(p, object_checker, *wSource->GetMap());
 
                 if (!door)
                 {
-                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR failed for gameobject(guid: %u).", step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR (script id: %u) failed for gameobject(guid: %u).", step.script->id, step.script->datalong);
                     break;
                 }
                 if (door->GetGoType() != GAMEOBJECT_TYPE_DOOR)
                 {
-                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR failed for non-door(GoType: %u, Entry: %u, GUID: %u).", door->GetGoType(),door->GetEntry(),door->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_OPEN_DOOR (script id: %u) failed for non-door(GoType: %u, Entry: %u, GUID: %u).", 
+                    step.script->id, door->GetGoType(),door->GetEntry(),door->GetGUIDLow());
                     break;
                 }
 
@@ -3742,45 +3719,47 @@ void Map::ScriptsProcess()
             {
                 if (!step.script->datalong)                  // guid for door not specified
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR call for NULL door.");
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR (script id: %u) call for NULL door.", step.script->id);
                     break;
                 }
 
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR call for NULL unit.");
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR (script id: %u) call for NULL unit.", step.script->id);
                     break;
                 }
 
                 if (!source->isType(TYPEMASK_UNIT))          // must be any Unit (creature or player)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR call for non-unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR (script id: %u) call for non-unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
-                Unit* caster = (Unit*)source;
-
                 GameObject *door = NULL;
+                WorldObject* wSource = (WorldObject*)source;
+
                 int32 time_to_open = step.script->datalong2 < 15 ? 15 : (int32)step.script->datalong2;
 
-                CellPair p(Trinity::ComputeCellPair(caster->GetPositionX(), caster->GetPositionY()));
+                CellPair p(Trinity::ComputeCellPair(wSource->GetPositionX(), wSource->GetPositionY()));
                 Cell cell(p);
                 cell.data.Part.reserved = ALL_DISTRICT;
 
-                Trinity::GameObjectWithDbGUIDCheck go_check(*caster,step.script->datalong);
-                Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck> checker(caster,door,go_check);
+                Trinity::GameObjectWithDbGUIDCheck go_check(*wSource, step.script->datalong);
+                Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck> checker(wSource, door, go_check);
 
                 TypeContainerVisitor<Trinity::GameObjectSearcher<Trinity::GameObjectWithDbGUIDCheck>, GridTypeMapContainer > object_checker(checker);
-                cell.Visit(p, object_checker, *caster->GetMap());
+                cell.Visit(p, object_checker, *wSource->GetMap());
 
                 if (!door)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR failed for gameobject(guid: %u).", step.script->datalong);
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR (script id: %u) failed for gameobject(guid: %u).", step.script->id, step.script->datalong);
                     break;
                 }
                 if (door->GetGoType() != GAMEOBJECT_TYPE_DOOR)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR failed for non-door(GoType: %u, Entry: %u, GUID: %u).", door->GetGoType(),door->GetEntry(),door->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_DOOR (script id: %u) failed for non-door(GoType: %u, Entry: %u, GUID: %u).", 
+                    step.script->id, door->GetGoType(),door->GetEntry(),door->GetGUIDLow());
                     break;
                 }
 
@@ -3798,55 +3777,57 @@ void Map::ScriptsProcess()
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED call for NULL source.");
+                    sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED (script id %u) call for NULL source.", step.script->id);
                     break;
                 }
 
                 if (!target)
                 {
-                    sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED call for NULL target.");
+                    sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED (script id %u) call for NULL target.", step.script->id);
                     break;
                 }
 
                 // when script called for item spell casting then target == (unit or GO) and source is player
                 WorldObject* worldObject;
-                Player* player;
+                Player* pTarget;
 
-                if (target->GetTypeId() == TYPEID_PLAYER)
+                pTarget = target->ToPlayer();
+                if (pTarget)
                 {
-                    if (source->GetTypeId() != TYPEID_UNIT && source->GetTypeId() != TYPEID_GAMEOBJECT)
+                    if (source->GetTypeId() != TYPEID_UNIT && source->GetTypeId() != TYPEID_GAMEOBJECT && source->GetTypeId() != TYPEID_PLAYER)
                     {
-                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED call for non-creature and non-gameobject (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED (script id %u) call for non-creature, non-gameobject or non-player (TypeId: %u), skipping.",
+                        step.script->id, source->GetTypeId());
                         break;
                     }
 
                     worldObject = (WorldObject*)source;
-                    player = (Player*)target;
                 }
                 else
                 {
-                    if (target->GetTypeId() != TYPEID_UNIT && target->GetTypeId() != TYPEID_GAMEOBJECT)
+                    if (target->GetTypeId() != TYPEID_UNIT && target->GetTypeId() != TYPEID_GAMEOBJECT && target->GetTypeId() != TYPEID_PLAYER)
                     {
-                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED call for non-creature and non-gameobject (TypeId: %u, Entry: %u, GUID: %u), skipping.",target->GetTypeId(),target->GetEntry(),target->GetGUIDLow());
+                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED (script id %u) call for non-creature, non-gameobject or non-player (TypeId: %u), skipping.", 
+                        step.script->id, target->GetTypeId());
                         break;
                     }
 
-                    if (source->GetTypeId() != TYPEID_PLAYER)
+                    pTarget = source->ToPlayer();
+                    if (!pTarget)
                     {
-                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED call for non-player(TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                        sLog.outError("SCRIPT_COMMAND_QUEST_EXPLORED (script id %u) call for non-player (TypeId: %u), skipping.", step.script->id, source->GetTypeId());
                         break;
                     }
 
                     worldObject = (WorldObject*)target;
-                    player = (Player*)source;
                 }
 
                 // quest id and flags checked at script loading
                 if ((worldObject->GetTypeId() != TYPEID_UNIT || ((Unit*)worldObject)->isAlive()) &&
-                    (step.script->datalong2 == 0 || worldObject->IsWithinDistInMap(player,float(step.script->datalong2))))
-                    player->AreaExploredOrEventHappens(step.script->datalong);
+                    (step.script->datalong2 == 0 || worldObject->IsWithinDistInMap(pTarget, float(step.script->datalong2))))
+                    pTarget->AreaExploredOrEventHappens(step.script->datalong);
                 else
-                    player->FailQuest(step.script->datalong);
+                    pTarget->FailQuest(step.script->datalong);
 
                 break;
             }
@@ -3855,25 +3836,27 @@ void Map::ScriptsProcess()
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT must have source caster.");
+                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT (script id: %u) must have source caster.", step.script->id);
                     break;
                 }
 
                 if (!source->isType(TYPEMASK_UNIT))
                 {
-                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT source caster isn't unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT (script id: %u) source caster isn't unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
                     break;
                 }
 
                 if (!target)
                 {
-                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT call for NULL gameobject.");
+                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT (script id: %u) call for NULL gameobject.", step.script->id);
                     break;
                 }
 
                 if (target->GetTypeId() != TYPEID_GAMEOBJECT)
                 {
-                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT call for non-gameobject (TypeId: %u, Entry: %u, GUID: %u), skipping.",target->GetTypeId(),target->GetEntry(),target->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_ACTIVATE_OBJECT (script id: %u) call for non-gameobject (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, target->GetTypeId(),target->GetEntry(),target->GetGUIDLow());
                     break;
                 }
 
@@ -3891,13 +3874,14 @@ void Map::ScriptsProcess()
 
                 if (!cmdTarget)
                 {
-                    sLog.outError("SCRIPT_COMMAND_REMOVE_AURA call for NULL %s.",step.script->datalong2 ? "source" : "target");
+                    sLog.outError("SCRIPT_COMMAND_REMOVE_AURA (script id: %u) call for NULL %s.", step.script->id, step.script->datalong2 ? "source" : "target");
                     break;
                 }
 
                 if (!cmdTarget->isType(TYPEMASK_UNIT))
                 {
-                    sLog.outError("SCRIPT_COMMAND_REMOVE_AURA %s isn't unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",step.script->datalong2 ? "source" : "target",cmdTarget->GetTypeId(),cmdTarget->GetEntry(),cmdTarget->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_REMOVE_AURA (script id: %u) %s isn't unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, step.script->datalong2 ? "source" : "target",cmdTarget->GetTypeId(),cmdTarget->GetEntry(),cmdTarget->GetGUIDLow());
                     break;
                 }
 
@@ -3907,56 +3891,147 @@ void Map::ScriptsProcess()
 
             case SCRIPT_COMMAND_CAST_SPELL:
             {
+                // TODO: Allow gameobjects to be targets and casters
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL must have source caster.");
+                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL (script id: %u) must have source caster.", step.script->id);
                     break;
                 }
 
-                Object* cmdTarget = NULL;
-                Object* cmdSource = NULL;
-                Unit* spellTarget = NULL;
-
-                if (step.script->datalong2 == 4)
+                Unit* uSource = NULL;
+                Unit* uTarget = NULL;
+                // source/target cast spell at target/source (script->datalong2: 0: s->t 1: s->s 2: t->t 3: t->s
+                switch (step.script->datalong2)
                 {
-                    Unit* pTarget = (Unit*)target;
-                    if (Creature* victim = GetClosestCreatureWithEntry(pTarget,step.script->dataint,step.script->x))
-                        Unit* spellTarget = (Unit*)victim->GetGUID();
+                    case 0: // source -> target
+                        uSource = dynamic_cast<Unit*>(source);
+                        uTarget = dynamic_cast<Unit*>(target);
+                    break;
+                    case 1: // source -> source
+                        uSource = dynamic_cast<Unit*>(source);
+                        uTarget = dynamic_cast<Unit*>(source);
+                    break;
+                    case 2: // target -> target
+                        uSource = dynamic_cast<Unit*>(target);
+                        uTarget = dynamic_cast<Unit*>(target);
+                    break;
+                    case 3: // target -> source
+                        uSource = dynamic_cast<Unit*>(target);
+                        uTarget = dynamic_cast<Unit*>(source);
+                    break;
+                    case 4: // creature
+                        uSource = dynamic_cast<Unit*>(source);
+                        uTarget = GetClosestCreatureWithEntry(uSource, step.script->dataint, step.script->x);
+                    break;
+                }
+
+                if (!uSource || !uSource->isType(TYPEMASK_UNIT))
+                {
+                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL (script id: %u) no source unit found for spell %u", step.script->id, step.script->datalong);
+                    break;
+                }
+
+                if (!uTarget || !uTarget->isType(TYPEMASK_UNIT))
+                {
+                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL (script id: %u) no target unit found for spell %u", step.script->id, step.script->datalong);
+                    break;
+                }
+
+                uSource->CastSpell(uTarget, step.script->datalong, false);
+                break;
+            }
+
+            case SCRIPT_COMMAND_PLAY_SOUND:
+            {
+                if (!source)
+                {
+                    sLog.outError("SCRIPT_COMMAND_PLAY_SOUND (script id: %u) call for NULL creature.", step.script->id);
+                    break;
+                }
+
+                WorldObject* pSource = dynamic_cast<WorldObject*>(source);
+                if (!pSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_PLAY_SOUND (script id: %u) call for non-world object (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                    step.script->id, source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
+                    break;
+                }
+
+                // bitmask: 0/1=anyone/target, 0/2=with distance dependent
+                Player* pTarget;
+                if (step.script->datalong2 & 1)
+                {
+                    if (!target)
+                    {
+                        sLog.outError("SCRIPT_COMMAND_PLAY_SOUND (script id: %u) in targeted mode call for NULL target.", step.script->id);
+                        break;
+                    }
+
+                    pTarget = target->ToPlayer();
+                    if (!pTarget)
+                    {
+                        sLog.outError("SCRIPT_COMMAND_PLAY_SOUND (script id: %u) in targeted mode call for non-player (TypeId: %u, Entry: %u, GUID: %u), skipping.",
+                        step.script->id, target->GetTypeId(),target->GetEntry(),target->GetGUIDLow());
+                        break;
+                    }
+                }
+
+                // bitmask: 0/1=anyone/target, 0/2=with distance dependent
+                if (step.script->datalong2 & 2)
+                    pSource->PlayDistanceSound(step.script->datalong, pTarget);
+                else
+                    pSource->PlayDirectSound(step.script->datalong, pTarget);
+                break;
+            }
+            
+            case SCRIPT_COMMAND_CREATE_ITEM:
+            {
+                if (!target && !source)
+                {
+                    sLog.outError("SCRIPT_COMMAND_CREATE_ITEM (script id: %u) call for NULL object.", step.script->id);
+                    break;
+                }
+
+                Player *pReceiver = target->ToPlayer() != NULL ? target->ToPlayer() : source->ToPlayer();
+                // only Player
+                if (!pReceiver)
+                {
+                    sLog.outError("SCRIPT_COMMAND_CREATE_ITEM (script id: %u) call for non-player (TypeIdSource: %u)(TypeIdTarget: %u), skipping.", 
+                    step.script->id, source ? source->GetTypeId() : 0, target ? target->GetTypeId() : 0);
+                    break;
+                }
+
+                ItemPosCountVec dest;
+                uint8 msg = pReceiver->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, step.script->datalong, step.script->datalong2);
+                if (msg == EQUIP_ERR_OK)
+                {
+                    if (Item* item = pReceiver->StoreNewItem(dest, step.script->datalong, true))
+                        pReceiver->SendNewItem(item, step.script->datalong2, false, true);
                 }
                 else
-                {
-                    Object* cmdTarget = step.script->datalong2 & 0x01 ? source : target;
-                    Unit* spellTarget = (Unit*)cmdTarget;
-                }
+                    pReceiver->SendEquipError(msg,NULL,NULL);
 
-                if (cmdTarget && !cmdTarget->isType(TYPEMASK_UNIT))
+                break;
+            }
+            
+            case SCRIPT_COMMAND_DESPAWN_SELF:
+            {
+                if (!target && !source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL %s isn't unit (TypeId: %u, Entry: %u. GUID: %u), skipping.",step.script->datalong2 & 0x01 ? "source" : "target",cmdTarget->GetTypeId(),cmdTarget->GetEntry(),cmdTarget->GetGUIDLow());
+                    sLog.outError("SCRIPT_COMMAND_DESPAWN_SELF (script id: %u) call for NULL object.", step.script->id);
                     break;
                 }
 
-                if (step.script->datalong2 == 4)
-                    Object* cmdSource = target;
-                else
-                    Object* cmdSource = step.script->datalong2 & 0x02 ? target : source;
-
-                if (!cmdSource)
+                Creature* cSource = target->ToCreature();
+                // only creature
+                if (!cSource)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL %u call for NULL %s.", step.script->datalong, step.script->datalong2 & 0x02 ? "target" : "source");
+                    sLog.outError("SCRIPT_COMMAND_DESPAWN_SELF (script id: %u) call for non-creature (TypeIdSource: %u)(TypeIdTarget: %u), skipping.", 
+                    step.script->id, source ? source->GetTypeId() : 0, target ? target->GetTypeId() : 0);
                     break;
                 }
 
-                if (!cmdSource->isType(TYPEMASK_UNIT))
-                {
-                    sLog.outError("SCRIPT_COMMAND_CAST_SPELL %s isn't unit (TypeId: %u, Entry: %u, GUID: %u), skipping.",step.script->datalong2 & 0x02 ? "target" : "source", cmdSource->GetTypeId(),cmdSource->GetEntry(),cmdSource->GetGUIDLow());
-                    break;
-                }
-
-                Unit* spellSource = (Unit*)cmdSource;
-
-                //TODO: when GO cast implemented, code below must be updated accordingly to also allow GO spell cast
-                spellSource->CastSpell(spellTarget,step.script->datalong,false);
-
+                cSource->ForcedDespawn(step.script->datalong);
                 break;
             }
 
@@ -3988,54 +4063,56 @@ void Map::ScriptsProcess()
             {
                 if (!step.script->datalong || !step.script->datalong2)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CALLSCRIPT calls invalid db_script_id or lowguid not present: skipping.");
+                    sLog.outError("SCRIPT_COMMAND_CALLSCRIPT (script id: %u) calls invalid db_script_id or lowguid not present: skipping.", step.script->id);
                     break;
                 }
-                //our target
-                Creature* target = NULL;
 
+                Creature* cTarget;
                 if (source) //using grid searcher
                 {
-                    CellPair p(Trinity::ComputeCellPair(((Unit*)source)->GetPositionX(), ((Unit*)source)->GetPositionY()));
+                    WorldObject* wSource = (WorldObject*)source;
+                    CellPair p(Trinity::ComputeCellPair(wSource->GetPositionX(), wSource->GetPositionY()));
                     Cell cell(p);
                     cell.data.Part.reserved = ALL_DISTRICT;
 
-                    //sLog.outDebug("Attempting to find Creature: Db GUID: %i", step.script->datalong);
-                    Trinity::CreatureWithDbGUIDCheck target_check(((Unit*)source), step.script->datalong);
-                    Trinity::CreatureSearcher<Trinity::CreatureWithDbGUIDCheck> checker(((Unit*)source), target, target_check);
+                    Trinity::CreatureWithDbGUIDCheck target_check(wSource, step.script->datalong);
+                    Trinity::CreatureSearcher<Trinity::CreatureWithDbGUIDCheck> checker(wSource, cTarget, target_check);
 
                     TypeContainerVisitor<Trinity::CreatureSearcher <Trinity::CreatureWithDbGUIDCheck>, GridTypeMapContainer > unit_checker(checker);
-                    cell.Visit(p, unit_checker, *(((Unit*)source)->GetMap()));
+                    cell.Visit(p, unit_checker, *wSource->GetMap());
                 }
                 else //check hashmap holders
                 {
                     if (CreatureData const* data = objmgr.GetCreatureData(step.script->datalong))
-                        target = ObjectAccessor::GetObjectInWorld<Creature>(data->mapid, data->posX, data->posY, MAKE_NEW_GUID(step.script->datalong, data->id, HIGHGUID_UNIT), target);
+                        cTarget = ObjectAccessor::GetObjectInWorld<Creature>(data->mapid, data->posX, data->posY, MAKE_NEW_GUID(step.script->datalong, data->id, HIGHGUID_UNIT), cTarget);
                 }
-                //sLog.outDebug("attempting to pass target...");
-                if (!target)
+
+                if (!cTarget)
+                {
+                    sLog.outError("SCRIPT_COMMAND_CALLSCRIPT (script id: %u) target not found, creature entry %u", step.script->id, step.script->datalong);
                     break;
-                //sLog.outDebug("target passed");
+                }
+
                 //Lets choose our ScriptMap map
                 ScriptMapMap *datamap = NULL;
-                switch(step.script->dataint)
+                switch (step.script->dataint)
                 {
-                    case 1://QUEST END SCRIPTMAP
+                    case 1: //QUEST END SCRIPTMAP
                         datamap = &sQuestEndScripts;
                         break;
-                    case 2://QUEST START SCRIPTMAP
+                    case 2: //QUEST START SCRIPTMAP
                         datamap = &sQuestStartScripts;
                         break;
-                    case 3://SPELLS SCRIPTMAP
+                    case 3: //SPELLS SCRIPTMAP
                         datamap = &sSpellScripts;
                         break;
-                    case 4://GAMEOBJECTS SCRIPTMAP
+                    case 4: //GAMEOBJECTS SCRIPTMAP
                         datamap = &sGameObjectScripts;
                         break;
-                    case 5://EVENTS SCRIPTMAP
+                    case 5: //EVENTS SCRIPTMAP
                         datamap = &sEventScripts;
                         break;
-                    case 6://WAYPOINTS SCRIPTMAP
+                    case 6: //WAYPOINTS SCRIPTMAP
                         datamap = &sWaypointScripts;
                         break;
                     default:
@@ -4048,80 +4125,55 @@ void Map::ScriptsProcess()
 
                 uint32 script_id = step.script->datalong2;
                 //insert script into schedule but do not start it
-                ScriptsStart(*datamap, script_id, target, NULL/*, false*/);
+                ScriptsStart(*datamap, script_id, cTarget, NULL/*, false*/);
                 break;
             }
 
             case SCRIPT_COMMAND_KILL:
             {
-                if (!source || source->ToCreature()->isDead())
-                    break;
-
-                source->ToCreature()->DealDamage((source->ToCreature()), source->ToCreature()->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-
-                switch(step.script->dataint)
-                {
-                case 0: break; //return false not remove corpse
-                case 1: source->ToCreature()->RemoveCorpse(); break;
-                }
-                break;
-            }
-
-            case SCRIPT_COMMAND_PLAY_SOUND:
-            {
+                // TODO: Allow to kill objects other than self?
                 if (!source)
+                    break;
+                    
+                Creature* cSource = source->ToCreature();
+                if (!cSource)
+                    break;
+                    
+                if (cSource->isDead())
                 {
-                    sLog.outError("SCRIPT_COMMAND_PLAY_SOUND call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_KILL (script id: %u) called for already dead creature, entry %u, guidLow %u", 
+                    step.script->id, cSource->GetEntry(), cSource->GetGUIDLow());
                     break;
                 }
 
-                WorldObject* pSource = dynamic_cast<WorldObject*>(source);
-                if (!pSource)
-                {
-                    sLog.outError("SCRIPT_COMMAND_PLAY_SOUND call for non-world object (TypeId: %u, Entry: %u, GUID: %u), skipping.",source->GetTypeId(),source->GetEntry(),source->GetGUIDLow());
-                    break;
-                }
+                cSource->setDeathState(JUST_DIED);
+                if (step.script->dataint == 1)
+                    cSource->RemoveCorpse();
 
-                // bitmask: 0/1=anyone/target, 0/2=with distance dependent
-                Player* pTarget = NULL;
-                if (step.script->datalong2 & 1)
-                {
-                    if (!target)
-                    {
-                        sLog.outError("SCRIPT_COMMAND_PLAY_SOUND in targeted mode call for NULL target.");
-                        break;
-                    }
-
-                    if (target->GetTypeId() != TYPEID_PLAYER)
-                    {
-                        sLog.outError("SCRIPT_COMMAND_PLAY_SOUND in targeted mode call for non-player (TypeId: %u, Entry: %u, GUID: %u), skipping.",target->GetTypeId(),target->GetEntry(),target->GetGUIDLow());
-                        break;
-                    }
-
-                    pTarget = (Player*)target;
-                }
-
-                // bitmask: 0/1=anyone/target, 0/2=with distance dependent
-                if (step.script->datalong2 & 2)
-                    pSource->PlayDistanceSound(step.script->datalong,pTarget);
-                else
-                    pSource->PlayDirectSound(step.script->datalong,pTarget);
                 break;
             }
 
             case SCRIPT_COMMAND_ORIENTATION:
             {
-                if (!source)
+                if (!source || !source->isType(TYPEMASK_UNIT))
                 {
-                    sLog.outError("SCRIPT_COMMAND_ORIENTATION call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_ORIENTATION (script id: %u) call for NULL or non-unit source.", step.script->id);
                     break;
                 }
+
                 Unit* uSource = (Unit*)source;
-                Unit* uTarget = (Unit*)target;
-                if (step.script->datalong)
-                    uSource->SetInFront(uTarget);
-                else
+
+                if (!step.script->datalong)
                     uSource->SetOrientation(step.script->o);
+                else
+                {
+                    if (!target || !target->isType(TYPEMASK_UNIT))
+                    {
+                        sLog.outError("SCRIPT_COMMAND_ORIENTATION (script id: %u) call for NULL or non-unit target.", step.script->id);
+                        break;
+                    }
+                    uSource->SetInFront((Unit*)target);
+                }
 
                 uSource->SendMovementFlagUpdate();
                 break;
@@ -4130,53 +4182,78 @@ void Map::ScriptsProcess()
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_EQUIP call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_EQUIP (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
 
-                source->ToCreature()->LoadEquipment(step.script->datalong);
-
+                Creature* cSource = source->ToCreature();
+                if (!cSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_EQUIP (script id: %u) call, source is non-creature.", step.script->id);
+                    break;
+                }
+                
+                cSource->LoadEquipment(step.script->datalong);
                 break;
             }
             case SCRIPT_COMMAND_MODEL:
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_MODEL call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_EQUIP (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
 
-                source->ToCreature()->SetDisplayId(step.script->datalong);
+                Creature* cSource = source->ToCreature();
+                if (!cSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_EQUIP (script id: %u) call, source is non-creature.", step.script->id);
+                    break;
+                }
 
+                cSource->SetDisplayId(step.script->datalong);
                 break;
             }
+
             case SCRIPT_COMMAND_CLOSE_GOSSIP:
             {
-/*
- * need to find a good way to do idiot checking here
- * No one should be using this script command in any scripts tables except 
- * gossip, but I guess someone could fat finger it.
-                if (!source->ToPlayer()->GetPlayer()->GetNPCIfCanInteractWith(target,UNIT_NPC_FLAG_GOSSIP));
+                if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_CLOSE_GOSSIP attempted to be used in a non-gossip case -- IGNORED!");
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_GOSSIP (script id: %u) for null source", step.script->id);
                     break;
                 }
-*/
-                source->ToPlayer()->PlayerTalkClass->CloseGossip();
+                
+                Player *pSource = source->ToPlayer();
+                if (!pSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_CLOSE_GOSSIP (script id: %u) for non-player source.", step.script->id);
+                    break;
+                }
+                
+                pSource->PlayerTalkClass->CloseGossip();
                 break;
-            } 
+            }
+
             case SCRIPT_COMMAND_PLAYMOVIE:
             {
                 if (!source)
                 {
-                    sLog.outError("SCRIPT_COMMAND_PLAYMOVIE call for NULL creature.");
+                    sLog.outError("SCRIPT_COMMAND_PLAYMOVIE (script id: %u) call for NULL source.", step.script->id);
                     break;
                 }
-                source->ToPlayer()->SendMovieStart(step.script->datalong);
+                
+                Player* pSource = source->ToPlayer();
+                if (!pSource)
+                {
+                    sLog.outError("SCRIPT_COMMAND_PLAYMOVIE (script id: %u) call for non-player source.", step.script->id);
+                    break;
+                }
+                pSource->SendMovieStart(step.script->datalong);
                 break;
             }
+            
             default:
-                sLog.outError("Unknown script command %u called.",step.script->command);
+                sLog.outError("Unknown script command %u called.", step.script->command);
                 break;
         }
 
