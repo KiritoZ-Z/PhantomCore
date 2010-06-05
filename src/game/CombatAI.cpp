@@ -365,5 +365,7 @@ void VehicleAI::CheckConditions(const uint32 diff)
                     }
                 }
         }
-        m_ConditionsTimer = VEHICLE_CONDITION_CHECK_TIME;
-    } else m_ConditionsTimer -= diff;
+		m_ConditionsTimer = VEHICLE_CONDITION_CHECK_TIME;
+	}
+     else m_ConditionsTimer -= diff;
+	}
