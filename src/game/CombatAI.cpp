@@ -336,7 +336,6 @@ void VehicleAI::OnCharmed(bool apply)
     m_DismissTimer = VEHICLE_DISMISS_TIME;//reset timer
     m_IsVehicleInUse = apply;
 }
-}
 
 void VehicleAI::LoadConditions()
 {
