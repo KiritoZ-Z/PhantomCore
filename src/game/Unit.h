@@ -1979,7 +1979,6 @@ class Unit : public WorldObject
 
         // Transports
         Transport * m_transport;
-        GameObject * m_temp_transport;
 
         void _UpdateSpells(uint32 time);
         void _DeleteRemovedAuras();

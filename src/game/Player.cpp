@@ -416,26 +416,6 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
     rest_type=REST_TYPE_NO;
     ////////////////////Rest System/////////////////////
 
-    // movement anticheat
-    m_anti_LastClientTime  = 0;          // last movement client time
-    m_anti_LastServerTime  = 0;          // last movement server time
-    m_anti_DeltaClientTime = 0;          // client side session time
-    m_anti_DeltaServerTime = 0;          // server side session time
-    m_anti_MistimingCount  = 0;          // mistiming count
-
-    m_anti_LastSpeedChangeTime = 0;      // last speed change time
-
-    m_anti_Last_HSpeed =  7.0f;          // horizontal speed, default RUN speed
-    m_anti_Last_VSpeed = -2.3f;          // vertical speed, default max jump height
-
-    m_anti_TeleToPlane_Count = 0;        // Teleport To Plane alarm counter
-
-    m_anti_AlarmCount = 0;               // alarm counter
-
-    m_anti_JumpCount = 0;                // Jump already began, anti air jump check
-    m_anti_JumpBaseZ = 0;                // Z coord before jump (AntiGrav)
-    // end movement anticheat
-
     m_mailsLoaded = false;
     m_mailsUpdated = false;
     unReadMails = 0;
@@ -1803,7 +1783,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
     if (GetMapId() == mapid && !m_transport)
     {
-        m_anti_JumpBaseZ = 0;
         //lets reset far teleport flag if it wasn't reset during chained teleports
         SetSemaphoreTeleportFar(false);
         //setup delayed teleport flag
@@ -1953,7 +1932,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
             m_teleport_dest = WorldLocation(mapid, final_x, final_y, final_z, final_o);
             SetFallInformation(0, final_z);
-            m_anti_JumpBaseZ = 0;
             // if the player is saved before worldportack (at logout for example)
             // this will be used instead of the current location in SaveToDB
 
@@ -18868,8 +18846,6 @@ void Player::VehicleSpellInitialize()
     Creature* veh = GetVehicleCreatureBase();
     if (!veh)
         return;
-
-    // GetPosition_ is not a member of 'Vehicle', SetPosition is a member of 'Player': SetPosition(GetVehicle()->GetPositionX(), GetVehicle()->GetPositionY(), GetVehicle()->GetPositionZ(), GetVehicle()->GetOrientation());
 
     // GetPosition_ is not a member of 'Vehicle', SetPosition is a member of 'Player': SetPosition(GetVehicle()->GetPositionX(), GetVehicle()->GetPositionY(), GetVehicle()->GetPositionZ(), GetVehicle()->GetOrientation());
 
