@@ -1,6 +1,8 @@
 /*
  * Copyright (C) 2009 - 2010 TrinityCore <http://www.trinitycore.org/>
  *
+ * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -127,7 +129,6 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 	uint32 m_uiBoneStormDamageTimer;
 	uint32 m_uiColdFlameTimer2;
 	uint32 m_uiBerserkTimer;
-	uint32 m_uiBoneStormCancelTimer;
 
 	bool Intro;
 
@@ -136,10 +137,9 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 		m_uiBoneSpikeGraveyardTimer	= 15000;
 		m_uiColdFlameTimer			= 7000;
 		m_uiBoneStormChannelTimer	= 45000;
-		m_uiBoneStormCancelTimer	= 70000;
 		m_uiColdFlameTimer2			= 4000;
 		m_uiBoneStormDamageTimer = urand(1500,2500);
-		m_uiBerserkTimer = 600000;
+		m_uiBerserkTimer = 500000;
 
 		me->SetSpeed(MOVE_RUN, 2.0f, true);
 		me->SetSpeed(MOVE_WALK, 2.0f, true);
@@ -185,6 +185,7 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
     {
         if (!UpdateVictim())
             return;
+	
 		
 		if (m_uiBerserkTimer <= uiDiff)
 		{
@@ -219,50 +220,51 @@ struct Boss_Lord_MarrowgarAI : public ScriptedAI
 		if(m_uiBoneStormChannelTimer <= uiDiff)
 		{
 			DoCastAOE(SPELL_BONE_STORM_CHANNEL);
+			if (AuraApplication * aur = me->GetAuraApplication(69076, GetGUID()))
+			{
+                aur->GetBase()->SetDuration(21000);
+                aur->GetBase()->SetMaxDuration(21000);
+                aur->ClientUpdate();
+			}
 			DoScriptText(SAY_BONE_STORM, me);
 			DoScriptText(SAY_EMOTE_BONE_STORM, me);
 			m_uiBoneStormChannelTimer = 50000;
 		} 
 		else m_uiBoneStormChannelTimer -= uiDiff;
-		if(m_uiBoneStormCancelTimer <= uiDiff)
+		
+		if (m_uiBoneSpikeGraveyardTimer < uiDiff)
 		{
-			me->RemoveAurasDueToSpell(SPELL_BONE_STORM_CHANNEL);
-			m_uiBoneStormCancelTimer = 75000;
-		}
-		else m_uiBoneStormCancelTimer -= uiDiff;
-			if (m_uiBoneSpikeGraveyardTimer < uiDiff)
-            {
-				switch(urand(0, 2))
-				{
-					case 0: DoScriptText(SAY_BONESPIKE_1, me); break;
-					case 1: DoScriptText(SAY_BONESPIKE_2, me); break;
-					case 2: DoScriptText(SAY_BONESPIKE_3, me); break;
-				}
-				uint32 count = RAID_MODE(1,3,1,3); 
-                for (uint8 i = 1; i <= count; i++)
-                {
-					Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1);
-					if (pTarget && !pTarget->HasAura(SPELL_BONE_SPIKE_IMPALING))
-						{
-							Creature* Bone = me->SummonCreature(CREATURE_BONE_SPIKE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 999999);
-							CAST_AI(BoneSpikeAI, Bone->AI())->SetPrisoner(pTarget);
-							Bone->CastSpell(pTarget, SPELL_BONE_SPIKE_IMPALING, true);
-						}
-				}
-				m_uiBoneSpikeGraveyardTimer = 15000;
-            }
-            else m_uiBoneSpikeGraveyardTimer -= uiDiff;
+		    switch(urand(0, 2))
+		    {
+			case 0: DoScriptText(SAY_BONESPIKE_1, me); break;
+			case 1: DoScriptText(SAY_BONESPIKE_2, me); break;
+			case 2: DoScriptText(SAY_BONESPIKE_3, me); break;
+		    }
+		    uint32 count = RAID_MODE(1,3,1,3); 
+                    for (uint8 i = 1; i <= count; i++)
+                    {
+			Unit* pTarget = SelectTarget(SELECT_TARGET_RANDOM, 1);
+			if (pTarget && !pTarget->HasAura(SPELL_BONE_SPIKE_IMPALING))
+			{
+			    Creature* Bone = me->SummonCreature(CREATURE_BONE_SPIKE, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 999999);
+				CAST_AI(BoneSpikeAI, Bone->AI())->SetPrisoner(pTarget);
+				Bone->CastSpell(pTarget, SPELL_BONE_SPIKE_IMPALING, true);
+			}
+		    } 
+		    m_uiBoneSpikeGraveyardTimer = 15000;
+               }
+               else m_uiBoneSpikeGraveyardTimer -= uiDiff;
 
 		}
 
 			if (me->HasAura(SPELL_BONE_STORM_CHANNEL))
 			{
-			if(m_uiColdFlameTimer2 <= uiDiff)
+			    if(m_uiColdFlameTimer2 <= uiDiff)
 				{
 					if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
 					{
 					    if (!me->IsWithinDistInMap(pTarget, 4))
-					    {
+					    { 
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()+20, me->GetPositionY()+20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()-20, me->GetPositionY()-20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
 						me->SummonCreature(CREATURE_COLD_FLAME, me->GetPositionX()+20, me->GetPositionY()-20, me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 20000);
@@ -315,7 +317,7 @@ struct Cold_FlameAI : public ScriptedAI
 {
     Cold_FlameAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-     m_pInstance = pCreature->GetInstanceData();
+        m_pInstance = pCreature->GetInstanceData();
     }
 
 	ScriptedInstance* m_pInstance;
@@ -335,8 +337,8 @@ struct Cold_FlameAI : public ScriptedAI
         me->SetVisibility(VISIBILITY_OFF);
 		DoCast(me, RAID_MODE(SPELL_COLD_FLAME_10_NORMAL,SPELL_COLD_FLAME_25_NORMAL,SPELL_COLD_FLAME_10_HEROIC,SPELL_COLD_FLAME_25_HEROIC));
 		me->SetReactState(REACT_PASSIVE);
-		me->SetSpeed(MOVE_WALK, 1.5f, true);
-		m_uiColdFlameTimer = 1000;
+		me->SetSpeed(MOVE_WALK, 1.3f, true);
+		m_uiColdFlameTimer = 700;
     }
 
 	void UpdateAI(const uint32 diff)

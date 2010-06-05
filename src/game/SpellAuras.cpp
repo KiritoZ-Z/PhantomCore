@@ -1322,6 +1322,21 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
     // mods at aura apply or remove
     switch (GetSpellProto()->SpellFamilyName)
     {
+		case SPELLFAMILY_GENERIC:
+		if (GetSpellProto()->SpellIconID == 2836)
+		{
+			if (target->HasAura(69076))
+			{
+				if(AuraApplication * aura = target->GetAuraApplication(69076, 0))
+				{
+					aura->GetBase()->SetDuration(20000);
+					aura->GetBase()->SetMaxDuration(20000);
+					aura->ClientUpdate();
+				}
+			}
+			break;
+		}
+		break;
         case SPELLFAMILY_ROGUE:
             // Stealth
             if (GetSpellProto()->SpellFamilyFlags[0] & 0x00400000)
