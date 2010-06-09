@@ -257,7 +257,7 @@ struct boss_acidmawAI : public ScriptedAI
     void JustReachedHome()
     {
         if (!m_pInstance) return;
-        if (m_pInstance->GetData(TYPE_NORTHREND_BEASTS) != FAIL)
+        if (m_pInstance->GetData(TYPE_NORTHREND_BEASTS) == IN_PROGRESS)
             m_pInstance->SetData(TYPE_NORTHREND_BEASTS, FAIL);
 
         me->ForcedDespawn();
@@ -373,7 +373,7 @@ struct boss_dreadscaleAI : public ScriptedAI
     void JustReachedHome()
     {
         if (!m_pInstance) return;
-        if (m_pInstance->GetData(TYPE_NORTHREND_BEASTS) != FAIL)
+        if (m_pInstance->GetData(TYPE_NORTHREND_BEASTS) == IN_PROGRESS)
             m_pInstance->SetData(TYPE_NORTHREND_BEASTS, FAIL);
 
         me->ForcedDespawn();
