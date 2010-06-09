@@ -1524,14 +1524,6 @@ void OutdoorPvPWG::UpdateClock()
         UpdateClockDigit(timer, 1, 10);
     else
         UpdateClockDigit(timer, 0, 10);
-
-	 // Announce in Dalaran 30 minutes
-    if ((m_timer > 1800000) && (m_timer < 1802000) && (m_wartime == false))
-    sWorld.SendWorldText(LANG_BG_WG_WORLD_ANNOUNCE_30);
-
-    // Announce in Dalaran 10 minutes
-    if ((m_timer > 600000) && (m_timer < 602000) && (m_wartime == false))
-    sWorld.SendWorldText(LANG_BG_WG_WORLD_ANNOUNCE_10);
 }
 
 bool OutdoorPvPWG::Update(uint32 diff)

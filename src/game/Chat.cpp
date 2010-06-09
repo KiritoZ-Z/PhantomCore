@@ -771,7 +771,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "unbindsight",    SEC_ADMINISTRATOR,  false, &ChatHandler::HandleUnbindSightCommand,         "", NULL },
         { "playall",        SEC_GAMEMASTER,  false, &ChatHandler::HandlePlayAllCommand,             "", NULL },
         { "wg",             SEC_ADMINISTRATOR,  false, NULL,                                           "", wintergraspCommandTable },
-        { NULL,             0,                  false, NULL,                                           "", NULL }
+		{ NULL,             0,                  false, NULL,                                           "", NULL }
     };
 
     if (load_command_table)

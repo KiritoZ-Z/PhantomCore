@@ -658,8 +658,6 @@ enum TrinityStrings
     LANG_BG_WG_ENABLE                   = 770,
     LANG_BG_WG_RANK1                    = 771,
     LANG_BG_WG_RANK2                    = 772,
-    LANG_BG_WG_WORLD_ANNOUNCE_30        = 780,	
-    LANG_BG_WG_WORLD_ANNOUNCE_10        = 781,
 
     LANG_ARENA_ONE_TOOLOW               = 700,
     LANG_ARENA_ONE_MINUTE               = 701,
@@ -674,6 +672,13 @@ enum TrinityStrings
     LANG_PLAYER_DND_DEFAULT             = 709,
     LANG_PLAYER_AFK_DEFAULT             = 710,
 
+    LANG_BG_QUEUE_ANNOUNCE_SELF         = 711,
+    LANG_BG_QUEUE_ANNOUNCE_WORLD        = 712,
+    LANG_YOUR_ARENA_LEVEL_REQ_ERROR     = 713,
+//                                      = 714, not used
+    LANG_YOUR_BG_LEVEL_REQ_ERROR        = 715,
+//                                      = 716, not used
+    LANG_BG_STARTED_ANNOUNCE_WORLD      = 717,
     LANG_ARENA_QUEUE_ANNOUNCE_WORLD_JOIN= 718,
     LANG_ARENA_QUEUE_ANNOUNCE_WORLD_EXIT= 719,
 
