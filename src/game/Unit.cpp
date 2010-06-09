@@ -2908,7 +2908,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
         for (Unit::AuraEffectList::const_iterator i = mReflectSpellsSchool.begin(); i != mReflectSpellsSchool.end(); ++i)
             if ((*i)->GetMiscValue() & GetSpellSchoolMask(spell))
                 reflectchance += (*i)->GetAmount();
-        if (reflectchance > 0 && roll_chance_i(reflectchance))
+        if (reflectchance > 0 && roll_chance_i(reflectchance) && !(spell->SchoolMask & SPELL_SCHOOL_MASK_NORMAL))
         {
             // Start triggers for remove charges if need (trigger only for victim, and mark as active spell)
             ProcDamageAndSpell(pVictim, PROC_FLAG_NONE, PROC_FLAG_TAKEN_NEGATIVE_MAGIC_SPELL, PROC_EX_REFLECT, 1, BASE_ATTACK, spell);
@@ -9873,6 +9873,10 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
     {
         //I am not sure if this should be redirected.
         if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE)
+            return victim;
+			
+        //Not redirect non magic spell
+        if (spellInfo->SchoolMask & SPELL_SCHOOL_MASK_NORMAL)
             return victim;
 
         Unit::AuraEffectList const& magnetAuras = victim->GetAuraEffectsByType(SPELL_AURA_SPELL_MAGNET);
