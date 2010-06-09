@@ -7479,7 +7479,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             // Blood-Caked Strike - Blood-Caked Blade
             if (dummySpell->SpellIconID == 138)
             {
-                if (!target || !target->isAlive())
+                // only main hand melee auto attack affected and Rune Strike
+                if ((procFlag & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) ||
+                    !(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
+                    return false;
+
+				if (!target || !target->isAlive())
                     return false;
 
                 triggered_spell_id = dummySpell->EffectTriggerSpell[effIndex];
@@ -7564,7 +7569,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             // Necrosis
             if (dummySpell->SpellIconID == 2709)
             {
-                if(!(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT))
+                if(!(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
                     return false;
 
                 basepoints0 = triggerAmount * damage / 100;
