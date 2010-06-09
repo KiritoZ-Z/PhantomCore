@@ -34,6 +34,7 @@
 #include "SpellAuraEffects.h"
 #include "BattleGround.h"
 #include "OutdoorPvPMgr.h"
+#include "OutdoorPvPWG.h"
 #include "Formulas.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
@@ -1865,6 +1866,9 @@ void AuraEffect::PeriodicDummyTick(Unit * target, Unit * caster) const
                     target->RemoveAurasDueToSpell(58670);
                 break;
             case 58730: // No Fly Zone - Wintergrasp
+                OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+                if (pvpWG->isWarTime() == false) break;
+
                 if (GetTickNumber() == 10)
                 {
                     target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
@@ -5731,7 +5735,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         } 
 		      case 58730: // Restricted Flight Area
                         {
-				if (!target || ((target->GetAreaId() != 4197) && (target->GetAreaId() != 4585) && (target->GetAreaId() != 4612) && (target->GetAreaId() != 4582) && (target->GetAreaId() != 4583) && (target->GetAreaId() != 4589) && (target->GetAreaId() != 4575) && (target->GetAreaId() != 4538) && (target->GetAreaId() != 4577))) break;
+                OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+				if (!target || (pvpWG->isWarTime() == false) || ((target->GetAreaId() != 4197) && (target->GetAreaId() != 4585) && (target->GetAreaId() != 4612) && (target->GetAreaId() != 4582) && (target->GetAreaId() != 4583) && (target->GetAreaId() != 4589) && (target->GetAreaId() != 4575) && (target->GetAreaId() != 4538) && (target->GetAreaId() != 4577))) break;
                       // Remove Flight Auras
 				target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
                                 target->RemoveAurasByType(SPELL_AURA_FLY);

@@ -30,6 +30,7 @@
 #include "CreatureAI.h"
 #include "MapManager.h"
 #include "OutdoorPvPWG.h"
+#include "OutdoorPvPMgr.h"
 
 bool IsAreaEffectTarget[TOTAL_SPELL_TARGETS];
 SpellEffectTargetTypes EffectTargetType[TOTAL_SPELL_EFFECTS];
@@ -2981,7 +2982,8 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
                 return false;
             break;
         case 58730: // No fly Zone - Wintergrasp
-            if (!player || !player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)
+            OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+            if ((pvpWG->isWarTime()==false) || !player || !player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)
                || player->HasAura(45472) || player->HasAura(44795))
                 return false;
             break;

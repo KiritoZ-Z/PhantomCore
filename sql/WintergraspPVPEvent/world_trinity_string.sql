@@ -1,5 +1,4 @@
-/* Trinity Strings */
-DELETE FROM `trinity_string` WHERE entry IN (756,757,758,759,760,761,762,763,764,765,766,767,768,769,770,771,772);
+DELETE FROM `trinity_string` WHERE entry IN (756,757,758,759,760,761,762,763,764,765,766,767,768,769,770,771,772,780,781);
 INSERT INTO `trinity_string` VALUES ('756', 'Battle begins!', '', '', '', '', '', '', '', '');
 INSERT INTO `trinity_string` VALUES ('757', '%s has successfully defended the fortress!', '', '', '', '', '', '', '', '');
 INSERT INTO `trinity_string` VALUES ('758', '%s has taken over the fortress!', '', '', '', '', '', '', '', '');
@@ -17,3 +16,5 @@ INSERT INTO `trinity_string` VALUES ('769', 'Wintergrasp outdoorPvP is disabled.
 INSERT INTO `trinity_string` VALUES ('770', 'Wintergrasp outdoorPvP is enabled.', '', '', '', '', '', '', '', '');
 INSERT INTO `trinity_string` VALUES ('771', 'You have reached Rank 1: Corporal', '', '', '', '', '', '', '', '');
 INSERT INTO `trinity_string` VALUES ('772', 'You have reached Rank 2: First Lieutenant', '', '', '', '', '', '', '', '');
+INSERT INTO `trinity_string` VALUES ('780', 'Before the Battle of Wintergrasp left 30 minutes!', '', '', '', '', '', '', '', '');
+INSERT INTO `trinity_string` VALUES ('781', 'Before the Battle of Wintergrasp left 10 minutes!', '', '', '', '', '', '', '', '');

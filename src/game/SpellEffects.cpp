@@ -52,6 +52,7 @@
 #include "BattleGroundEY.h"
 #include "BattleGroundWS.h"
 #include "OutdoorPvPMgr.h"
+#include "OutdoorPvPWG.h"
 #include "Language.h"
 #include "SocialMgr.h"
 #include "Util.h"
@@ -8040,20 +8041,24 @@ void Spell::EffectPlayerNotification(uint32 /*eff_idx*/)
     switch(m_spellInfo->Id)
     {
         case 58730: // Restricted Flight Area
+        {
+            OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+            if (pvpWG->isWarTime())
 			{
-             unitTarget->ToPlayer()->GetSession()->SendNotification(LANG_ZONE_NOFLYZONE);
-             unitTarget->PlayDirectSound(9417); // Fel Reaver sound
-             unitTarget->MonsterTextEmote("The air is too thin in Wintergrasp for normal flight. You will be ejected in 9 sec.",unitTarget->GetGUID(),true);
-             break;
-			}
-         case 58600: // Restricted Flight Area
-			{
-             unitTarget->ToPlayer()->GetSession()->SendNotification(LANG_ZONE_NOFLYZONE);
-             unitTarget->PlayDirectSound(9417); // Fel Reaver sound
-             unitTarget->MonsterTextEmote("The air over Dalaran is protected. You will be ejected in 9 sec.",unitTarget->GetGUID(),true);
-             break;
-			}
-     }
+                unitTarget->ToPlayer()->GetSession()->SendNotification(LANG_ZONE_NOFLYZONE);
+                unitTarget->PlayDirectSound(9417); // Fel Reaver sound
+                unitTarget->MonsterTextEmote("The air is too thin in Wintergrasp for normal flight. You will be ejected in 9 sec.",unitTarget->GetGUID(),true);
+                break;
+			} else break;
+        }
+        case 58600: // Restricted Flight Area
+        {
+            unitTarget->ToPlayer()->GetSession()->SendNotification(LANG_ZONE_NOFLYZONE);
+            unitTarget->PlayDirectSound(9417); // Fel Reaver sound
+            unitTarget->MonsterTextEmote("The air over Dalaran is protected. You will be ejected in 9 sec.",unitTarget->GetGUID(),true);
+            break;
+        }
+    }
 }
 
 void Spell::EffectCastButtons(uint32 i)

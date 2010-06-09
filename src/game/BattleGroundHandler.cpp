@@ -31,7 +31,6 @@
 #include "Chat.h"
 #include "Language.h"
 #include "Log.h"
-#include "Player.h"
 #include "Object.h"
 #include "Opcodes.h"
  // Temporal fix to wintergrasp spirit guides till 3.2
@@ -584,7 +583,7 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket & recv_data)
         return;
 
     if (bg)
-{
+    {
         sBattleGroundMgr.SendAreaSpiritHealerQueryOpcode(_player, bg, guid);
 	}
 	else
@@ -617,7 +616,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket & recv_data)
         return;
 
     if (bg)
-{
+    {
         bg->AddPlayerToResurrectQueue(guid, _player->GetGUID());
 	}
 	else
