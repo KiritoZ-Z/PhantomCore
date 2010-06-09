@@ -22504,6 +22504,12 @@ void Player::AddGlobalCooldown(SpellEntry const *spellInfo, Spell *spell)
         cdTime *= GetFloatValue(UNIT_MOD_CAST_SPEED);
     else if (IsRangedWeaponSpell(spellInfo) && !spell->IsAutoRepeat())
         cdTime *= m_modAttackSpeedPct[RANGED_ATTACK];
+    Unit::AuraEffectList const& gcd_mod_auras = GetAuraEffectsByType(SPELL_AURA_ADD_FLAT_MODIFIER);
+    for (Unit::AuraEffectList::const_iterator itr = gcd_mod_auras.begin(); itr != gcd_mod_auras.end(); ++itr)
+    {
+        if ((*itr)->GetMiscValue() == 21 && (*itr)->IsAffectedOnSpell(spellInfo))
+            cdTime += (*itr)->GetAmount();
+    }
 
     if (cdTime > 1500.0f)
         cdTime = 1500.0f;
