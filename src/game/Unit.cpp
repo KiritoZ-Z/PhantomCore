@@ -7484,7 +7484,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     !(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
                     return false;
 
-				if (!target || !target->isAlive())
+                if (!target || !target->isAlive())
                     return false;
 
                 triggered_spell_id = dummySpell->EffectTriggerSpell[effIndex];
