@@ -137,7 +137,7 @@ enum Events
 
 struct boss_razorscaleAI : public BossAI
 {
-    boss_razorscaleAI(Creature *pCreature) : BossAI(pCreature, BOSS_RAZORSCALE)
+    boss_razorscaleAI(Creature *pCreature) : BossAI(pCreature, RAZORSCALE)
         , phase(PHASE_NULL)
     {
         // Do not let Razorscale be affected by Battle Shout buff
@@ -471,7 +471,7 @@ struct npc_expedition_commanderAI : public ScriptedAI
                 case 0:
                     break;
                 case 1:
-                    pInstance->SetBossState(BOSS_RAZORSCALE, IN_PROGRESS);
+                    pInstance->SetBossState(RAZORSCALE, IN_PROGRESS);
                     summons.DespawnAll();
                     uiTimer = 1000;
                     uiPhase = 2;
@@ -555,7 +555,7 @@ bool Expedition_commander_ulduar(Player* pPlayer, Creature* pCreature)
     InstanceData *data = pPlayer->GetInstanceData();
     ScriptedInstance *pInstance = (ScriptedInstance *) pCreature->GetInstanceData();
     
-    if (pInstance && pPlayer && data->GetBossState(BOSS_RAZORSCALE) == NOT_STARTED)
+    if (pInstance && pPlayer && data->GetBossState(RAZORSCALE) == NOT_STARTED)
     {
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT,GOSSIP_ITEM_1,GOSSIP_SENDER_MAIN,GOSSIP_ACTION_INFO_DEF);
         pPlayer->SEND_GOSSIP_MENU(13853, pCreature->GetGUID());
