@@ -2908,7 +2908,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
         for (Unit::AuraEffectList::const_iterator i = mReflectSpellsSchool.begin(); i != mReflectSpellsSchool.end(); ++i)
             if ((*i)->GetMiscValue() & GetSpellSchoolMask(spell))
                 reflectchance += (*i)->GetAmount();
-        if (reflectchance > 0 && roll_chance_i(reflectchance))
+        if (reflectchance > 0 && roll_chance_i(reflectchance) && !(spell->SchoolMask & SPELL_SCHOOL_MASK_NORMAL))
         {
             // Start triggers for remove charges if need (trigger only for victim, and mark as active spell)
             ProcDamageAndSpell(pVictim, PROC_FLAG_NONE, PROC_FLAG_TAKEN_NEGATIVE_MAGIC_SPELL, PROC_EX_REFLECT, 1, BASE_ATTACK, spell);
@@ -4168,6 +4168,18 @@ void Unit::RemoveAurasByType(AuraType auraType, uint64 casterGUID, Aura * except
             if (m_removedAurasCount > removedAuras + 1)
                 iter = m_modAuras[auraType].begin();
         }
+    }
+}
+
+void Unit::RemoveAurasWithAttribute(uint32 flags)
+{
+    for (AuraApplicationMap::iterator iter = m_appliedAuras.begin(); iter != m_appliedAuras.end();)
+    {
+        SpellEntry const *spell = iter->second->GetBase()->GetSpellProto();
+        if (spell->Attributes & flags)
+            RemoveAura(iter);
+        else
+            ++iter;
     }
 }
 
@@ -6702,6 +6714,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 }
                 break;
             }
+            // Glyph of Mend Pet
+            if(dummySpell->Id == 57870)
+            {
+                pVictim->CastSpell(pVictim, 57894, true, NULL, NULL, GetGUID());
+                return true;
+            }
             break;
         }
         case SPELLFAMILY_PALADIN:
@@ -7461,6 +7479,11 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             // Blood-Caked Strike - Blood-Caked Blade
             if (dummySpell->SpellIconID == 138)
             {
+                // only main hand melee auto attack affected and Rune Strike
+                if ((procFlag & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT) ||
+                    !(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
+                    return false;
+
                 if (!target || !target->isAlive())
                     return false;
 
@@ -7546,7 +7569,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
             // Necrosis
             if (dummySpell->SpellIconID == 2709)
             {
-                if(!(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT))
+                if(!(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
                     return false;
 
                 basepoints0 = triggerAmount * damage / 100;
@@ -8482,8 +8505,8 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
         // Unyielding Knights (item exploit 29108\29109)
         case 38164:
         {
-            if (pVictim->GetEntry() != 19457)  // Proc only if you target is Grillok
-            return false;
+            if (!pVictim || pVictim->GetEntry() != 19457)  // Proc only if your target is Grillok
+                return false;
             break;
         }
         // Deflection
@@ -9850,6 +9873,10 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
     {
         //I am not sure if this should be redirected.
         if (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE)
+            return victim;
+			
+        //Not redirect non magic spell
+        if (spellInfo->SchoolMask & SPELL_SCHOOL_MASK_NORMAL)
             return victim;
 
         Unit::AuraEffectList const& magnetAuras = victim->GetAuraEffectsByType(SPELL_AURA_SPELL_MAGNET);

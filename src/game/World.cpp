@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
- * Copyright (C) 2010 Phantom Project <http://phantom-project.org/>
+ * Copyright  (C) 2010 Phantom Project <http://phantom-project.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@
 #include "ScriptMgr.h"
 #include "AddonMgr.h"
 #include "LFGMgr.h"
+#include "ConditionMgr.h"
 
 INSTANTIATE_SINGLETON_1(World);
 
@@ -91,12 +92,6 @@ float World::m_VisibleObjectGreyDistance      = 0;
 int32 World::m_visibility_notify_periodOnContinents = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 int32 World::m_visibility_notify_periodInInstances  = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
 int32 World::m_visibility_notify_periodInBGArenas   = DEFAULT_VISIBILITY_NOTIFY_PERIOD;
-
-// movement anticheat
-bool World::m_EnableMvAnticheat = true;
-uint32 World::m_TeleportToPlaneAlarms = 100;
-uint32 World::m_MistimingAlarms = 300;
-uint32 World::m_MistimingDelta = 30000;
 
 /// World constructor
 World::World()
@@ -602,41 +597,6 @@ void World::LoadConfigSettings(bool reload)
     {
         sLog.outError("DurabilityLossChance.Block (%f) must be >=0. Using 0.0 instead.",rate_values[RATE_DURABILITY_LOSS_BLOCK]);
         rate_values[RATE_DURABILITY_LOSS_BLOCK] = 0.0f;
-    }
-    // movement anticheat
-    m_EnableMvAnticheat = sConfig.GetBoolDefault("Anticheat.Movement.Enable", true);
-    m_TeleportToPlaneAlarms = sConfig.GetIntDefault("Anticheat.Movement.TeleportToPlaneAlarms", 50);
-    if (m_TeleportToPlaneAlarms < 200)
-    {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be >= 20. Using 200 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 200;
-    }
-    if (m_TeleportToPlaneAlarms > 10000)
-    {
-        sLog.outError("Anticheat.Movement.TeleportToPlaneAlarms (%d) must be <= 100. Using 10000 instead.", m_TeleportToPlaneAlarms);
-        m_TeleportToPlaneAlarms = 10000;
-    }
-    m_MistimingDelta = sConfig.GetIntDefault("Anticheat.Movement.MistimingDelta", 30000);
-    if (m_MistimingDelta < 10000)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingDelta (%d) must be >= 5000ms. Using 5000ms instead.", m_MistimingDelta);
-        m_MistimingDelta = 10000;
-    }
-    if (m_MistimingDelta > 50000)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingDelta (%d) must be <= 50000ms. Using 50000ms instead.", m_MistimingDelta);
-        m_MistimingDelta = 50000;
-    }
-    m_MistimingAlarms = sConfig.GetIntDefault("Anticheat.Movement.MistimingAlarms", 200);
-    if (m_MistimingAlarms < 1000)
-    {
-        sLog.outError("Anticheat.Movement.MistimingAlarms (%d) must be >= 100. Using 1000 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 1000;
-    }
-    if (m_MistimingAlarms > 5000)
-    {
-        sLog.outError("Anticheat.Movement.m_MistimingAlarms (%d) must be <= 500. Using 5000 instead.", m_MistimingAlarms);
-        m_MistimingAlarms = 5000;
     }
     ///- Read other configuration items from the config file
 
@@ -1235,6 +1195,7 @@ void World::LoadConfigSettings(bool reload)
         sLog.outString("Using DataDir %s",m_dataPath.c_str());
     }
 
+    m_configs[CONFIG_VMAP_INDOOR_CHECK] = sConfig.GetBoolDefault("vmap.enableIndoorCheck", 0);
     bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", false);
     bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", false);
     std::string ignoreMapIds = sConfig.GetStringDefault("vmap.ignoreMapIds", "");
@@ -1441,12 +1402,6 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading Creature templates...");
     objmgr.LoadCreatureTemplates();
 
-    sLog.outString("Loading SpellsScriptTarget...");
-    spellmgr.LoadSpellScriptTarget();                       // must be after LoadCreatureTemplates and LoadGameobjectInfo
-
-    sLog.outString("Loading ItemRequiredTarget...");
-    objmgr.LoadItemRequiredTarget();
-
     sLog.outString("Loading Creature Reputation OnKill Data...");
     objmgr.LoadReputationOnKill();
 
@@ -1638,6 +1593,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Loading Creature Formations...");
     formation_mgr.LoadCreatureFormations();
+
+    sLog.outString("Loading Conditions...");
+    sConditionMgr.LoadConditions();
 
     sLog.outString("Loading GM tickets...");
     objmgr.LoadGMTickets();

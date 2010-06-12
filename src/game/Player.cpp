@@ -68,7 +68,7 @@
 #include "AchievementMgr.h"
 #include "SpellAuras.h"
 #include "SpellAuraEffects.h"
-
+#include "ConditionMgr.h"
 #include <cmath>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILISECONDS)
@@ -416,26 +416,6 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
     rest_type=REST_TYPE_NO;
     ////////////////////Rest System/////////////////////
 
-    // movement anticheat
-    m_anti_LastClientTime  = 0;          // last movement client time
-    m_anti_LastServerTime  = 0;          // last movement server time
-    m_anti_DeltaClientTime = 0;          // client side session time
-    m_anti_DeltaServerTime = 0;          // server side session time
-    m_anti_MistimingCount  = 0;          // mistiming count
-
-    m_anti_LastSpeedChangeTime = 0;      // last speed change time
-
-    m_anti_Last_HSpeed =  7.0f;          // horizontal speed, default RUN speed
-    m_anti_Last_VSpeed = -2.3f;          // vertical speed, default max jump height
-
-    m_anti_TeleToPlane_Count = 0;        // Teleport To Plane alarm counter
-
-    m_anti_AlarmCount = 0;               // alarm counter
-
-    m_anti_JumpCount = 0;                // Jump already began, anti air jump check
-    m_anti_JumpBaseZ = 0;                // Z coord before jump (AntiGrav)
-    // end movement anticheat
-
     m_mailsLoaded = false;
     m_mailsUpdated = false;
     unReadMails = 0;
@@ -525,6 +505,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
         m_powerFraction[i] = 0;
 
     m_globalCooldowns.clear();
+
+    m_ConditionErrorMsgId = 0;
 }
 
 Player::~Player ()
@@ -1086,7 +1068,9 @@ void Player::HandleDrowning(uint32 time_diff)
                 uint32 damage = urand(600, 700);
                 if (m_MirrorTimerFlags&UNDERWATER_INLAVA)
                     EnvironmentalDamage(DAMAGE_LAVA, damage);
-                else
+                // need to skip Slime damage in Undercity,
+                // maybe someone can find better way to handle environmental damage
+                else if (m_zoneUpdateId != 1497)
                     EnvironmentalDamage(DAMAGE_SLIME, damage);
             }
         }
@@ -1799,7 +1783,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
     if (GetMapId() == mapid && !m_transport)
     {
-        m_anti_JumpBaseZ = 0;
         //lets reset far teleport flag if it wasn't reset during chained teleports
         SetSemaphoreTeleportFar(false);
         //setup delayed teleport flag
@@ -1949,7 +1932,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
             m_teleport_dest = WorldLocation(mapid, final_x, final_y, final_z, final_o);
             SetFallInformation(0, final_z);
-            m_anti_JumpBaseZ = 0;
             // if the player is saved before worldportack (at logout for example)
             // this will be used instead of the current location in SaveToDB
 
@@ -4618,7 +4600,7 @@ bool Player::FallGround(uint8 FallMode)
 
     float x, y, z;
     GetPosition(x, y, z);
-    float ground_Z = GetMap()->GetVmapHeight(x, y, z);
+    float ground_Z = GetMap()->GetHeight(x, y, z);
     float z_diff = 0.0f;
     if ((z_diff = fabs(ground_Z - z)) < 0.1f)
         return false;
@@ -6216,7 +6198,7 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
     if (GetTrader() && !IsWithinDistInMap(GetTrader(), INTERACTION_DISTANCE))
         GetSession()->SendCancelTrade();
 
-    CheckExploreSystem();
+    CheckAreaExploreAndOutdoor();
 
     return true;
 }
@@ -6290,7 +6272,7 @@ void Player::SendMovieStart(uint32 MovieId)
     SendDirectMessage(&data);
 }
 
-void Player::CheckExploreSystem()
+void Player::CheckAreaExploreAndOutdoor()
 {
     if (!isAlive())
         return;
@@ -6306,8 +6288,13 @@ void Player::CheckExploreSystem()
         GetSession()->HandleOnAreaChange(GetAreaEntryByAreaID(m_AreaID));
     }
 
-    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ());
-    if (areaFlag == 0xffff)
+    bool isOutdoor;
+    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ(), &isOutdoor);
+
+    if (sWorld.getConfig(CONFIG_VMAP_INDOOR_CHECK) && !isOutdoor)
+        RemoveAurasWithAttribute(SPELL_ATTR_OUTDOORS_ONLY);
+
+    if (areaFlag==0xffff)
         return;
     int offset = areaFlag / 32;
 
@@ -6703,7 +6690,7 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
             int32 v_rank =1;                                //need more info
 
             honor = ((f * diff_level * (190 + v_rank*10))/6);
-            honor *= ((float)k_level) / 70.0f;              //factor of dependence on levels of the killer
+            honor *= ((float)k_level) / 21.50537f;              //factor of dependence on levels of the killer
             honor *= 1 + sWorld.getRate(RATE_PVP_RANK_EXTRA_HONOR)*(((float)rank_diff) / 10.0f);
 
             // count the number of playerkills in one day
@@ -6727,16 +6714,14 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
 
     if (uVictim != NULL)
     {
-        honor *= sWorld.getRate(RATE_HONOR);
-
         if (groupsize > 1)
             honor /= groupsize;
 
         // apply honor multiplier from aura (not stacking-get highest)
         honor = int32(float(honor) * (float(GetMaxPositiveAuraModifier(SPELL_AURA_MOD_HONOR_GAIN_PCT))+100.0f)/100.0f);
-        honor *= (((float)urand(8,12))/10);                 // approx honor: 80% - 120% of real honor
     }
 
+    honor *= sWorld.getRate(RATE_HONOR);
     // honor - for show honor points in log
     // victim_guid - for show victim name in log
     // victim_rank [1..4]  HK: <dishonored rank>
@@ -13466,14 +13451,7 @@ void Player::PrepareGossipMenu(WorldObject *pSource, uint32 menuId)
     for (GossipMenuItemsMap::const_iterator itr = pMenuItemBounds.first; itr != pMenuItemBounds.second; ++itr)
     {
         bool bCanTalk = true;
-
-        if (itr->second.cond_1 && !objmgr.IsPlayerMeetToCondition(this, itr->second.cond_1))
-            continue;
-
-        if (itr->second.cond_2 && !objmgr.IsPlayerMeetToCondition(this, itr->second.cond_2))
-            continue;
-
-        if (itr->second.cond_3 && !objmgr.IsPlayerMeetToCondition(this, itr->second.cond_3))
+        if (!sConditionMgr.IsPlayerMeetToConditions(this, itr->second.conditions))
             continue;
 
         if (pSource->GetTypeId() == TYPEID_UNIT)
@@ -13807,7 +13785,7 @@ uint32 Player::GetGossipTextId(uint32 menuId)
 
     for (GossipMenusMap::const_iterator itr = pMenuBounds.first; itr != pMenuBounds.second; ++itr)
     {
-        if (objmgr.IsPlayerMeetToCondition(this, itr->second.cond_1) && objmgr.IsPlayerMeetToCondition(this, itr->second.cond_2))
+        if (sConditionMgr.IsPlayerMeetToConditions(this, itr->second.conditions))
             textId = itr->second.text_id;
     }
 
@@ -17607,8 +17585,8 @@ bool Player::CheckInstanceLoginValid()
 
     if (GetMap()->IsRaid())
     {
-        // cannot be in raid instance without a raid group
-        if (!GetGroup() || !GetGroup()->isRaidGroup())
+        // cannot be in raid instance without a group
+        if (!GetGroup())
             return false;
     }
     else
@@ -18868,8 +18846,6 @@ void Player::VehicleSpellInitialize()
     Creature* veh = GetVehicleCreatureBase();
     if (!veh)
         return;
-
-    // GetPosition_ is not a member of 'Vehicle', SetPosition is a member of 'Player': SetPosition(GetVehicle()->GetPositionX(), GetVehicle()->GetPositionY(), GetVehicle()->GetPositionZ(), GetVehicle()->GetOrientation());
 
     // GetPosition_ is not a member of 'Vehicle', SetPosition is a member of 'Player': SetPosition(GetVehicle()->GetPositionX(), GetVehicle()->GetPositionY(), GetVehicle()->GetPositionZ(), GetVehicle()->GetOrientation());
 
@@ -22195,8 +22171,8 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
     {
         m_MirrorTimerFlags &= ~(UNDERWATER_INWATER|UNDERWATER_INLAVA|UNDERWATER_INSLIME|UNDERWARER_INDARKWATER);
         // Small hack for enable breath in WMO
-        if (IsInWater())
-            m_MirrorTimerFlags|=UNDERWATER_INWATER;
+        /* if (IsInWater())
+            m_MirrorTimerFlags|=UNDERWATER_INWATER; */
         return;
     }
 
@@ -22528,6 +22504,12 @@ void Player::AddGlobalCooldown(SpellEntry const *spellInfo, Spell *spell)
         cdTime *= GetFloatValue(UNIT_MOD_CAST_SPEED);
     else if (IsRangedWeaponSpell(spellInfo) && !spell->IsAutoRepeat())
         cdTime *= m_modAttackSpeedPct[RANGED_ATTACK];
+    Unit::AuraEffectList const& gcd_mod_auras = GetAuraEffectsByType(SPELL_AURA_ADD_FLAT_MODIFIER);
+    for (Unit::AuraEffectList::const_iterator itr = gcd_mod_auras.begin(); itr != gcd_mod_auras.end(); ++itr)
+    {
+        if ((*itr)->GetMiscValue() == 21 && (*itr)->IsAffectedOnSpell(spellInfo))
+            cdTime += (*itr)->GetAmount();
+    }
 
     if (cdTime > 1500.0f)
         cdTime = 1500.0f;

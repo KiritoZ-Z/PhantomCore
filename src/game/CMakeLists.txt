@@ -71,6 +71,8 @@ SET(game_STAT_SRCS
    Chat.h
    ChatHandler.cpp
    CombatHandler.cpp
+   ConditionMgr.cpp
+   ConditionMgr.h
    ConfusedMovementGenerator.cpp
    ConfusedMovementGenerator.h
    Corpse.cpp

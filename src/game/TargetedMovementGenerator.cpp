@@ -162,6 +162,7 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 	if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 1)
 	{
 		owner.GetPosition(myx,myy,myz);
+		owner.GetPosition(x,y,z);
 		Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 		i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
 		if(sWorld.getConfig(CONFIG_MOVEMAP_LOGS_ENABLE) == 1)

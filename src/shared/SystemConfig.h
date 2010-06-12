@@ -27,7 +27,7 @@
 #include "Platform/Define.h"
 #include "revision.h"
 
-#define _PACKAGENAME "PhnatomCore "
+#define _PACKAGENAME "PhantomCore "
 #define _CODENAME "LONG_COLD_WINTER"
 
 #if TRINITY_ENDIAN == TRINITY_BIGENDIAN
