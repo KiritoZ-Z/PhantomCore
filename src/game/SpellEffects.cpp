@@ -2548,6 +2548,7 @@ void Spell::EffectJump(uint32 i)
     else if (m_targets.getUnitTarget())
     {
         m_targets.getUnitTarget()->GetContactPoint(m_caster,x,y,z,CONTACT_DISTANCE);
+		m_targets.getUnitTarget()->InterruptNonMeleeSpells(true);
         o = m_caster->GetOrientation();
     }
     else if (m_targets.getGOTarget())
