@@ -58,13 +58,6 @@
 #define MAX_GRID_LOAD_TIME      50
 #define MAX_CREATURE_ATTACK_RADIUS  (45.0f * sWorld.getRate(RATE_CREATURE_AGGRO))
 
-#include "pathfinding/InputGeom.h"
-#include "pathfinding/Recast/Recast.h"
-#include "pathfinding/Detour/DetourNavMesh.h"
-#include "pathfinding/Detour/DetourNavMeshBuilder.h"
-
-#include <fstream>
-#include <search.h>
 GridState* si_GridStates[MAX_GRID_STATE];
 
 struct ScriptAction
@@ -208,8 +201,7 @@ Position Map::getNextPositionOnPathToLocation(const float startx, const float st
 
             dtPolyRef mPathResults[50];
 
-            int mNumPathResults = myNavMesh->findPath(mStartRef,
-mEndRef,startPos, endPos, mPathFilter ,mPathResults,50);//TODO: CHANGE ME
+            int mNumPathResults = myNavMesh->findPath(mStartRef, mEndRef, startPos, endPos, mPathFilter, mPathResults, 50);//TODO: CHANGE ME
             if (mNumPathResults <= 0) {
                 return pos;
             }
