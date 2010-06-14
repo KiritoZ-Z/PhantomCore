@@ -71,7 +71,7 @@ struct npc_crusade_persuadedAI : public ScriptedAI
                 uiPlayerGUID = caster->GetGUID();
                 uiSpeech_timer = 1000;
                 uiSpeech_counter = 1;
-                me->setFaction(caster->getFaction());
+                me->setFaction(35);
                 me->CombatStop(true);
                 me->GetMotionMaster()->MoveIdle();
                 me->SetReactState(REACT_PASSIVE);
@@ -196,7 +196,6 @@ struct npc_koltira_deathweaverAI : public npc_escortAI
         {
             case 0:
                 DoScriptText(SAY_BREAKOUT1, me);
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 break;
             case 1:
                 me->SetStandState(UNIT_STAND_STATE_KNEEL);
@@ -214,6 +213,7 @@ struct npc_koltira_deathweaverAI : public npc_escortAI
                 DoCast(me, SPELL_ANTI_MAGIC_ZONE);  // cast again that makes bubble up
                 break;
             case 4:
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 SetRun(true);
                 break;
             case 9:
