@@ -111,6 +111,7 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
     //SendSysMessage(full);
     //PSendSysMessage(LANG_USING_WORLD_DB,sWorld.GetDBVersion());
     //PSendSysMessage(LANG_USING_EVENT_AI,sWorld.GetCreatureEventAIVersion());
+	PSendSysMessage("Phantom Core © 2010, based on TrinityCore 3.3.3a");
     PSendSysMessage(LANG_CONNECTED_PLAYERS, PlayersNum, MaxPlayersNum);
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, uptime.c_str());
