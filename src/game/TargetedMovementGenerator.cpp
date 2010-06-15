@@ -26,7 +26,7 @@
 #include "DestinationHolderImp.h"
 #include "World.h"
 #include "Unit.h"
-#include "Pet.h"
+
 
 #define SMALL_ALPHA 0.05f
 
@@ -165,7 +165,6 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
 		owner.GetPosition(myx,myy,myz);
 		Position travelto = i_target->GetMap()->getNextPositionOnPathToLocation(myx,myy,myz,x,y,z);
 		i_destinationHolder.SetDestination(traveller, travelto.m_positionX,travelto.m_positionY,travelto.m_positionZ);
-        i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
 		if(sWorld.getConfig(CONFIG_MOVEMAP_LOGS_ENABLE) == 1)
 		sLog.outString("Moving to x[%.2f] y[%.2f] z[%.2f]", travelto.m_positionX, travelto.m_positionY, travelto.m_positionZ);
 	}
