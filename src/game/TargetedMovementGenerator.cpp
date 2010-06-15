@@ -139,7 +139,6 @@ TargetedMovementGenerator<T>::_setTargetLocation(T &owner)
     else
     {
         // to at i_offset distance from target and i_angle from target facing
-		if(sWorld.getConfig(CONFIG_MOVEMAP_ENABLE) == 0)
         i_target->GetClosePoint(x,y,z,owner.GetObjectSize(),i_offset,i_angle);
     }
 
