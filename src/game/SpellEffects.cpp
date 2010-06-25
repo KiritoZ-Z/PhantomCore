@@ -7861,7 +7861,7 @@ void Spell::SummonGuardian(uint32 i, uint32 entry, SummonPropertiesEntry const *
             }
             else
                 summon->SetDisplayId(1126);
-		
+
         summon->AI()->EnterEvadeMode();
     }
 }

@@ -9317,7 +9317,11 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
         if (victim->GetTypeId() == TYPEID_PLAYER)
             victim->SetInCombatWith(this);
         AddThreat(victim, 0.0f);
-
+        if(GetOwner())
+        {
+            GetOwner()->SetInCombatWith(this);
+            GetOwner()->AddThreat(victim, 0.0f);
+        }
         this->ToCreature()->SendAIReaction(AI_REACTION_HOSTILE);
         this->ToCreature()->CallAssistance();
     }
