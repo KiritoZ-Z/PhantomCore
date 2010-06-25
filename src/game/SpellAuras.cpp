@@ -1364,6 +1364,20 @@ void Aura::HandleAuraSpecificMods(AuraApplication const * aurApp, Unit * caster,
             }
             break;
         case SPELLFAMILY_HUNTER:
+			// Freezing Trap Effect
+			if (m_spellProto->SpellFamilyFlags[0] & 0x8)
+			{
+				if(!apply)
+				{
+					Unit *caster = GetCaster();
+					// Glyph of Freezing Trap
+					if (caster && caster->HasAura(56845))
+						target->CastSpell(target,61394,true);
+					else
+						return;
+				}
+				else return;
+			}
             switch(GetId())
             {
                 case 19574: // Bestial Wrath
