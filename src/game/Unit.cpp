@@ -10646,6 +10646,8 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
             {
                 crit_chance = m_baseSpellCritChance;
                 crit_chance += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL, schoolMask);
+				if(ToCreature()->isTotem() && ((Totem*)this)->GetOwner()->GetTypeId() == TYPEID_PLAYER)
+					crit_chance = ((Totem*)this)->GetOwner()->GetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + GetFirstSchoolInMask(schoolMask));
             }
             // taken
             if (pVictim)
