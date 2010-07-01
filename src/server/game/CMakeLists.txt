@@ -1,0 +1,301 @@
+# Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+######## game ########
+
+# Enable precompiled headers when using the GCC compiler.
+if(DO_PCH)
+  include_directories(${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
+# Create game-libary
+set(game_STAT_SRCS
+  Accounts/AccountMgr.cpp
+  Achievements/AchievementMgr.cpp
+  Addons/AddonMgr.cpp
+  AI/CoreAI/CombatAI.cpp
+  AI/CoreAI/GuardAI.cpp
+  AI/CoreAI/PassiveAI.cpp
+  AI/CoreAI/PetAI.cpp
+  AI/CoreAI/ReactorAI.cpp
+  AI/CoreAI/TotemAI.cpp
+  AI/CoreAI/UnitAI.cpp
+  AI/EventAI/CreatureEventAI.cpp
+  AI/EventAI/CreatureEventAIMgr.cpp
+  AI/ScriptedAI/ScriptedSmartAI.cpp
+  AI/CreatureAIRegistry.cpp
+  AI/CreatureAISelector.cpp
+  AI/CreatureAI.cpp
+  AuctionHouse/AuctionHouseMgr.cpp
+  AuctionHouse/AuctionHouseBot/AuctionHouseBot.cpp
+  BattleGrounds/ArenaTeam.cpp
+  BattleGrounds/Zones/BattleGroundAA.cpp
+  BattleGrounds/Zones/BattleGroundAB.cpp
+  BattleGrounds/Zones/BattleGroundRB.cpp
+  BattleGrounds/Zones/BattleGroundAV.cpp
+  BattleGrounds/Zones/BattleGroundBE.cpp
+  BattleGrounds/Zones/BattleGroundDS.cpp
+  BattleGrounds/Zones/BattleGroundEY.cpp
+  BattleGrounds/Zones/BattleGroundIC.cpp
+  BattleGrounds/Zones/BattleGroundNA.cpp
+  BattleGrounds/Zones/BattleGroundRL.cpp
+  BattleGrounds/Zones/BattleGroundRV.cpp
+  BattleGrounds/Zones/BattleGroundSA.cpp
+  BattleGrounds/Zones/BattleGroundWS.cpp
+  BattleGrounds/BattleGround.cpp
+  BattleGrounds/BattleGroundMgr.cpp
+  Calendar/Calendar.cpp
+  Chat/Channels/Channel.cpp
+  Chat/Channels/ChannelMgr.cpp
+  Chat/Commands/Debugcmds.cpp
+  Chat/Commands/Level0.cpp
+  Chat/Commands/Level1.cpp
+  Chat/Commands/Level2.cpp
+  Chat/Commands/Level3.cpp
+  Chat/Chat.cpp
+  Combat/HostileRefManager.cpp
+  Combat/ThreatManager.cpp
+  Conditions/ConditionMgr.cpp
+  DataStores/DBCStores.cpp
+  DungeonFinding/LFGMgr.cpp
+  Entities/Corpse/Corpse.cpp
+  Entities/Creature/Creature.cpp
+  Entities/Creature/CreatureGroups.cpp
+  Entities/Creature/GossipDef.cpp
+  Entities/Creature/TemporarySummon.cpp
+  Entities/DynamicObject/DynamicObject.cpp
+  Entities/GameObject/GameObject.cpp
+  Entities/Item/Container/Bag.cpp
+  Entities/Item/Item.cpp
+  Entities/Item/ItemEnchantmentMgr.cpp
+  Entities/Object/Updates/UpdateData.cpp
+  Entities/Object/Object.cpp
+  Entities/Object/ObjectPosSelector.cpp
+  Entities/Pet/Pet.cpp
+  Entities/Player/Player.cpp
+  Entities/Player/SocialMgr.cpp
+  Entities/Unit/StatSystem.cpp
+  Entities/Unit/Unit.cpp
+  Entities/Totem/Totem.cpp
+  Entities/Transport/Transport.cpp
+  Entities/Vehicle/Vehicle.cpp
+  Events/GameEventMgr.cpp
+  Globals/GlobalEvents.cpp
+  Globals/ObjectAccessor.cpp
+  Globals/ObjectMgr.cpp
+  Grids/Notifiers/GridNotifiers.cpp
+  Grids/GridStates.cpp
+  Grids/ObjectGridLoader.cpp
+  Groups/Group.cpp
+  Groups/GroupReference.cpp
+  Guilds/Guild.cpp
+  Instances/InstanceData.cpp
+  Instances/InstanceSaveMgr.cpp
+  Loot/LootMgr.cpp
+  Mails/Mail.cpp
+  Maps/Map.cpp
+  Maps/MapInstanced.cpp
+  Maps/MapManager.cpp
+  Maps/MapUpdater.cpp
+  Movement/MovementGenerators/ConfusedMovementGenerator.cpp
+  Movement/MovementGenerators/FleeingMovementGenerator.cpp
+  Movement/MovementGenerators/HomeMovementGenerator.cpp
+  Movement/MovementGenerators/IdleMovementGenerator.cpp
+  Movement/MovementGenerators/PointMovementGenerator.cpp
+  Movement/MovementGenerators/RandomMovementGenerator.cpp
+  Movement/MovementGenerators/TargetedMovementGenerator.cpp
+  Movement/MovementGenerators/WaypointMovementGenerator.cpp
+  Movement/Waypoints/WaypointManager.cpp
+  Movement/DestinationHolder.cpp
+  Movement/FollowerReference.cpp
+  Movement/MotionMaster.cpp
+  Movement/MovementGenerator.cpp
+  OutdoorPvP/Zones/OutdoorPvPEP.cpp
+  OutdoorPvP/Zones/OutdoorPvPHP.cpp
+  OutdoorPvP/Zones/OutdoorPvPNA.cpp
+  OutdoorPvP/Zones/OutdoorPvPSI.cpp
+  OutdoorPvP/Zones/OutdoorPvPTF.cpp
+  OutdoorPvP/Zones/OutdoorPvPZM.cpp
+  OutdoorPvP/OutdoorPvP.cpp
+  OutdoorPvP/OutdoorPvPMgr.cpp
+  Pools/PoolMgr.cpp
+  Quests/QuestDef.cpp
+  Reputation/ReputationMgr.cpp
+  Scripting/ScriptLoader.cpp
+  Scripting/ScriptMgr.cpp
+  Scripting/ScriptSystem.cpp
+  Server/Protocol/Handlers/AddonHandler.cpp
+  Server/Protocol/Handlers/ArenaTeamHandler.cpp
+  Server/Protocol/Handlers/AuctionHouseHandler.cpp
+  Server/Protocol/Handlers/BattleGroundHandler.cpp
+  Server/Protocol/Handlers/CalendarHandler.cpp
+  Server/Protocol/Handlers/ChannelHandler.cpp
+  Server/Protocol/Handlers/CharacterHandler.cpp
+  Server/Protocol/Handlers/ChatHandler.cpp
+  Server/Protocol/Handlers/CombatHandler.cpp
+  Server/Protocol/Handlers/DuelHandler.cpp
+  Server/Protocol/Handlers/GroupHandler.cpp
+  Server/Protocol/Handlers/GuildHandler.cpp
+  Server/Protocol/Handlers/ItemHandler.cpp
+  Server/Protocol/Handlers/LFGHandler.cpp
+  Server/Protocol/Handlers/LootHandler.cpp
+  Server/Protocol/Handlers/MiscHandler.cpp
+  Server/Protocol/Handlers/MovementHandler.cpp
+  Server/Protocol/Handlers/NPCHandler.cpp
+  Server/Protocol/Handlers/PetHandler.cpp
+  Server/Protocol/Handlers/PetitionsHandler.cpp
+  Server/Protocol/Handlers/QueryHandler.cpp
+  Server/Protocol/Handlers/QuestHandler.cpp
+  Server/Protocol/Handlers/SkillHandler.cpp
+  Server/Protocol/Handlers/SpellHandler.cpp
+  Server/Protocol/Handlers/TaxiHandler.cpp
+  Server/Protocol/Handlers/TicketHandler.cpp
+  Server/Protocol/Handlers/TradeHandler.cpp
+  Server/Protocol/Handlers/VoiceChatHandler.cpp
+  Server/Protocol/Opcodes.cpp
+  Server/Protocol/WorldLog.cpp
+  Server/WorldSession.cpp
+  Server/WorldSocket.cpp
+  Server/WorldSocketMgr.cpp
+  Skills/SkillDiscovery.cpp
+  Skills/SkillExtraItems.cpp
+  Spells/Auras/SpellAuras.cpp
+  Spells/Auras/SpellAuraEffects.cpp
+  Spells/Auras/SpellEffects.cpp
+  Spells/Spell.cpp
+  Spells/SpellMgr.cpp
+  Tools/PlayerDump.cpp
+  Tools/Tools.cpp
+  Weather/Weather.cpp
+  World/World.cpp
+)
+
+include_directories(
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/externals/mersennetwister
+  ${CMAKE_SOURCE_DIR}/externals/zlib
+  ${CMAKE_SOURCE_DIR}/src/server/collision
+  ${CMAKE_SOURCE_DIR}/src/server/collision/Management
+  ${CMAKE_SOURCE_DIR}/src/server/shared
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Configuration
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Cryptography
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Cryptography/Authentication
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Database
+  ${CMAKE_SOURCE_DIR}/src/server/shared/DataStores
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Debugging
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Dynamic/CountedReference
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Dynamic/LinkedReference
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Dynamic
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Logging
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Packets
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Policies
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Threading
+  ${CMAKE_SOURCE_DIR}/src/server/shared/Utilities
+  ${CMAKE_SOURCE_DIR}/src/server/game
+  ${CMAKE_SOURCE_DIR}/src/server/game/Accounts
+  ${CMAKE_SOURCE_DIR}/src/server/game/Achievements
+  ${CMAKE_SOURCE_DIR}/src/server/game/Addons
+  ${CMAKE_SOURCE_DIR}/src/server/game/AI
+  ${CMAKE_SOURCE_DIR}/src/server/game/AI/CoreAI
+  ${CMAKE_SOURCE_DIR}/src/server/game/AI/EventAI
+  ${CMAKE_SOURCE_DIR}/src/server/game/AI/ScriptedAI
+  ${CMAKE_SOURCE_DIR}/src/server/game/AuctionHouse
+  ${CMAKE_SOURCE_DIR}/src/server/game/AuctionHouse/AuctionHouseBot
+  ${CMAKE_SOURCE_DIR}/src/server/game/BattleGrounds
+  ${CMAKE_SOURCE_DIR}/src/server/game/BattleGrounds/Zones
+  ${CMAKE_SOURCE_DIR}/src/server/game/Calendar
+  ${CMAKE_SOURCE_DIR}/src/server/game/Chat
+  ${CMAKE_SOURCE_DIR}/src/server/game/Chat/Channels
+  ${CMAKE_SOURCE_DIR}/src/server/game/Chat/Commands
+  ${CMAKE_SOURCE_DIR}/src/server/game/Combat
+  ${CMAKE_SOURCE_DIR}/src/server/game/Conditions
+  ${CMAKE_SOURCE_DIR}/src/server/game/DataStores
+  ${CMAKE_SOURCE_DIR}/src/server/game/DungeonFinding
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Creature
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Corpse
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/DynamicObject
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/GameObject
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Item
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Item/Container
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Object
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Object/Updates
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Pet
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Player
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Totem
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Unit
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Vehicle
+  ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Transport
+  ${CMAKE_SOURCE_DIR}/src/server/game/Events
+  ${CMAKE_SOURCE_DIR}/src/server/game/Globals
+  ${CMAKE_SOURCE_DIR}/src/server/game/Grids/Cells
+  ${CMAKE_SOURCE_DIR}/src/server/game/Grids/Notifiers
+  ${CMAKE_SOURCE_DIR}/src/server/game/Grids
+  ${CMAKE_SOURCE_DIR}/src/server/game/Groups
+  ${CMAKE_SOURCE_DIR}/src/server/game/Guilds
+  ${CMAKE_SOURCE_DIR}/src/server/game/Instances
+  ${CMAKE_SOURCE_DIR}/src/server/game/Loot
+  ${CMAKE_SOURCE_DIR}/src/server/game/Mails
+  ${CMAKE_SOURCE_DIR}/src/server/game/Maps
+  ${CMAKE_SOURCE_DIR}/src/server/game/Miscellaneous
+  ${CMAKE_SOURCE_DIR}/src/server/game/Movement
+  ${CMAKE_SOURCE_DIR}/src/server/game/Movement/MovementGenerators
+  ${CMAKE_SOURCE_DIR}/src/server/game/Movement/Waypoints
+  ${CMAKE_SOURCE_DIR}/src/server/game/OutdoorPvP
+  ${CMAKE_SOURCE_DIR}/src/server/game/OutdoorPvP/Zones
+  ${CMAKE_SOURCE_DIR}/src/server/game/Pools
+  ${CMAKE_SOURCE_DIR}/src/server/game/PrecompiledHeaders
+  ${CMAKE_SOURCE_DIR}/src/server/game/Quests
+  ${CMAKE_SOURCE_DIR}/src/server/game/Reputation
+  ${CMAKE_SOURCE_DIR}/src/server/game/Scripting
+  ${CMAKE_SOURCE_DIR}/src/server/game/Server/Protocol
+  ${CMAKE_SOURCE_DIR}/src/server/game/Server/Protocol/Handlers
+  ${CMAKE_SOURCE_DIR}/src/server/game/Server
+  ${CMAKE_SOURCE_DIR}/src/server/game/Skills
+  ${CMAKE_SOURCE_DIR}/src/server/game/Spells
+  ${CMAKE_SOURCE_DIR}/src/server/game/Spells/Auras
+  ${CMAKE_SOURCE_DIR}/src/server/game/Tools
+  ${CMAKE_SOURCE_DIR}/src/server/game/Weather
+  ${CMAKE_SOURCE_DIR}/src/server/game/World
+  ${MYSQL_INCLUDE_DIR}
+  ${ACE_INCLUDE_DIR}
+)
+
+if(NOT DO_SCRIPTS)
+  set(game_STAT_SRCS
+    ${game_STAT_SRCS}
+    AI/ScriptedAI/ScriptedEscortAI.cpp
+    AI/ScriptedAI/ScriptedCreature.cpp
+    AI/ScriptedAI/ScriptedFollowerAI.cpp
+    AI/ScriptedAI/ScriptedGuardAI.cpp
+    AI/ScriptedAI/ScriptedSimpleAI.cpp
+  )
+  message("-- Added basic scriptAI-engines to GAME library")
+endif()
+
+# Add gamePCH.cpp to project on Windows
+if(MSVC)
+  set(game_STAT_SRCS
+    PrecompiledHeaders/gamePCH.cpp
+    ${game_STAT_SRCS})
+endif()
+
+add_library(game STATIC ${game_STAT_SRCS})
+
+add_dependencies(game revision.h)
+
+# Generate precompiled header
+if(DO_PCH)
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    add_precompiled_header(game ${CMAKE_SOURCE_DIR}/src/server/game/PrecompiledHeaders/gamePCH.h)
+  elseif(MSVC)
+    add_native_precompiled_header(game ${CMAKE_SOURCE_DIR}/src/server/game/PrecompiledHeaders/gamePCH)
+  endif()
+endif()

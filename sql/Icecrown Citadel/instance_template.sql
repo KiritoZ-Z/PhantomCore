@@ -1,1 +1,0 @@
-UPDATE `instance_template` SET `script`='instance_icecrown_citadel' WHERE (`map`='631');

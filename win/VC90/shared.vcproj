@@ -21,8 +21,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -48,18 +48,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\dep\include;..\..\dep\include\g3dlite;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
+				AdditionalIncludeDirectories="..\..\src\server\shared\Debugging\;..\..\src\server\;..\..\src\server\shared\Utilities;..\..\src\server\shared\Logging;..\..\src\server\shared;..\..\externals;..\..\externals\sockets;..\..\externals\sockets\include;..\..\externals\openssl;..\..\externals\utf8cpp;..\..\externals\mersennetwister;..\..\externals\mysql;..\..\externals\mysql\include;..\..\src\server\game\Entities\Object"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="1"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\shared__$(PlatformName)_$(ConfigurationName)/shared.pch"
-				AssemblerListingLocation=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\shared__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=""
+				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -80,8 +80,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
-				AdditionalLibraryDirectories="dep\lib\$(PlatformName)_$(ConfigurationName)"
+				LinkLibraryDependencies="false"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -102,8 +103,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -130,18 +131,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\dep\include;..\..\dep\include\g3dlite;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0"
+				AdditionalIncludeDirectories="..\..\src\server\shared\Debugging\;..\..\src\server\;..\..\src\server\shared\Utilities;..\..\src\server\shared\Logging;..\..\src\server\shared;..\..\externals;..\..\externals\sockets;..\..\externals\sockets\include;..\..\externals\openssl;..\..\externals\utf8cpp;..\..\externals\mersennetwister;..\..\externals\mysql;..\..\externals\mysql\include;..\..\src\server\game\Entities\Object"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\shared__$(PlatformName)_$(ConfigurationName)/shared.pch"
-				AssemblerListingLocation=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\shared__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=""
+				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -162,9 +163,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies=".\g3dlite__$(PlatformName)_$(ConfigurationName)\g3dlite.lib"
-				OutputFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
-				AdditionalLibraryDirectories="dep\lib\$(PlatformName)_$(ConfigurationName)"
+				LinkLibraryDependencies="false"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -185,8 +186,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -212,17 +213,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\dep\include;..\..\dep\include\g3dlite;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;_DEBUG;PHANTOM_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\src\server\shared\Debugging\;..\..\src\server\;..\..\src\server\shared\Utilities;..\..\src\server\shared\Logging;..\..\src\server\shared;..\..\externals;..\..\externals\sockets;..\..\externals\sockets\include;..\..\externals\openssl;..\..\externals\utf8cpp;..\..\externals\mersennetwister;..\..\externals\mysql;..\..\externals\mysql\include;..\..\src\server\game\Entities\Object"
+				PreprocessorDefinitions="WIN32;TRINITY_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.pch"
-				AssemblerListingLocation=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\shared__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=""
+				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -243,8 +245,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
-				AdditionalLibraryDirectories="dep\lib\$(PlatformName)_$(ConfigurationName)"
+				LinkLibraryDependencies="false"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -265,8 +268,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\shared__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -293,17 +296,18 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\dep\include;..\..\dep\include\g3dlite;..\..\src\framework;..\..\src\shared;..\..\dep\ACE_wrappers"
-				PreprocessorDefinitions="WIN32;_DEBUG;PHANTOM_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..\..\src\server\shared\Debugging\;..\..\src\server\;..\..\src\server\shared\Utilities;..\..\src\server\shared\Logging;..\..\src\server\shared;..\..\externals;..\..\externals\sockets;..\..\externals\sockets\include;..\..\externals\openssl;..\..\externals\utf8cpp;..\..\externals\mersennetwister;..\..\externals\mysql;..\..\externals\mysql\include;..\..\src\server\game\Entities\Object"
+				PreprocessorDefinitions="WIN32;TRINITY_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.pch"
-				AssemblerListingLocation=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\shared__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\shared__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=""
+				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -324,9 +328,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies=".\g3dlite__$(PlatformName)_$(ConfigurationName)\g3dlite.lib"
-				OutputFile=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
-				AdditionalLibraryDirectories="dep\lib\$(PlatformName)_$(ConfigurationName)"
+				LinkLibraryDependencies="false"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -350,435 +354,359 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Database"
+			Name="Configuration"
 			>
 			<File
-				RelativePath="..\..\src\shared\Database\Database.cpp"
+				RelativePath="..\..\src\server\shared\Configuration\Config.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Database\Database.h"
+				RelativePath="..\..\src\server\shared\Configuration\Config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Database\DatabaseEnv.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\DatabaseImpl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\Field.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\Field.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\QueryResult.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\QueryResult.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SqlDelayThread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SqlDelayThread.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SqlOperations.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SqlOperations.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SQLStorage.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SQLStorage.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Database\SQLStorageImpl.h"
-				>
-			</File>
-			<Filter
-				Name="DataStores"
-				>
-				<File
-					RelativePath="..\..\src\shared\Database\DBCFileLoader.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\Database\DBCFileLoader.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\Database\DBCStore.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="Log"
-			>
-			<File
-				RelativePath="..\..\src\shared\Log.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Log.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Util"
-			>
-			<File
-				RelativePath="..\..\src\shared\ByteBuffer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Errors.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\dep\include\mersennetwister\MersenneTwister.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\ProgressBar.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\ProgressBar.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Timer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Util.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Util.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\WorldPacket.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Config"
-			>
-			<File
-				RelativePath="..\..\src\shared\Config\Config.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Config\Config.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\Config\ConfigEnv.h"
+				RelativePath="..\..\src\server\shared\Configuration\ConfigEnv.h"
 				>
 			</File>
 			<Filter
 				Name="dotconfpp"
 				>
 				<File
-					RelativePath="..\..\src\shared\Config\dotconfpp\dotconfpp.cpp"
+					RelativePath="..\..\src\server\shared\Configuration\dotconfpp\dotconfpp.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\shared\Config\dotconfpp\dotconfpp.h"
+					RelativePath="..\..\src\server\shared\Configuration\dotconfpp\dotconfpp.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\shared\Config\dotconfpp\mempool.cpp"
+					RelativePath="..\..\src\server\shared\Configuration\dotconfpp\mempool.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\shared\Config\dotconfpp\mempool.h"
+					RelativePath="..\..\src\server\shared\Configuration\dotconfpp\mempool.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Auth"
+			Name="Cryptography"
 			>
 			<File
-				RelativePath="..\..\src\shared\Auth\AuthCrypt.cpp"
+				RelativePath="..\..\src\server\shared\Cryptography\ARC4.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\AuthCrypt.h"
+				RelativePath="..\..\src\server\shared\Cryptography\ARC4.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\BigNumber.cpp"
+				RelativePath="..\..\src\server\shared\Cryptography\BigNumber.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\BigNumber.h"
+				RelativePath="..\..\src\server\shared\Cryptography\BigNumber.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\Hmac.cpp"
+				RelativePath="..\..\src\server\shared\Cryptography\HMACSHA1.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\Hmac.h"
+				RelativePath="..\..\src\server\shared\Cryptography\HMACSHA1.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\SARC4.cpp"
+				RelativePath="..\..\src\server\shared\Cryptography\MD5.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\SARC4.h"
+				RelativePath="..\..\src\server\shared\Cryptography\MD5.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\Sha1.cpp"
+				RelativePath="..\..\src\server\shared\Cryptography\SHA1.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\shared\Auth\Sha1.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="vmaps"
-			>
-			<File
-				RelativePath="..\..\src\shared\vmap\BIH.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\BIH.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\CMakeLists.txt"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\IVMapManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\MapTree.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\MapTree.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\ModelInstance.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\ModelInstance.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\TileAssembler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\TileAssembler.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapDefinitions.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapManager2.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapManager2.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\VMapTools.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\WorldModel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\vmap\WorldModel.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="pathfinding"
-			>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\ChunkyTriMesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\ChunkyTriMesh.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\InputGeom.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\InputGeom.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\MeshLoaderObj.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\shared\pathfinding\MeshLoaderObj.h"
+				RelativePath="..\..\src\server\shared\Cryptography\SHA1.h"
 				>
 			</File>
 			<Filter
-				Name="Detour"
+				Name="Authentication"
 				>
 				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourCommon.cpp"
+					RelativePath="..\..\src\server\shared\Cryptography\Authentication\AuthCrypt.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourCommon.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNavMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNavMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNavMeshBuilder.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNavMeshBuilder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Detour\DetourNode.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Recast"
-				>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\Recast.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\Recast.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastArea.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastContour.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastFilter.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastLog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastLog.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastMeshDetail.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastRasterization.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastRegion.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastTimer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\src\shared\pathfinding\Recast\RecastTimer.h"
+					RelativePath="..\..\src\server\shared\Cryptography\Authentication\AuthCrypt.h"
 					>
 				</File>
 			</Filter>
 		</Filter>
+		<Filter
+			Name="Database"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Database\Database.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\Database.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\DatabaseEnv.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\DatabaseImpl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\Field.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\Field.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\PreparedStatements.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\PreparedStatements.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\QueryResult.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\QueryResult.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SqlDelayThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SqlDelayThread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SqlOperations.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SqlOperations.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SQLStorage.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SQLStorage.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Database\SQLStorageImpl.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="DataStores"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\DataStores\DBCFileLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\DataStores\DBCFileLoader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\DataStores\DBCStore.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Debugging"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Debugging\Errors.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Debugging\MemoryLeaks.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Debugging\MemoryLeaks.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Debugging\WheatyExceptionReport.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Debugging\WheatyExceptionReport.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Dynamic"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\FactoryHolder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\LinkedList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\ObjectRegistry.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\TypeContainer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\TypeContainerFunctions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\TypeContainerFunctionsPtr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\TypeContainerVisitor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\TypeList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Dynamic\UnorderedMap.h"
+				>
+			</File>
+			<Filter
+				Name="LinkedReference"
+				>
+				<File
+					RelativePath="..\..\src\server\shared\Dynamic\LinkedReference\Reference.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\server\shared\Dynamic\LinkedReference\RefManager.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Logging"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Logging\Log.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Logging\Log.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Packets"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Packets\ByteBuffer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Packets\WorldPacket.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Threading"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Threading\DelayExecutor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Threading\DelayExecutor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Threading\Threading.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Threading\Threading.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Utilities"
+			>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\EventProcessor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\EventProcessor.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\ProgressBar.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\ProgressBar.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\SignalHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\Timer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\Util.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\shared\Utilities\Util.h"
+				>
+			</File>
+		</Filter>
 		<File
-			RelativePath="..\..\src\shared\Common.cpp"
+			RelativePath="..\..\src\server\shared\Common.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\Common.h"
+			RelativePath="..\..\src\server\shared\Common.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\DelayExecutor.cpp"
+			RelativePath="..\..\src\server\shared\CompilerDefs.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\DelayExecutor.h"
+			RelativePath="..\..\src\server\shared\Define.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\LockedQueue.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\revision.h"
+			RelativePath="..\..\src\server\shared\revision.h"
 			>
 			<FileConfiguration
 				Name="Release|Win32"
@@ -786,8 +714,8 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Getting Version..."
-					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;..\..&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(SolutionDir)../.hg/branch.cache"
+					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;..\..\..&quot;&#x0D;&#x0A;"
+					AdditionalDependencies="$(SolutionDir)../.hg/branchheads.cache"
 					Outputs="revision.h"
 				/>
 			</FileConfiguration>
@@ -797,8 +725,8 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Getting Version..."
-					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;..\..&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(SolutionDir)../.hg/branch.cache"
+					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;..\..\..&quot;&#x0D;&#x0A;"
+					AdditionalDependencies="$(SolutionDir)../.hg/branchheads.cache"
 					Outputs="revision.h"
 				/>
 			</FileConfiguration>
@@ -808,8 +736,8 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Getting Version..."
-					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;-d&quot; &quot;..\..&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(SolutionDir)../.hg/branch.cache"
+					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;-d&quot; &quot;..\..\..&quot;&#x0D;&#x0A;"
+					AdditionalDependencies="$(SolutionDir)../.hg/branchheads.cache"
 					Outputs="revision.h"
 				/>
 			</FileConfiguration>
@@ -819,34 +747,22 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Getting Version..."
-					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;-d&quot; &quot;..\..&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(SolutionDir)../.hg/branch.cache"
+					CommandLine="cd $(InputDir)&#x0D;&#x0A;&quot;$(TargetDir)\..\genrevision__$(PlatformName)_$(ConfigurationName)\genrevision.exe&quot; &quot;-d&quot; &quot;..\..\..&quot;&#x0D;&#x0A;"
+					AdditionalDependencies="$(SolutionDir)../.hg/branchheads.cache"
 					Outputs="revision.h"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\ServiceWin32.cpp"
+			RelativePath="..\..\src\server\shared\Utilities\ServiceWin32.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\ServiceWin32.h"
+			RelativePath="..\..\src\server\shared\Utilities\ServiceWin32.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\shared\SignalHandler.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\SystemConfig.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\Threading.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\Threading.h"
+			RelativePath="..\..\src\server\shared\SystemConfig.h"
 			>
 		</File>
 	</Files>

@@ -1,1 +1,0 @@
-REPLACE INTO `worldstates` (`entry`, `comment`) VALUES ('90000', 'NextRandomBGResetTime');
