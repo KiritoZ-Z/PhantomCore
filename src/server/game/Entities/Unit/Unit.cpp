@@ -8454,7 +8454,15 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, AuraEffect* trig
                 return false;
             break;
     }
-
+	
+      // Glyph of Death Grip
+      if (auraSpellInfo->Id == 62259)
+      {
+          // remove cooldown of Death Grip
+        if (GetTypeId()==TYPEID_PLAYER)
+            ((Player*)this)->RemoveSpellCooldown(49576, true);
+        return true;
+      } 
     // Blade Barrier
     if (auraSpellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && auraSpellInfo->SpellIconID == 85)
     {
