@@ -1,1 +1,0 @@
-﻿INSERT INTO `spell_linked_spell` VALUES ('49576', '20788', '0', 'Death Grip spell cast interrupt');

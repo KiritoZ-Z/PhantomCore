@@ -1,1 +1,0 @@
-UPDATE `creature_template` SET `ScriptName`='Boss_Festergut' WHERE (`entry`='36626');
