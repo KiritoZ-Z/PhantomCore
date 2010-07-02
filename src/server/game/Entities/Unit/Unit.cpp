@@ -1852,8 +1852,9 @@ void Unit::CalcAbsorbResist(Unit *pVictim, SpellSchoolMask schoolMask, DamageEff
                         {
                             case 5065:                          // Rank 1
                             case 5064:                          // Rank 2
-                                triggeredSpells.push_back(TriggeredSpellInfo(33619, pVictim, this,
-                                    std::min(RemainingDamage, currentAbsorb) * aurEff->GetAmount() / 100, *i));
+								if (pVictim == caster)
+									triggeredSpells.push_back(TriggeredSpellInfo(33619, pVictim, this,
+										std::min(RemainingDamage, currentAbsorb) * aurEff->GetAmount() / 100, *i));
                                 break;
                             default:
                                 sLog.outError("Unit::CalcAbsorbResist: unknown Reflective Shield spell %d", aurEff->GetId());
