@@ -28,7 +28,7 @@ EndScriptData */
 
 #define MAX_ENCOUNTER  4
 
-struct instance_trial_of_the_champion : public ScriptedInstance
+struct  instance_trial_of_the_champion : public ScriptedInstance
 {
     instance_trial_of_the_champion(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
 
@@ -37,6 +37,7 @@ struct instance_trial_of_the_champion : public ScriptedInstance
     uint8 uiMovementDone;
     uint8 uiGrandChampionsDeaths;
     uint8 uiArgentSoldierDeaths;
+    uint32 uiTimer;
 
     uint64 uiAnnouncerGUID;
     uint64 uiMainGateGUID;
@@ -54,6 +55,7 @@ struct instance_trial_of_the_champion : public ScriptedInstance
     std::string str_data;
 
     bool bDone;
+    bool bDuna;
 
     void Initialize()
     {
@@ -71,8 +73,10 @@ struct instance_trial_of_the_champion : public ScriptedInstance
         uiGrandChampion3GUID          = 0;
         uiChampionLootGUID            = 0;
         uiArgentChampionGUID          = 0;
+    uiTimer    = 1000;
 
         bDone = false;
+    bDuna = true;
 
         VehicleList.clear();
 
@@ -124,11 +128,36 @@ struct instance_trial_of_the_champion : public ScriptedInstance
                 if (TeamInInstance == HORDE)
                     pCreature->UpdateEntry(VEHICLE_LANA_STOUTHAMMER_MOUNT, ALLIANCE);
                 break;
+        case VEHICLE_FORSAKE_WARHORSE:
+        if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(VEHICLE_DARNASSIA_NIGHTSABER, ALLIANCE);
+                break;
+        case VEHICLE_THUNDER_BLUFF_KODO:
+        if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(VEHICLE_EXODAR_ELEKK, ALLIANCE);
+                break;
+        case VEHICLE_ORGRIMMAR_WOLF:
+        if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(VEHICLE_STORMWIND_STEED, ALLIANCE);
+                break;
+        case VEHICLE_SILVERMOON_HAWKSTRIDER:
+        if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(VEHICLE_GNOMEREGAN_MECHANOSTRIDER, ALLIANCE);
+                break;
+        case VEHICLE_DARKSPEAR_RAPTOR:
+        if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(VEHICLE_IRONFORGE_RAM, ALLIANCE);
+                break;
             // Coliseum Announcer || Just NPC_JAEREN must be spawned.
             case NPC_JAEREN:
                 uiAnnouncerGUID = pCreature->GetGUID();
                 if (TeamInInstance == ALLIANCE)
                     pCreature->UpdateEntry(NPC_ARELAS,ALLIANCE);
+                break;
+        case NPC_ARELAS:
+                uiAnnouncerGUID = pCreature->GetGUID();
+                if (TeamInInstance == HORDE)
+                    pCreature->UpdateEntry(NPC_JAEREN,HORDE);
                 break;
             case VEHICLE_ARGENT_WARHORSE:
             case VEHICLE_ARGENT_BATTLEWORG:
@@ -195,7 +224,7 @@ struct instance_trial_of_the_champion : public ScriptedInstance
                     if (Creature* pBoss =  instance->GetCreature(uiArgentChampionGUID))
                     {
                         pBoss->GetMotionMaster()->MovePoint(0,746.88,618.74,411.06);
-                        pBoss->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+                        pBoss->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
                         pBoss->SetReactState(REACT_AGGRESSIVE);
                     }
                 }
@@ -277,7 +306,7 @@ struct instance_trial_of_the_champion : public ScriptedInstance
 
         std::ostringstream saveStream;
 
-        saveStream << "T C " << m_auiEncounter[0]
+       saveStream << "T C " << m_auiEncounter[0]
             << " " << m_auiEncounter[1]
             << " " << m_auiEncounter[2]
             << " " << m_auiEncounter[3]

@@ -141,7 +141,7 @@ bool GrandChampionsOutVehicle(Creature* me)
 * Script Complete: 25%.                                                     *
 */
 
-struct generic_vehicleAI_toc5AI : public npc_escortAI
+struct  generic_vehicleAI_toc5AI : public npc_escortAI
 {
     generic_vehicleAI_toc5AI(Creature* pCreature) : npc_escortAI(pCreature)
     {
@@ -200,7 +200,7 @@ struct generic_vehicleAI_toc5AI : public npc_escortAI
         switch(i)
         {
             case 2:
-                if (pInstance && uiWaypointPath == 3 || uiWaypointPath == 2)
+                if (pInstance && uiWaypointPath == 1 || uiWaypointPath == 2)
                     pInstance->SetData(DATA_MOVEMENT_DONE, pInstance->GetData(DATA_MOVEMENT_DONE)+1);
                 break;
             case 3:
@@ -213,6 +213,8 @@ struct generic_vehicleAI_toc5AI : public npc_escortAI
     void EnterCombat(Unit* /*pWho*/)
     {
         DoCastSpellShield();
+    me->SetReactState(REACT_AGGRESSIVE);
+        me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     void DoCastSpellShield()
@@ -260,9 +262,6 @@ struct generic_vehicleAI_toc5AI : public npc_escortAI
         if (uiShieldBreakerTimer <= uiDiff)
         {
             Vehicle *pVehicle = me->GetVehicleKit();
-            if (!pVehicle)
-                return;
-
             if (Unit* pPassenger = pVehicle->GetPassenger(SEAT_ID_0))
             {
                 Map::PlayerList const& players = me->GetMap()->GetPlayers();
@@ -292,7 +291,7 @@ CreatureAI* GetAI_generic_vehicleAI_toc5(Creature* pCreature)
 }
 
 // Marshal Jacob Alerius && Mokra the Skullcrusher || Warrior
-struct boss_warrior_toc5AI : public ScriptedAI
+struct  boss_warrior_toc5AI : public ScriptedAI
 {
     boss_warrior_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -304,9 +303,9 @@ struct boss_warrior_toc5AI : public ScriptedAI
         uiPhase = 0;
         uiPhaseTimer = 0;
 
-        me->SetReactState(REACT_PASSIVE);
+        //me->SetReactState(REACT_PASSIVE);
         // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+        //me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     ScriptedInstance* pInstance;
@@ -347,15 +346,21 @@ struct boss_warrior_toc5AI : public ScriptedAI
         if (!bDone && GrandChampionsOutVehicle(me))
         {
             bDone = true;
-
-            if (pInstance && me->GetGUID() == pInstance->GetData64(DATA_GRAND_CHAMPION_1))
+        
+                pInstance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
                 me->SetHomePosition(739.678,662.541,412.393,4.49);
+        }
             else if (pInstance && me->GetGUID() == pInstance->GetData64(DATA_GRAND_CHAMPION_2))
+        {
                 me->SetHomePosition(746.71,661.02,411.69,4.6);
+        }
             else if (pInstance && me->GetGUID() == pInstance->GetData64(DATA_GRAND_CHAMPION_3))
+        {
                 me->SetHomePosition(754.34,660.70,412.39,4.79);
+        me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+        me->SetReactState(REACT_AGGRESSIVE);
 
-            EnterEvadeMode();
+            //EnterEvadeMode();
             bHome = true;
         }
 
@@ -363,6 +368,7 @@ struct boss_warrior_toc5AI : public ScriptedAI
         {
             if (uiPhase == 1)
             {
+        //me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
                 AggroAllPlayers(me);
                 uiPhase = 0;
             }
@@ -419,7 +425,7 @@ CreatureAI* GetAI_boss_warrior_toc5(Creature* pCreature)
 }
 
 // Ambrose Boltspark && Eressea Dawnsinger || Mage
-struct boss_mage_toc5AI : public ScriptedAI
+struct  boss_mage_toc5AI : public ScriptedAI
 {
     boss_mage_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -431,9 +437,9 @@ struct boss_mage_toc5AI : public ScriptedAI
         uiPhase = 0;
         uiPhaseTimer = 0;
 
-        me->SetReactState(REACT_PASSIVE);
+        //me->SetReactState(REACT_PASSIVE);
         // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+        //me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     ScriptedInstance* pInstance;
@@ -485,8 +491,10 @@ struct boss_mage_toc5AI : public ScriptedAI
 
             if (pInstance)
                 pInstance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->SetReactState(REACT_AGGRESSIVE);
 
-            EnterEvadeMode();
+            //EnterEvadeMode();
             bHome = true;
         }
 
@@ -494,6 +502,7 @@ struct boss_mage_toc5AI : public ScriptedAI
         {
             if (uiPhase == 1)
             {
+        //me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
                 AggroAllPlayers(me);
                 uiPhase = 0;
             }
@@ -553,7 +562,7 @@ CreatureAI* GetAI_boss_mage_toc5(Creature* pCreature)
 }
 
 // Colosos && Runok Wildmane || Shaman
-struct boss_shaman_toc5AI : public ScriptedAI
+struct  boss_shaman_toc5AI : public ScriptedAI
 {
     boss_shaman_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -565,9 +574,9 @@ struct boss_shaman_toc5AI : public ScriptedAI
         uiPhase = 0;
         uiPhaseTimer = 0;
 
-        me->SetReactState(REACT_PASSIVE);
+       // me->SetReactState(REACT_PASSIVE);
         // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+       // me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     ScriptedInstance* pInstance;
@@ -625,8 +634,10 @@ struct boss_shaman_toc5AI : public ScriptedAI
 
             if (pInstance)
                 pInstance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
+                me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->SetReactState(REACT_AGGRESSIVE);
 
-            EnterEvadeMode();
+            //EnterEvadeMode();
             bHome = true;
         }
 
@@ -634,6 +645,7 @@ struct boss_shaman_toc5AI : public ScriptedAI
         {
             if (uiPhase == 1)
             {
+        //me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
                 AggroAllPlayers(me);
                 uiPhase = 0;
             }
@@ -694,7 +706,7 @@ CreatureAI* GetAI_boss_shaman_toc5(Creature* pCreature)
 }
 
 // Jaelyne Evensong && Zul'tore || Hunter
-struct boss_hunter_toc5AI : public ScriptedAI
+struct  boss_hunter_toc5AI : public ScriptedAI
 {
     boss_hunter_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -706,9 +718,9 @@ struct boss_hunter_toc5AI : public ScriptedAI
         uiPhase = 0;
         uiPhaseTimer = 0;
 
-        me->SetReactState(REACT_PASSIVE);
+       // me->SetReactState(REACT_PASSIVE);
         // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+       // me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     ScriptedInstance* pInstance;
@@ -765,8 +777,9 @@ struct boss_hunter_toc5AI : public ScriptedAI
 
             if (pInstance)
                 pInstance->SetData(BOSS_GRAND_CHAMPIONS, IN_PROGRESS);
-
-            EnterEvadeMode();
+                me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                me->SetReactState(REACT_AGGRESSIVE);
+            //EnterEvadeMode();
             bHome = true;
         }
 
@@ -843,7 +856,7 @@ CreatureAI* GetAI_boss_hunter_toc5(Creature* pCreature)
 }
 
 // Lana Stouthammer Evensong && Deathstalker Visceri || Rouge
-struct boss_rouge_toc5AI : public ScriptedAI
+struct  boss_rouge_toc5AI : public ScriptedAI
 {
     boss_rouge_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -855,9 +868,9 @@ struct boss_rouge_toc5AI : public ScriptedAI
         uiPhase = 0;
         uiPhaseTimer = 0;
 
-        me->SetReactState(REACT_PASSIVE);
+       // me->SetReactState(REACT_PASSIVE);
         // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+       // me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     ScriptedInstance* pInstance;
@@ -915,6 +928,7 @@ struct boss_rouge_toc5AI : public ScriptedAI
         {
             if (uiPhase == 1)
             {
+        //me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
                 AggroAllPlayers(me);
                 uiPhase = 0;
             }
