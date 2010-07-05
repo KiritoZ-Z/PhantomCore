@@ -78,6 +78,11 @@ void Vehicle::Install()
             me->setPowerType(POWER_ENERGY);
             me->SetMaxPower(POWER_ENERGY, 100);
         }
+        if (m_vehicleInfo->m_powerType == POWER_BLOOD_POWER)
+        {
+            me->setPowerType(POWER_ENERGY);
+            me->SetMaxPower(POWER_ENERGY, 100);
+        }		
         else if (m_vehicleInfo->m_powerType == POWER_PYRITE)
         {
             me->setPowerType(POWER_ENERGY);

@@ -427,6 +427,20 @@ void AddSC_instance_halls_of_reflection();   // Halls of Reflection
 void AddSC_halls_of_reflection();
 void AddSC_boss_falric();
 void AddSC_boss_marwyn();
+void AddSC_instance_icecrown_citadel(); //Icecrown Citadel 
+void AddSC_boss_saurfang(); 
+void AddSC_boss_festergut(); 
+void AddSC_boss_deahtwisper(); 
+void AddSC_boss_marrowgar(); 
+void AddSC_boss_professor_putricide(); 
+void AddSC_boss_sindragosa(); 
+void AddSC_boss_lichking(); 
+void AddSC_icecrown_teleporter(); 
+void AddSC_boss_rotface(); 
+void AddSC_boss_rat_des_blutes(); 
+void AddSC_icecrown_citadel_trash(); 
+void AddSC_boss_blood_queen_lana_thel();
+void AddSC_boss_valithria();
 
 void AddSC_dalaran();
 void AddSC_borean_tundra();
@@ -930,6 +944,20 @@ void AddScripts()
     AddSC_halls_of_reflection();
     AddSC_boss_falric();
     AddSC_boss_marwyn();
+    AddSC_instance_icecrown_citadel(); //Icecrown Citadel
+    AddSC_boss_saurfang();
+    AddSC_boss_festergut();
+    AddSC_boss_deahtwisper();
+    AddSC_boss_marrowgar();
+    AddSC_boss_professor_putricide();
+    AddSC_boss_sindragosa();
+    AddSC_boss_lichking(); 
+    AddSC_icecrown_teleporter(); 
+    AddSC_boss_rotface(); 
+    AddSC_boss_rat_des_blutes(); 
+    AddSC_icecrown_citadel_trash(); 
+    AddSC_boss_blood_queen_lana_thel();
+    AddSC_boss_valithria();	
 
     AddSC_dalaran();
     AddSC_borean_tundra();
