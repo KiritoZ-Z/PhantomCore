@@ -43,6 +43,8 @@
 #include "UpdateMask.h"
 #include "Util.h"
 #include "ScriptMgr.h"
+#include "OutdoorPvPWG.h"
+#include "OutdoorPvPMgr.h"
 
 class LoginQueryHolder : public SqlQueryHolder
 {
@@ -721,6 +723,20 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 
     sObjectAccessor.AddObject(pCurrChar);
     //sLog.outDebug("Player %s added to Map.",pCurrChar->GetName());
+
+    if (OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197))
+    {
+            if (pvpWG->isWarTime())
+            {
+                // "Battle in progress"
+                pCurrChar->SendUpdateWorldState(ClockWorldState[1], (time(NULL)));
+            } else
+                // Time to next battle
+            {
+                pvpWG->SendInitWorldStatesTo(pCurrChar);
+                pCurrChar->SendUpdateWorldState(ClockWorldState[1], (time(NULL) + pvpWG->GetTimer()));
+            }
+    }
 
     pCurrChar->SendInitialPacketsAfterAddToMap();
 

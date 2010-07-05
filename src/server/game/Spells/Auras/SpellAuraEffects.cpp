@@ -32,6 +32,7 @@
 #include "SpellAuraEffects.h"
 #include "BattleGround.h"
 #include "OutdoorPvPMgr.h"
+#include "OutdoorPvPWG.h"
 #include "Formulas.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
@@ -1774,6 +1775,8 @@ void AuraEffect::PeriodicTick(Unit * target, Unit * caster) const
 
 void AuraEffect::PeriodicDummyTick(Unit * target, Unit * caster) const
 {
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+
     switch (GetSpellProto()->SpellFamilyName)
     {
         case SPELLFAMILY_GENERIC:
@@ -1826,6 +1829,16 @@ void AuraEffect::PeriodicDummyTick(Unit * target, Unit * caster) const
                 else
                     target->RemoveAurasDueToSpell(58670);
                 break;
+            case 58730: // No Fly Zone - Wintergrasp
+				{
+			    if (pvpWG->isWarTime()==false) break;
+                if (GetTickNumber() == 10)
+                {
+                    target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
+                    target->RemoveAurasByType(SPELL_AURA_FLY);
+                }
+                break;
+				}
             case 62292: // Blaze (Pool of Tar)
                 // should we use custom damage?
                 target->CastSpell((Unit*)NULL, m_spellProto->EffectTriggerSpell[m_effIndex], true);
@@ -5442,6 +5455,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
 
     Unit * target = aurApp->GetTarget();
 
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+
     Unit * caster = GetCaster();
 
     if (mode & AURA_EFFECT_HANDLE_REAL)
@@ -5650,6 +5665,28 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                 case SPELLFAMILY_GENERIC:
                     switch(GetId())
                     {
+		      case 58600: // Restricted Flight Area
+                        {
+				if (!target || target->GetAreaId() != 4395) break;
+                      // Remove Flight Auras
+				target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
+                                target->RemoveAurasByType(SPELL_AURA_FLY);
+                                target->CastSpell(target, 61286, true);
+                      // Parachute
+                                target->CastSpell(target, 45472, true);
+                                break;
+                        } 
+		      case 58730: // Restricted Flight Area
+                        {
+				if (!target || (pvpWG->isWarTime()==false) || ((target->GetAreaId() != 4581) && (target->GetAreaId() != 4539) && (target->GetAreaId() != 4197) && (target->GetAreaId() != 4585) && (target->GetAreaId() != 4612) && (target->GetAreaId() != 4582) && (target->GetAreaId() != 4583) && (target->GetAreaId() != 4589) && (target->GetAreaId() != 4575) && (target->GetAreaId() != 4538) && (target->GetAreaId() != 4577))) break;
+                      // Remove Flight Auras
+				target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
+                                target->RemoveAurasByType(SPELL_AURA_FLY);
+                                target->CastSpell(target, 61286, true);
+                      // Parachute
+                                target->CastSpell(target, 45472, true);
+                                break;
+                        } 
                         case 2584: // Waiting to Resurrect
                             // Waiting to resurrect spell cancel, we must remove player from resurrect queue
                             if (target->GetTypeId() == TYPEID_PLAYER)

@@ -123,6 +123,8 @@ set(game_STAT_SRCS
   OutdoorPvP/Zones/OutdoorPvPSI.cpp
   OutdoorPvP/Zones/OutdoorPvPTF.cpp
   OutdoorPvP/Zones/OutdoorPvPZM.cpp
+  OutdoorPvP/Zones/OutdoorPvPWG.cpp
+  OutdoorPvP/Zones/OutdoorPvPWG.h
   OutdoorPvP/OutdoorPvP.cpp
   OutdoorPvP/OutdoorPvPMgr.cpp
   Pools/PoolMgr.cpp

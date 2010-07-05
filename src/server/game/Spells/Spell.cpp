@@ -51,6 +51,8 @@
 #include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 #include "ConditionMgr.h"
+#include "OutdoorPvPWG.h"
+#include "OutdoorPvPMgr.h"
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL (1 * IN_MILISECONDS)
 
@@ -4484,6 +4486,7 @@ void Spell::TriggerSpell()
 
 SpellCastResult Spell::CheckCast(bool strict)
 {
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
     // check cooldowns to prevent cheating
     if (m_caster->GetTypeId() == TYPEID_PLAYER && !(m_spellInfo->Attributes & SPELL_ATTR_PASSIVE))
     {
@@ -5443,7 +5446,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_originalCaster && m_originalCaster->GetTypeId() == TYPEID_PLAYER && m_originalCaster->isAlive())
                 {
                     if (AreaTableEntry const* pArea = GetAreaEntryByAreaID(m_originalCaster->GetAreaId()))
-                        if (pArea->flags & AREA_FLAG_NO_FLY_ZONE)
+                        if ((pArea->flags & AREA_FLAG_NO_FLY_ZONE) || (m_originalCaster->GetZoneId() == 4197 && pvpWG->isWarTime()))
                             return m_IsTriggeredSpell ? SPELL_FAILED_DONT_REPORT : SPELL_FAILED_NOT_HERE;
                 }
                 break;
