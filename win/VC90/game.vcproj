@@ -107,6 +107,88 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP /Zm200"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="..\..\externals;..\..\externals\g3dlite;..\..\externals\mersennetwister;..\..\externals\zlib;..\..\src\server\collision;..\..\src\server\collision\Management;..\..\src\server\collision\Maps;..\..\src\server\collision\Models;..\..\src\server\shared;..\..\src\server\shared\Configuration;..\..\src\server\shared\Cryptography;..\..\src\server\shared\Cryptography\Authentication;..\..\src\server\shared\Database;..\..\src\server\shared\DataStores;..\..\src\server\shared\Debugging;..\..\src\server\shared\Dynamic\CountedReference;..\..\src\server\shared\Dynamic\LinkedReference;..\..\src\server\shared\Dynamic;..\..\src\server\shared\Logging;..\..\src\server\shared\Packets;..\..\src\server\shared\Policies;..\..\src\server\shared\Threading;..\..\src\server\shared\Utilities;..\..\src\server\game;..\..\src\server\game\Accounts;..\..\src\server\game\Achievements;..\..\src\server\game\Addons;..\..\src\server\game\AI;..\..\src\server\game\AI\CoreAI;..\..\src\server\game\AI\EventAI;..\..\src\server\game\AI\ScriptedAI;..\..\src\server\game\AuctionHouse;..\..\src\server\game\AuctionHouse\AuctionHouseBot;..\..\src\server\game\BattleGrounds;..\..\src\server\game\BattleGrounds\Zones;..\..\src\server\game\Calendar;..\..\src\server\game\Chat;..\..\src\server\game\Chat\Channels;..\..\src\server\game\Chat\Commands;..\..\src\server\game\Combat;..\..\src\server\game\Conditions;..\..\src\server\game\DataStores;..\..\src\server\game\DungeonFinding;..\..\src\server\game\Entities;..\..\src\server\game\Entities\Creature;..\..\src\server\game\Entities\Corpse;..\..\src\server\game\Entities\DynamicObject;..\..\src\server\game\Entities\GameObject;..\..\src\server\game\Entities\Item;..\..\src\server\game\Entities\Item\Container;..\..\src\server\game\Entities\Object;..\..\src\server\game\Entities\Object\Updates;..\..\src\server\game\Entities\Pet;..\..\src\server\game\Entities\Player;..\..\src\server\game\Entities\Totem;..\..\src\server\game\Entities\Unit;..\..\src\server\game\Entities\Vehicle;..\..\src\server\game\Entities\Transport;..\..\src\server\game\Events;..\..\src\server\game\Globals;..\..\src\server\game\Grids\Cells;..\..\src\server\game\Grids\Notifiers;..\..\src\server\game\Grids;..\..\src\server\game\Groups;..\..\src\server\game\Guilds;..\..\src\server\game\Instances;..\..\src\server\game\Loot;..\..\src\server\game\Mails;..\..\src\server\game\Maps;..\..\src\server\game\Miscellaneous;..\..\src\server\game\Movement;..\..\src\server\game\Movement\MovementGenerators;..\..\src\server\game\Movement\Waypoints;..\..\src\server\game\OutdoorPvP;..\..\src\server\game\OutdoorPvP\Zones;..\..\src\server\game\Pools;..\..\src\server\game\PrecompiledHeaders;..\..\src\server\game\Quests;..\..\src\server\game\Reputation;..\..\src\server\game\Scripting;..\..\src\server\game\Server;..\..\src\server\game\Server\Protocol;..\..\src\server\game\Server\Protocol\Handlers;..\..\src\server\game\Skills;..\..\src\server\game\Spells;..\..\src\server\game\Spells\Auras;..\..\src\server\game\Tools;..\..\src\server\game\Weather;..\..\src\server\game\World"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DO_SCRIPTS"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="gamePCH.h"
+				PrecompiledHeaderFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\$(ProjectName).pch"
+				AssemblerListingLocation=""
+				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				CallingConvention="0"
+				CompileAs="0"
+				ForcedIncludeFiles="gamePCH.h"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_SECURE_SCL=0"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				LinkLibraryDependencies="false"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
 			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
@@ -164,88 +246,6 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				LinkLibraryDependencies="false"
-				OutputFile="$(OutDir)\$(ProjectName).lib"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectName)__$(PlatformName)_$(ConfigurationName)"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /Zm200"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\externals;..\..\externals\g3dlite;..\..\externals\mersennetwister;..\..\externals\zlib;..\..\src\server\collision;..\..\src\server\collision\Management;..\..\src\server\collision\Maps;..\..\src\server\collision\Models;..\..\src\server\shared;..\..\src\server\shared\Configuration;..\..\src\server\shared\Cryptography;..\..\src\server\shared\Cryptography\Authentication;..\..\src\server\shared\Database;..\..\src\server\shared\DataStores;..\..\src\server\shared\Debugging;..\..\src\server\shared\Dynamic\CountedReference;..\..\src\server\shared\Dynamic\LinkedReference;..\..\src\server\shared\Dynamic;..\..\src\server\shared\Logging;..\..\src\server\shared\Packets;..\..\src\server\shared\Policies;..\..\src\server\shared\Threading;..\..\src\server\shared\Utilities;..\..\src\server\game;..\..\src\server\game\Accounts;..\..\src\server\game\Achievements;..\..\src\server\game\Addons;..\..\src\server\game\AI;..\..\src\server\game\AI\CoreAI;..\..\src\server\game\AI\EventAI;..\..\src\server\game\AI\ScriptedAI;..\..\src\server\game\AuctionHouse;..\..\src\server\game\AuctionHouse\AuctionHouseBot;..\..\src\server\game\BattleGrounds;..\..\src\server\game\BattleGrounds\Zones;..\..\src\server\game\Calendar;..\..\src\server\game\Chat;..\..\src\server\game\Chat\Channels;..\..\src\server\game\Chat\Commands;..\..\src\server\game\Combat;..\..\src\server\game\Conditions;..\..\src\server\game\DataStores;..\..\src\server\game\DungeonFinding;..\..\src\server\game\Entities;..\..\src\server\game\Entities\Creature;..\..\src\server\game\Entities\Corpse;..\..\src\server\game\Entities\DynamicObject;..\..\src\server\game\Entities\GameObject;..\..\src\server\game\Entities\Item;..\..\src\server\game\Entities\Item\Container;..\..\src\server\game\Entities\Object;..\..\src\server\game\Entities\Object\Updates;..\..\src\server\game\Entities\Pet;..\..\src\server\game\Entities\Player;..\..\src\server\game\Entities\Totem;..\..\src\server\game\Entities\Unit;..\..\src\server\game\Entities\Vehicle;..\..\src\server\game\Entities\Transport;..\..\src\server\game\Events;..\..\src\server\game\Globals;..\..\src\server\game\Grids\Cells;..\..\src\server\game\Grids\Notifiers;..\..\src\server\game\Grids;..\..\src\server\game\Groups;..\..\src\server\game\Guilds;..\..\src\server\game\Instances;..\..\src\server\game\Loot;..\..\src\server\game\Mails;..\..\src\server\game\Maps;..\..\src\server\game\Miscellaneous;..\..\src\server\game\Movement;..\..\src\server\game\Movement\MovementGenerators;..\..\src\server\game\Movement\Waypoints;..\..\src\server\game\OutdoorPvP;..\..\src\server\game\OutdoorPvP\Zones;..\..\src\server\game\Pools;..\..\src\server\game\PrecompiledHeaders;..\..\src\server\game\Quests;..\..\src\server\game\Reputation;..\..\src\server\game\Scripting;..\..\src\server\game\Server;..\..\src\server\game\Server\Protocol;..\..\src\server\game\Server\Protocol\Handlers;..\..\src\server\game\Skills;..\..\src\server\game\Spells;..\..\src\server\game\Spells\Auras;..\..\src\server\game\Tools;..\..\src\server\game\Weather;..\..\src\server\game\World"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;DO_SCRIPTS"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="gamePCH.h"
-				PrecompiledHeaderFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\$(ProjectName).pch"
-				AssemblerListingLocation=""
-				ObjectFile=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\$(ProjectName)__$(PlatformName)_$(ConfigurationName)\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CallingConvention="0"
-				CompileAs="0"
-				ForcedIncludeFiles="gamePCH.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_SECURE_SCL=0"
 				Culture="1033"
 			/>
 			<Tool
@@ -651,6 +651,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPWG.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPWG.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPZM.cpp"
 					>
 				</File>
@@ -658,14 +666,6 @@
 					RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPZM.h"
 					>
 				</File>
- 			        <File
-				        RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPWG.cpp"
-				        >
-			        </File>
-			        <File
-				        RelativePath="..\..\src\server\game\OutdoorPvP\Zones\OutdoorPvPWG.h"
-				        >
-			        </File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -2254,6 +2254,70 @@
 					Name="Icecrown Citadel"
 					>
 					<Filter
+						Name="Icecrown Citadel"
+						>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\blood_queen_lana_thel.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\deathbringer_saurfang.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\festergut.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\icecrown_citadel.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\icecrown_citadel.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\icecrown_teleport.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\instance_icecrown_citadel.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\lady_deathwhisper.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\lord_marrowgar.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\professor_putricide.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\rat_des_blutes.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\rotface.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\sindragosa.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\the_lich_king.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\src\server\scripts\Northrend\icecrown_citadel\valithria_dreamwalker.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
 						Name="Forge of Souls"
 						>
 						<File
@@ -2829,6 +2893,50 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Trial of the Crusader"
+					>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_anubarak_toc.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_champions.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_dreadscale.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_fjola.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_gormok.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_icehowl.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\boss_lord_jaraksus.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\def.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\instance_trial_of_the_crusader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\CrusadersColiseum\trial_of_the_crusader\trial_of_the_crusader.cpp"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -4316,46 +4424,6 @@
 			Name="PrecompiledHeaders"
 			>
 			<File
-				RelativePath="..\..\src\server\game\PrecompiledHeaders\ScriptPCH.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="2"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\server\game\PrecompiledHeaders\ScriptPCH.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\server\game\PrecompiledHeaders\gamePCH.cpp"
 				>
 				<FileConfiguration
@@ -4368,7 +4436,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4377,7 +4445,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4397,6 +4465,46 @@
 			</File>
 			<File
 				RelativePath="..\..\src\server\game\PrecompiledHeaders\gamePCH.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\server\game\PrecompiledHeaders\ScriptPCH.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\server\game\PrecompiledHeaders\ScriptPCH.h"
 				>
 			</File>
 		</Filter>
