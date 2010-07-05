@@ -330,6 +330,15 @@ void AddSC_boss_black_knight();
 void AddSC_boss_grand_champions();
 void AddSC_instance_trial_of_the_champion();
 void AddSC_trial_of_the_champion();
+void AddSC_boss_gormok();        //Trial of the Crusader
+void AddSC_the_two_jormungar();
+void AddSC_boss_icehowl();
+void AddSC_boss_anub_arak_crusader();
+void AddSC_npc_toc6_announcer();
+void AddSC_instance_trial_of_the_crusader();
+void AddSC_boss_lord_jaraksus();
+void AddSC_boss_champions();
+void AddSC_boss_twin_fjola();
 void AddSC_boss_anubrekhan();            //Naxxramas
 void AddSC_boss_maexxna();
 void AddSC_boss_patchwerk();
