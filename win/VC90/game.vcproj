@@ -2543,6 +2543,34 @@
 					</File>
 				</Filter>
 				<Filter
+					Name="Ruby Sanctum"
+					>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_baltharus.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_halion.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_ragefire.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_zarithian.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\instance_ruby_sanctum.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\ruby_sanctum.h"
+						>
+					</File>
+				</Filter>
+				<Filter
 					Name="Ulduar"
 					>
 					<Filter
