@@ -2546,27 +2546,27 @@
 					Name="Ruby Sanctum"
 					>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_baltharus.cpp"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\boss_baltharus.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_halion.cpp"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\boss_halion.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_ragefire.cpp"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\boss_ragefire.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\boss_zarithian.cpp"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\boss_zarithian.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\instance_ruby_sanctum.cpp"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\instance_ruby_sanctum.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\src\server\scripts\Northrend\IcecrownCitadel\ruby_sanctum.h"
+						RelativePath="..\..\src\server\scripts\Northrend\RubySanctum\ruby_sanctum.h"
 						>
 					</File>
 				</Filter>
