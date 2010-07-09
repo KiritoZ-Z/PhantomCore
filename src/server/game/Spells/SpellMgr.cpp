@@ -3486,6 +3486,11 @@ void SpellMgr::LoadSpellCustomAttr()
 
         switch(i)
         {
+		// Flame Shock passive
+		case 75461:
+			spellInfo->Effect = SPELL_EFFECT_APPLY_AURA;
+			spellInfo->EffectApplyAuraName = SPELL_AURA_PERIODIC_HASTE;
+			spellInfo->EffectSpellClassMask[1]=spellInfo->EffectSpellClassMask[1];
         // Bind
         case 3286:
             spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
