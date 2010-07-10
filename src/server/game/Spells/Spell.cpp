@@ -1949,6 +1949,12 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
         {
             if (cur == TARGET_SRC_CASTER)
             {
+				// Mirror Image
+				if(m_spellInfo->Id == 58836)
+					for (std::set<Unit*>::iterator itr = m_caster->m_Controlled.begin() ; itr != m_caster->m_Controlled.end(); ++itr)
+						if((*itr)->GetEntry() == 31216)
+							AddUnitTarget(*itr, i);
+					return;
                 m_targets.setSrc(m_caster);
                 break;
             }
@@ -2549,6 +2555,8 @@ void Spell::SelectEffectTargets(uint32 i, uint32 cur)
             {
                 switch (m_spellInfo->Id)
                 {
+					case 58836: // Mirror Image
+						return;
                     case 27285: // Seed of Corruption proc spell
                         unitList.remove(m_targets.getUnitTarget());
                         break;
