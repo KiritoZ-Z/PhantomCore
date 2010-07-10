@@ -7966,7 +7966,7 @@ void Spell::EffectPlayerNotification(uint32 /*eff_idx*/)
     {
         case 58730: // Restricted Flight Area
 			{
-             if (pvpWG->isWarTime())
+             if (pvpWG && pvpWG->isWarTime() && pvpWG != 0)
 			 {
              unitTarget->ToPlayer()->GetSession()->SendNotification(LANG_ZONE_NOFLYZONE);
              unitTarget->PlayDirectSound(9417); // Fel Reaver sound

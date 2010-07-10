@@ -5701,7 +5701,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const * aurApp, uint8 mode, boo
                         } 
 		      case 58730: // Restricted Flight Area
                         {
-				if (!target || (pvpWG->isWarTime()==false) || ((target->GetAreaId() != 4581) && (target->GetAreaId() != 4539) && (target->GetAreaId() != 4197) && (target->GetAreaId() != 4585) && (target->GetAreaId() != 4612) && (target->GetAreaId() != 4582) && (target->GetAreaId() != 4583) && (target->GetAreaId() != 4589) && (target->GetAreaId() != 4575) && (target->GetAreaId() != 4538) && (target->GetAreaId() != 4577))) break;
+				if (!target || (pvpWG && pvpWG != 0 && pvpWG->isWarTime()==false) || ((target->GetAreaId() != 4581) && (target->GetAreaId() != 4539) && (target->GetAreaId() != 4197) && (target->GetAreaId() != 4585) && (target->GetAreaId() != 4612) && (target->GetAreaId() != 4582) && (target->GetAreaId() != 4583) && (target->GetAreaId() != 4589) && (target->GetAreaId() != 4575) && (target->GetAreaId() != 4538) && (target->GetAreaId() != 4577)) && !sWorld.getConfig(CONFIG_OUTDOORPVP_WINTERGRASP_ENABLED))
+					return;
                       // Remove Flight Auras
 				target->RemoveAurasByType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED);
                                 target->RemoveAurasByType(SPELL_AURA_FLY);
