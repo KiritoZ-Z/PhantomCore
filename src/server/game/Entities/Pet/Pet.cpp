@@ -973,7 +973,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
 
                     break;
                 }
-                case 17252: // Felguard
+                /*case 17252: // Felguard
                 {
                     if (!pInfo)
                     {
@@ -989,7 +989,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                     SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float((petlevel * 4 + petlevel) + bonus_dmg));
 
                     break;
-                }
+                }*/
                 case 19833: //Snake Trap - Venomous Snake
                 {
                     SetCreateHealth(uint32(107 * (petlevel - 40) * 0.025f));
