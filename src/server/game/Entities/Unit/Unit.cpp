@@ -1723,7 +1723,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim, SpellSchoolMask schoolMask, DamageEff
     AuraEffectList const& vSchoolAbsorb = pVictim->GetAuraEffectsByType(SPELL_AURA_SCHOOL_ABSORB);
     for (AuraEffectList::const_iterator i = vSchoolAbsorb.begin(); i != vSchoolAbsorb.end() && RemainingDamage > 0; ++i)
     {
-        if (!((*i)->GetMiscValue() & schoolMask))
+        if (!(*i) || !((*i)->GetMiscValue() & schoolMask))
             continue;
 
         SpellEntry const* spellProto = (*i)->GetSpellProto();
