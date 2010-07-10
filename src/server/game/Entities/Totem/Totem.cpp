@@ -125,7 +125,7 @@ void Totem::InitSummon()
         CastSpell(this, GetSpell(1), true);
 		
 	if (m_owner->HasAuraEffect(58585, 0))
-		CastSpell(this, 55277, true)
+		CastSpell(this, 55277, true);
 }
 
 void Totem::UnSummon()
