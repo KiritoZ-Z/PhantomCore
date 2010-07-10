@@ -759,6 +759,10 @@ void BattleGround::EndBattleGround(uint32 winner)
         // should remove spirit of redemption
         if (plr->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
             plr->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
+			
+		// Size sploit
+		plr->RemoveAurasDueToSpell(71556);
+		plr->RemoveAurasDueToSpell(71560);
 
         if (!plr->isAlive())
         {
