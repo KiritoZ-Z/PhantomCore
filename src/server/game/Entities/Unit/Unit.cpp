@@ -2063,7 +2063,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim, SpellSchoolMask schoolMask, DamageEff
             next = i; ++next;
 
             // check damage school mask
-            if (((*i)->GetMiscValue() & schoolMask) == 0)
+            if (!i || !(*i) || ((*i)->GetMiscValue() & schoolMask)==0)
                 continue;
 
             // Damage can be splitted only if aura has an alive caster
@@ -2095,7 +2095,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim, SpellSchoolMask schoolMask, DamageEff
             next = i; ++next;
 
             // check damage school mask
-            if (((*i)->GetMiscValue() & schoolMask) == 0)
+            if (!i || !(*i) || ((*i)->GetMiscValue() & schoolMask)==0)
                 continue;
 
             // Damage can be splitted only if aura has an alive caster
