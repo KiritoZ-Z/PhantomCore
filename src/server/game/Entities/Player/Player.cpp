@@ -18982,6 +18982,35 @@ void Player::RestoreSpellMods(Spell * spell)
     }
 }
 
+void Player::RemovePrecastSpellMods(Spell * spell)
+{
+	if (!spell)
+		return;
+	for (uint8 i=SPELLMOD_CASTING_TIME; i!=SPELLMOD_COST; i=SPELLMOD_COST)
+	{
+		for (SpellModList::iterator itr = m_spellMods[i].begin(); itr != m_spellMods[i].end();)
+		{
+			SpellModifier *mod = *itr;
+			++itr;
+			
+			// spellmods without aura set cannot be charged
+			if (!mod->ownerAura || !mod->ownerAura->GetCharges())
+				continue;
+				
+			// check if mod affected this spell
+			Spell::UsedSpellMods::iterator iterMod = spell->m_appliedMods.find(mod->ownerAura);
+			if (iterMod == spell->m_appliedMods.end())
+				continue;
+			
+			// remove from list
+			spell->m_appliedMods.erase(iterMod);
+			
+			if (mod->ownerAura->DropCharge())
+				itr = m_spellMods[i].begin();
+		}
+	}
+}
+
 void Player::RemoveSpellMods(Spell * spell)
 {
     if (!spell)
@@ -19019,6 +19048,9 @@ void Player::RemoveSpellMods(Spell * spell)
 
     for (uint8 i=0; i<MAX_SPELLMOD; ++i)
     {
+		// Used in Player::RemovePrecastSpellMods
+		if (i == SPELLMOD_CASTING_TIME || i == SPELLMOD_COST)
+			continue;
         for (SpellModList::iterator itr = m_spellMods[i].begin(); itr != m_spellMods[i].end();)
         {
             SpellModifier *mod = *itr;

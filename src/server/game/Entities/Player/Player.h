@@ -1584,6 +1584,7 @@ class Player : public Unit, public GridObject<Player>
         bool IsAffectedBySpellmod(SpellEntry const *spellInfo, SpellModifier *mod, Spell * spell = NULL);
         template <class T> T ApplySpellMod(uint32 spellId, SpellModOp op, T &basevalue, Spell * spell = NULL);
         void RemoveSpellMods(Spell * spell);
+		void RemovePrecastSpellMods(Spell * spell);
         void RestoreSpellMods(Spell * spell);
         void DropModCharge(SpellModifier * mod, Spell * spell);
         void SetSpellModTakingSpell(Spell* spell, bool apply);

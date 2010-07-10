@@ -3131,6 +3131,9 @@ void Spell::handle_immediate()
 
     // Remove used for cast item if need (it can be already NULL after TakeReagents call
     TakeCastItem();
+	
+	if(Player* modOwner = m_caster->GetSpellModOwner())
+		modOwner->RemovePrecastSpellMods(this);
 
     if (m_spellState != SPELL_STATE_CASTING)
         finish(true);                                       // successfully finish spell cast (not last in case autorepeat or channel spell)
