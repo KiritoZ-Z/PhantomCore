@@ -164,6 +164,7 @@ void BattleGroundDS::Reset()
 
 bool BattleGroundDS::SetupBattleGround()
 {
+	m_uiKnockback=10000;
     // gates
     if (!AddObject(BG_DS_OBJECT_DOOR_1, BG_DS_OBJECT_TYPE_DOOR_1, 1350.95, 817.2, 20.8096, 3.15, 0, 0, 0.99627, 0.0862864, RESPAWN_IMMEDIATELY)
         || !AddObject(BG_DS_OBJECT_DOOR_2, BG_DS_OBJECT_TYPE_DOOR_2, 1232.65, 764.913, 20.0729, 6.3, 0, 0, 0.0310211, -0.999519, RESPAWN_IMMEDIATELY)
