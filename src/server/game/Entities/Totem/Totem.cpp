@@ -123,6 +123,9 @@ void Totem::InitSummon()
     // Some totems can have both instant effect and passive spell
     if (GetSpell(1))
         CastSpell(this, GetSpell(1), true);
+		
+	if (m_owner->HasAuraEffect(58585, 0))
+		CastSpell(this, 55277, true)
 }
 
 void Totem::UnSummon()
