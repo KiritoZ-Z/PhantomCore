@@ -56,6 +56,8 @@ struct boss_halionAI : public ScriptedAI
         uint32 m_uiFlameBreathTimer;
         uint32 m_uiBerserkTimer;
         uint32 m_uiTailLashTimer;
+        uint32 m_uiFlammenAtemTimer;
+        uint32 m_uiBeserkTimer;
 
         bool bIntro;
         bool isMode25;
