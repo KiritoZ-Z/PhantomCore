@@ -1736,6 +1736,21 @@ Battleground.Random.ResetHour = 6
 #	 Start personal rating on entry in team
 #	 Default: 1500
 #
+#    Arena.2v2.Team.ON
+#	 Enable or disable 2v2 AT
+#	 Default: 0 (disable)
+#             1 (enable)
+#
+#    Arena.3v3.Team.ON
+#	 Enable or disable 3v3 AT
+#	 Default: 0 (disable)
+#             1 (enable)
+#
+#    Arena.5v5.Team.ON
+#	 Enable or disable 5v5 AT
+#	 Default: 0 (disable)
+#             1 (enable)
+#
 ###############################################################################
 
 Arena.MaxRatingDifference = 150
@@ -1748,6 +1763,9 @@ Arena.ArenaSeason.ID = 1
 Arena.ArenaSeason.InProgress = 1
 Arena.ArenaStartRating = 0
 Arena.ArenaStartPersonalRating = 0
+Arena.2v2.Team.ON = 1
+Arena.3v3.Team.ON = 1
+Arena.5v5.Team.ON = 1
 
 ###############################################################################
 # NETWORK CONFIG

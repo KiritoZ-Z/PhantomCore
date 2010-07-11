@@ -2017,11 +2017,20 @@ BattleGroundQueueTypeId BattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgType
             switch(arenaType)
             {
                 case ARENA_TYPE_2v2:
+				if (sWorld.getConfig(CONFIG_ARENA_2v2_TEAM_ENABLE) == 1)
                     return BATTLEGROUND_QUEUE_2v2;
+				else
+					return BATTLEGROUND_QUEUE_NONE;
                 case ARENA_TYPE_3v3:
+				if (sWorld.getConfig(CONFIG_ARENA_3v3_TEAM_ENABLE) == 1)
                     return BATTLEGROUND_QUEUE_3v3;
+				else
+					return BATTLEGROUND_QUEUE_NONE;
                 case ARENA_TYPE_5v5:
+				if (sWorld.getConfig(CONFIG_ARENA_5v5_TEAM_ENABLE) == 1)
                     return BATTLEGROUND_QUEUE_5v5;
+				else
+					return BATTLEGROUND_QUEUE_NONE;
                 default:
                     return BATTLEGROUND_QUEUE_NONE;
             }
