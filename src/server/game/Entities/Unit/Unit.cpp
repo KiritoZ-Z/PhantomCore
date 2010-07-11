@@ -7168,6 +7168,22 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 58879;
                     break;
                 }
+				// Glyph of Totem of Wrath
+				case 63280:
+				{
+					if (procSpell->SpellIconID != 2019)
+						return false;
+					// we need the sp of the totem's spell
+					CreatureInfo const * cinfo = GetCreatureInfo(procSpell->EffectMiscValue[0]);
+					if (cinfo && cinfo->spells[0])
+					{
+						SpellEntry const * spell = sSpellStore.LookupEntry(cinfo->spells[0]);
+						basepoints0 = triggerAmount * spell->CalculateSimpleValue(0) / 100;
+						target = GetSpellModOwner();
+						triggered_spell_id = 63283;
+					}
+					break;
+				}
                 // Shaman T8 Elemental 4P Bonus
                 case 64928:
                 {
