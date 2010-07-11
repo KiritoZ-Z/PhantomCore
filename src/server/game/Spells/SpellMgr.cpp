@@ -3664,6 +3664,14 @@ void SpellMgr::LoadSpellCustomAttr()
             spellInfo->EffectRadiusIndex[0] = 37;
             count++;
             break;
+		// Blade barrier ranks 2-5 - Effect 1 (dummy) has invalid target - disable effect (we don't use it)
+		case 49500:
+		case 49501:
+		case 55225:
+		case 55226:
+			spellInfo->Effect[1] = 0;
+			count++;
+			break;
         // Master Shapeshifter: missing stance data for forms other than bear - bear version has correct data
         // To prevent aura staying on target after talent unlearned
         case 48420:
