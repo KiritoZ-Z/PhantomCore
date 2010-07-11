@@ -43,6 +43,9 @@ void EventProcessor::Update(uint32 p_time)
         // get and remove event from queue
         BasicEvent* Event = i->second;
         m_events.erase(i);
+		
+		if (!Event)
+			continue;
 
         if (!Event->to_Abort)
         {
