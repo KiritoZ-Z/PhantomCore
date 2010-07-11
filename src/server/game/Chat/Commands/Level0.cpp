@@ -113,6 +113,7 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
     //PSendSysMessage(LANG_USING_EVENT_AI,sWorld.GetCreatureEventAIVersion());
     PSendSysMessage(LANG_CONNECTED_PLAYERS, PlayersNum, MaxPlayersNum);
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
+	PSendSysMessage("Phantom Core");
     PSendSysMessage(LANG_UPTIME, uptime.c_str());
     PSendSysMessage("Update time diff: %u.", updateTime);
 
