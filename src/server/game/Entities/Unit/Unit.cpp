@@ -7549,8 +7549,8 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 triggered_spell_id = 50526;
                 break;
             }
-			// Item - Death Knight T10 Melee 4P Bonus
-			else if (dummySpell->Id == 70656
+	    // Item - Death Knight T10 Melee 4P Bonus
+			else if (dummySpell->Id == 70656)
 			{
 				if (GetTypeId() != TYPEID_PLAYER)
 					return false;
