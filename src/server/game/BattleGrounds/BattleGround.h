@@ -443,9 +443,10 @@ class BattleGround
 
         /* Map pointers */
         void SetBgMap(BattleGroundMap* map) { m_Map = map; }
-        BattleGroundMap* GetBgMap()
+        BattleGroundMap* GetBgMap(bool WithAssert=true)
         {
-            ASSERT(m_Map);
+			if(WithAssert)
+				ASSERT(m_Map);
             return m_Map;
         }
 
