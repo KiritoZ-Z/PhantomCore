@@ -7549,6 +7549,16 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                 triggered_spell_id = 50526;
                 break;
             }
+			// Item - Death Knight T10 Melee 4P Bonus
+			else if (dummySpell->Id == 70656
+			{
+				if (GetTypeId() != TYPEID_PLAYER)
+					return false;
+					
+				for (uint32 i = 0; i < MAX_RUNES; ++i)
+					if (this->ToPlayer()->GetRuneCooldown(i) == 0)
+						return false;
+			}
             // Sudden Doom
             if (dummySpell->SpellIconID == 1939 && GetTypeId() == TYPEID_PLAYER)
             {
