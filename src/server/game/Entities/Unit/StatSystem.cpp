@@ -970,7 +970,8 @@ bool Guardian::UpdateStats(Stats stat)
                     mod += mod * (sProto->EffectBasePoints[0] / 100.0f);
                 }
             }
-            value += float(owner->GetStat(stat)) * mod;
+            if (!this->ToCreature()->IsOnlyNoneOrAndSummonOrAndMinionOrAndGuardian())
+				value += float(owner->GetStat(stat)) * mod;
         }
     }
                                                             //warlock's and mage's pets gain 30% of owner's intellect
