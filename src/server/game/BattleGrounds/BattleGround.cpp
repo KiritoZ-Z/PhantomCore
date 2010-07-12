@@ -428,6 +428,13 @@ void BattleGround::Update(uint32 diff)
                 for (BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
                     if (Player *plr = objmgr.GetPlayer(itr->first))
                     {
+						//packet stat
+						WorldPacket status;
+						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
+						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
+						BattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
+						plr->GetSession()->SendPacket(&status);
+						 
                         plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
                         // remove auras with duration lower than 30s
                         Unit::AuraApplicationMap & auraMap = plr->GetAppliedAuras();
@@ -1082,7 +1089,7 @@ void BattleGround::AddPlayer(Player *plr)
     WorldPacket status;
     BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
     uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-    sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
+    sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType(), isArena() ? 0 : 1);
     plr->GetSession()->SendPacket(&status);
 
     plr->RemoveAurasByType(SPELL_AURA_MOUNTED);
@@ -1118,6 +1125,10 @@ void BattleGround::AddPlayer(Player *plr)
             plr->SetHealth(plr->GetMaxHealth());
             plr->SetPower(POWER_MANA, plr->GetMaxPower(POWER_MANA));
         }
+		WorldPacket teammate;
+		teammate.Initialize(SMSG_ARENA_OPPONENT_UPDATE, 8);
+		teammate << uint64(plr->GetGUID());
+		SendPacketToTeam(team, &teammate, plr, false);
     }
     else
     {
