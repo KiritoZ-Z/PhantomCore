@@ -42,7 +42,7 @@ EndContentData */
 
 const Position SpawnPosition = {746.261,657.401,411.681,4.65};
 
-struct  npc_announcer_toc5AI : public ScriptedAI
+struct npc_announcer_toc5AI : public ScriptedAI
 {
     npc_announcer_toc5AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
@@ -70,7 +70,7 @@ struct  npc_announcer_toc5AI : public ScriptedAI
         Champion3List.clear();
 
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+        me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
         me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
         SetGrandChampionsForEncounter();
@@ -111,7 +111,7 @@ struct  npc_announcer_toc5AI : public ScriptedAI
             uiPhase = uiPhaseStep;
     }
 
-    void SetData(uint32 uiType, uint32 uiData)
+    void SetData(uint32 uiType, uint32 /*uiData*/)
     {
         switch (uiType)
         {
@@ -143,7 +143,7 @@ struct  npc_announcer_toc5AI : public ScriptedAI
 
                     for (std::list<uint64>::const_iterator itr = TempList.begin(); itr != TempList.end(); ++itr)
                         if (Creature* pSummon = Unit::GetCreature(*me, *itr))
-         AggroAllPlayers(pSummon);
+                            AggroAllPlayers(pSummon);
                 }else if (uiLesserChampions == 9)
                     StartGrandChampionsAttack();
 
@@ -160,8 +160,6 @@ struct  npc_announcer_toc5AI : public ScriptedAI
 
         if (pGrandChampion1 && pGrandChampion2 && pGrandChampion3)
         {
-            //m_creature->SetReactState(REACT_AGGRESSIVE);
-        // THIS IS A HACK, SHOULD BE REMOVED WHEN THE EVENT IS FULL SCRIPTED
             AggroAllPlayers(pGrandChampion1);
             AggroAllPlayers(pGrandChampion2);
             AggroAllPlayers(pGrandChampion3);
@@ -388,7 +386,7 @@ struct  npc_announcer_toc5AI : public ScriptedAI
                 if (pPlayer->isAlive())
                 {
                     pTemp->SetHomePosition(me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetOrientation());
-                    pTemp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+                    pTemp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
                     pTemp->SetReactState(REACT_AGGRESSIVE);
                     pTemp->SetInCombatWith(pPlayer);
                     pPlayer->SetInCombatWith(pTemp);
@@ -435,7 +433,7 @@ struct  npc_announcer_toc5AI : public ScriptedAI
     {
         if (pInstance && pInstance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
         {
-            pSummon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+            pSummon->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
             pSummon->SetReactState(REACT_PASSIVE);
         }
     }
@@ -471,39 +469,26 @@ bool GossipHello_npc_announcer_toc5(Player* pPlayer, Creature* pCreature)
 
     if (pInstance &&
         pInstance->GetData(BOSS_GRAND_CHAMPIONS) == DONE &&
-        pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE &&
-        pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE &&
-    pInstance->GetData(BOSS_BLACK_KNIGHT) == DONE)
+        pInstance->GetData(BOSS_BLACK_KNIGHT) == DONE &&
+        pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE ||
+        pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE)
         return false;
 
-    if (pInstance && pInstance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
-    {
-    if ((pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED) && (pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED))
-     {
-      if ((pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED) && (pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == DONE))
-      {
-      if ((pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == DONE) && (pInstance && pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED))
-     {
-      if (pInstance && pInstance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED)
-      pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-    
-      if (pInstance && pInstance->GetData(BOSS_GRAND_CHAMPIONS) == DONE)
-      pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-     }
-      pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-      }
-      pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-      }
-      pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-      }
-
+    if (pInstance &&
+        pInstance->GetData(BOSS_GRAND_CHAMPIONS) == NOT_STARTED &&
+        pInstance->GetData(BOSS_ARGENT_CHALLENGE_E) == NOT_STARTED &&
+        pInstance->GetData(BOSS_ARGENT_CHALLENGE_P) == NOT_STARTED &&
+        pInstance->GetData(BOSS_BLACK_KNIGHT) == NOT_STARTED)
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+    else if (pInstance)
+        pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_START_EVENT2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 
     return true;
 }
 
-bool GossipSelect_npc_announcer_toc5(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
+bool GossipSelect_npc_announcer_toc5(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
 {
     if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
     {

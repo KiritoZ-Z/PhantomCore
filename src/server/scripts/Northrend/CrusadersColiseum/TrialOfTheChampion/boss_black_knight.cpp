@@ -120,7 +120,7 @@ struct boss_black_knightAI : public ScriptedAI
         uiObliterateTimer = urand(17000,19000);
         uiDesecration = urand(15000,16000);
         uiDeathArmyCheckTimer = 7000;
-        uiResurrectTimer = 8000;
+        uiResurrectTimer = 4000;
         uiGhoulExplodeTimer = 8000;
         uiDeathBiteTimer = urand (2000,4000);
         uiMarkedDeathTimer = urand (5000,7000);
@@ -156,9 +156,9 @@ struct boss_black_knightAI : public ScriptedAI
             if (uiResurrectTimer <= uiDiff)
             {
                 me->SetHealth(me->GetMaxHealth());
-                me->CastSpell(me,SPELL_BLACK_KNIGHT_RES,true);
+                DoCast(me,SPELL_BLACK_KNIGHT_RES,true);
                 uiPhase++;
-                uiResurrectTimer = 8000;
+                uiResurrectTimer = 4000;
                 bEventInProgress = false;
                 me->clearUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
             } else uiResurrectTimer -= uiDiff;
@@ -183,7 +183,6 @@ struct boss_black_knightAI : public ScriptedAI
                     DoCastVictim(SPELL_OBLITERATE);
                     uiObliterateTimer = urand(17000,19000);
                 } else uiObliterateTimer -= uiDiff;
-        
                 switch(uiPhase)
                 {
                     case PHASE_UNDEAD:
@@ -258,12 +257,12 @@ struct boss_black_knightAI : public ScriptedAI
             DoMeleeAttackIfReady();
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+    void DamageTaken(Unit* /*pDoneBy*/, uint32& uiDamage)
     {
         if (uiDamage > me->GetHealth() && uiPhase <= PHASE_SKELETON)
         {
             uiDamage = 0;
-            me->SetHealth(1);
+            me->SetHealth(0);
             me->addUnitState(UNIT_STAT_ROOT | UNIT_STAT_STUNNED);
             RemoveSummons();
             switch(uiPhase)
@@ -279,7 +278,7 @@ struct boss_black_knightAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* /*pKiller*/)
     {
         if (pInstance)
             pInstance->SetData(BOSS_BLACK_KNIGHT,DONE);
@@ -291,7 +290,7 @@ CreatureAI* GetAI_boss_black_knight(Creature *pCreature)
     return new boss_black_knightAI (pCreature);
 }
 
-struct  npc_risen_ghoulAI : public ScriptedAI
+struct npc_risen_ghoulAI : public ScriptedAI
 {
     npc_risen_ghoulAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 
@@ -333,7 +332,7 @@ struct npc_black_knight_skeletal_gryphonAI : public npc_escortAI
         Start(false,true,0,NULL);
     }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 /*i*/)
     {
 
     }
