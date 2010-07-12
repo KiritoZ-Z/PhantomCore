@@ -3486,6 +3486,13 @@ void SpellMgr::LoadSpellCustomAttr()
 			spellInfo->Effect[1] = SPELL_EFFECT_APPLY_AURA;
 			spellInfo->EffectApplyAuraName[1] = SPELL_AURA_PERIODIC_HASTE;
 			spellInfo->EffectSpellClassMask[1]=spellInfo->EffectSpellClassMask[0];
+		// Natural Shapeshifter
+		case 16834:
+		case 16835:
+		{
+			SpellEntry const* spellInf = sSpellStore.LookupEntry(16833);
+			spellInfo->DurationIndex=spellInf->DurationIndex;
+		}
         // Bind
         case 3286:
             spellInfo->EffectImplicitTargetA[0] = TARGET_UNIT_TARGET_ENEMY;
