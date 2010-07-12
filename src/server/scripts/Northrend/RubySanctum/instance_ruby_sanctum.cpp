@@ -63,6 +63,12 @@ struct instance_ruby_sanctum : public ScriptedInstance
                         break;
                 case NPC_HALION:
                         m_uiHalionGUID = pCreature->GetGUID();
+						if(instance->GetDifficulty() != RAID_DIFFICULTY_10MAN_HEROIC || instance->GetDifficulty() != RAID_DIFFICULTY_25MAN_HEROIC)
+						{
+							pCreature->SetReactState(REACT_PASSIVE);
+							pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+							pCreature->SetVisibility(VISIBILITY_OFF);
+						}
                         break;
                 case NPC_XERESTRASZA:
                         m_uiXerestraszaGUID = pCreature->GetGUID();
