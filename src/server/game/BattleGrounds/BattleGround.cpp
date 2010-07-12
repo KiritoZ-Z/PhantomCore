@@ -432,7 +432,7 @@ void BattleGround::Update(uint32 diff)
 						WorldPacket status;
 						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
 						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-						BattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
+						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType());
 						plr->GetSession()->SendPacket(&status);
 						 
                         plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
