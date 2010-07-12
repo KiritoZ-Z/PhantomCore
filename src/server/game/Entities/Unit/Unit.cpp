@@ -6320,6 +6320,19 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                     triggered_spell_id = 28810;
                     break;
                 }
+				// Item - Priest T10 Healer 4P Bonus
+				case 70799:
+				{
+					if (GetTypeId() != TYPEID_PLAYER)
+						return false;
+						
+					// Circle of Healing
+					this->ToPlayer()->RemoveSpellCategoryCooldown(1204, true);
+					// Penance
+					this->ToPlayer()->RemoveSpellCategoryCooldown(1230, true);
+					
+					return true;
+				}
             }
             break;
         }
