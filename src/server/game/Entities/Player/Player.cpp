@@ -20515,6 +20515,14 @@ bool Player::canSeeOrDetect(Unit const* u, bool detect, bool inVisibleList, bool
                 if (!detect || !m_mover->canDetectStealthOf(u, GetDistance(u)))
                     return false;
     }
+	if (GetTypeId() == TYPEID_PLAYER && u->GetTypeId() == TYPEID_PLAYER)
+		if (HasAura(32727) || u->HasAura(32727))
+			if ((HasAura(32724) || HasAura(35774)) && (u->HasAura(32724) || u->HasAura(35774)))
+				return true;
+			else if ((HasAura(32725) || HasAura(35775)) && (u->HasAura(32725) || u->HasAura(35775)))
+				return true;
+			else
+				return false;
 
     // If use this server will be too laggy
     // Now check is target visible with LoS

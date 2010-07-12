@@ -2978,6 +2978,8 @@ DiminishingReturnsType GetDiminishingReturnsGroupType(DiminishingGroup group)
 bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32 newArea) const
 {
 	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+	
+	AreaTableEntry const* pArea = GetAreaEntryByAreaID(player->GetAreaId());
 
     if (gender != GENDER_NONE)                   // not in expected gender
         if (!player || gender != player->getGender())
@@ -3026,6 +3028,9 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
         case 58600: // No fly Zone - Dalaran (Krasus Landing exception)
             if (!player)
                 return false;
+			if (!(pArea && pArea->flags & AREA_FLAG_NO_FLY_ZONE))
+			    return false;
+			if (!player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY) || player->HasAura(44795))
 
             AreaTableEntry const* pArea = GetAreaEntryByAreaID(player->GetAreaId());
             if (!(pArea && pArea->flags & AREA_FLAG_NO_FLY_ZONE))

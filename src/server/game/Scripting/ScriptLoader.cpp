@@ -857,6 +857,15 @@ void AddScripts()
     AddSC_boss_grand_champions();
     AddSC_instance_trial_of_the_champion();
     AddSC_trial_of_the_champion();
+    AddSC_boss_gormok();        //Trial of the Crusader
+    AddSC_the_two_jormungar();
+    AddSC_boss_icehowl();
+    AddSC_boss_anub_arak_crusader();
+    AddSC_npc_toc6_announcer();
+    AddSC_instance_trial_of_the_crusader();
+    AddSC_boss_lord_jaraksus();
+    AddSC_boss_champions();
+    AddSC_boss_twin_fjola();
     AddSC_boss_krik_thir();             //Azjol-Nerub Azjol-Nerub
     AddSC_boss_hadronox();
     AddSC_boss_anub_arak();

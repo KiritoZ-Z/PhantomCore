@@ -2324,9 +2324,23 @@ void AuraEffect::TriggerSpell(Unit * target, Unit * caster) const
                 return;
             // Beacon of Light
             case 53563:
+			{
                 Unit * triggerCaster = (Unit *)(GetBase()->GetOwner());
                 triggerCaster->CastSpell(triggerTarget, triggeredSpellInfo, true, 0, this,triggerCaster->GetGUID());
                 return;
+			}
+			// Earthbind
+			case 6474:
+				// Earthen Power (Rank 1, 2)
+				Unit * totem = (Unit *)(GetBase()->GetOwner());
+				Aura * aura;
+				if (!totem->isTotem())
+					return;
+				if (Unit * owner = totem->GetOwner())
+					if ((aura = owner->GetAura(51523)) || (aura = owner->GetAura(51524)))
+						if (roll_chance_i(aura->GetEffect(0)->GetAmount()))
+							totem->CastSpell(totem, 59566, true, 0, this);
+			break;
         }
     }
 
