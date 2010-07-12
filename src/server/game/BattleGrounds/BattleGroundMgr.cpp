@@ -1248,11 +1248,6 @@ void BattleGroundMgr::Update(uint32 diff)
     }
 }
 
-
- 
- 
- 
- 
 void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGround *bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, uint8 arenatype, uint8 uiframe)
 {
     // we can be in 2 queues in same time...
