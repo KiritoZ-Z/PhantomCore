@@ -4699,6 +4699,11 @@ void Spell::SpellDamageWeaponDmg(uint32 i)
                        totalDamagePercentMod *= float((20 + 100.0f) / 100.0f);
                 }
             }
+			// Heart Strike
+			else if (m_spellInfo->SpellFamilyFlags[0] &  0x1000000)
+			{
+				totalDamagePercentMod *= (float(unitTarget->GetDiseasesByCaster(m_caster->GetGUID())) * 10.0f + 100.0f) / 100.0f;
+			}
             // Death Strike
             else if (m_spellInfo->SpellFamilyFlags[0] & 0x00000010)
             {
