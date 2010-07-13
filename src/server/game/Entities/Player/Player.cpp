@@ -574,6 +574,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
     //Default movement to run mode
     //m_unit_movement_flags = 0;
+	
+	m_AreaID = 0;
 
     m_mover = this;
     m_movedPlayer = this;
