@@ -7331,27 +7331,25 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
                         sLog.outError("Unit::HandleDummyAuraProc: non handled spell id: %u (LO)", procSpell->Id);
                         return false;
                 }
-                // No thread generated mod
-                // TODO: exist special flag in spell attributes for this, need found and use!
-                SpellModifier *mod = new SpellModifier;
-                mod->op = SPELLMOD_THREAT;
-                mod->value = -100;
-                mod->type = SPELLMOD_PCT;
-                mod->spellId = dummySpell->Id;
-                mod->mask[0] = 0x02;
-                mod->mask[2] = 0x00;
-                this->ToPlayer()->AddSpellMod(mod, true);
-
-                // Remove cooldown (Chain Lightning - have Category Recovery time)
+				
+				// Chain Lightning
                 if (procSpell->SpellFamilyFlags[0] & 0x2)
+				{
+					// Chain lightning has [LightOverload_Proc_Chance] / [Max_Number_of_Targets] chance to proc of each individual target hit.
+					// A maxed LO would have a 33% / 3 = 11% chance to proc of each target.
+					// LO chance was already "accounted" at the proc chance roll, now need to divide the chance by [Max_Number_of_Targets]
+					float chance = 100.0f / procSpell->EffectChainTarget[effIndex];
+					if (!roll_chance_f(chance))
+						return false;
+						
+					// Remove cooldown (Chain Lightning - have Category Recovery time)
                     ToPlayer()->RemoveSpellCooldown(spellId);
+				}
 
                 CastSpell(pVictim, spellId, true, castItem, triggeredByAura);
 
-                this->ToPlayer()->AddSpellMod(mod, false);
-
                 if (cooldown && GetTypeId() == TYPEID_PLAYER)
-                    ToPlayer()->AddSpellCooldown(dummySpell->Id,0,time(NULL) + cooldown);
+                    ToPlayer()->AddSpellCooldown(dummySpell->Id, 0, time(NULL) + cooldown);
 
                 return true;
             }
@@ -11017,7 +11015,7 @@ int32 Unit::SpellBaseHealingBonus(SpellSchoolMask schoolMask)
 
     AuraEffectList const& mHealingDone = GetAuraEffectsByType(SPELL_AURA_MOD_HEALING_DONE);
     for (AuraEffectList::const_iterator i = mHealingDone.begin(); i != mHealingDone.end(); ++i)
-        if (((*i)->GetMiscValue() & schoolMask) != 0 || (*i)->GetId() == 55637)
+        if (!(*i)->GetMiscValue() || ((*i)->GetMiscValue() & schoolMask) != 0)
             AdvertisedBenefit += (*i)->GetAmount();
 
     // Healing bonus of spirit, intellect and strength
@@ -13453,7 +13451,8 @@ void Unit::DeleteCharmInfo()
 }
 
 CharmInfo::CharmInfo(Unit* unit)
-: m_unit(unit), m_CommandState(COMMAND_FOLLOW), m_petnumber(0), m_barInit(false)
+: m_unit(unit), m_CommandState(COMMAND_FOLLOW), m_petnumber(0), m_barInit(false),
+  m_isCommandAttack(false), m_isAtStay(false), m_isFollowing(false), m_isReturning(false)
 {
     for (uint8 i = 0; i < MAX_SPELL_CHARM; ++i)
         m_charmspells[i].SetActionAndType(0,ACT_DISABLED);

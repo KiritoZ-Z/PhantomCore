@@ -56,8 +56,6 @@ struct boss_halionAI : public ScriptedAI
         uint32 m_uiFlameBreathTimer;
         uint32 m_uiBerserkTimer;
         uint32 m_uiTailLashTimer;
-        uint32 m_uiFlammenAtemTimer;
-        uint32 m_uiBeserkTimer;
 
         bool bIntro;
         bool isMode25;
@@ -150,7 +148,7 @@ struct boss_halionAI : public ScriptedAI
                         
                 }
         else
-                m_uiFlammenAtemTimer -= diff;
+                m_uiFlameBreathTimer -= diff;
                 
         // Tail Lash
         if (m_uiTailLashTimer <= diff)
@@ -166,7 +164,7 @@ struct boss_halionAI : public ScriptedAI
                 {
                         DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_BERSERK/*_25 - not yet implemented*/ : SPELL_BERSERK);
                         DoScriptText(SAY_BERSERK, me);
-                        m_uiBeserkTimer = urand(6000000,6000000);
+                        m_uiBerserkTimer = urand(6000000,6000000);
                         
                 }
         else
