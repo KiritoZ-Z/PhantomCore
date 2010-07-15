@@ -1,0 +1,35 @@
+***************
+*** 43,49 ****
+  {
+      SOCIAL_FLAG_FRIEND      = 0x01,
+      SOCIAL_FLAG_IGNORED     = 0x02,
+-     SOCIAL_FLAG_MUTED       = 0x04                          // guessed
+  };
+  
+  struct FriendInfo
+--- 43,50 ----
+  {
+      SOCIAL_FLAG_FRIEND      = 0x01,
+      SOCIAL_FLAG_IGNORED     = 0x02,
++     SOCIAL_FLAG_MUTED       = 0x04,                          // guessed
++     SOCAIL_FLAG_RAF         = 0x08                           // Recruit A Friend
+  };
+  
+  struct FriendInfo
+***************
+*** 112,118 ****
+  };
+  
+  #define SOCIALMGR_FRIEND_LIMIT  50
+- #define SOCIALMGR_IGNORE_LIMIT  25
+  
+  class PlayerSocial
+  {
+--- 113,119 ----
+  };
+  
+  #define SOCIALMGR_FRIEND_LIMIT  50
++ #define SOCIALMGR_IGNORE_LIMIT  50
+  
+  class PlayerSocial
+  {

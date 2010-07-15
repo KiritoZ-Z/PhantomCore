@@ -1,0 +1,21 @@
+# HG changeset patch
+# User click
+# Date 1278550990 -7200
+# Branch trunk
+# Node ID 6c04321235d3a2959e0e0e4e5ee80833720fb3a8
+# Parent  cb780b69adb2f2c2f0b7a7cf9c8a686a550ad2b3
+Do proper sanitytesting for waypoint scriptloading - thanks to Azazel for the heads up
+Closes issues #2888
+
+diff -r cb780b69adb2 -r 6c04321235d3 src/server/game/Globals/ObjectMgr.cpp
+--- a/src/server/game/Globals/ObjectMgr.cpp	Wed Jul 07 22:30:38 2010 +0200
++++ b/src/server/game/Globals/ObjectMgr.cpp	Thu Jul 08 03:03:10 2010 +0200
+@@ -4868,7 +4868,7 @@
+ 
+     for (ScriptMapMap::const_iterator itr = sWaypointScripts.begin(); itr != sWaypointScripts.end(); ++itr)
+     {
+-        QueryResult_AutoPtr query = WorldDatabase.PQuery("SELECT * FROM waypoint_scripts WHERE id = %u", itr->first);
++        QueryResult_AutoPtr query = WorldDatabase.PQuery("SELECT * FROM waypoint_data WHERE action = %u", itr->first);
+         if (!query || !query->GetRowCount())
+             sLog.outErrorDb("There is no waypoint which links to the waypoint script %u", itr->first);
+     }

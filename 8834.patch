@@ -1,0 +1,91 @@
+# HG changeset patch
+# User click
+# Date 1278384571 -7200
+# Branch trunk
+# Node ID 23e1978a6dbbde5c393a578058026679b701813f
+# Parent  28501e6d3c17d9af02a65cc587459d7b14431a5c
+Kill another memleak - delete auction element after auction has been ended and removed (fix by ge0rg)
+
+diff -r 28501e6d3c17 -r 23e1978a6dbb src/server/game/AuctionHouse/AuctionHouseMgr.cpp
+--- a/src/server/game/AuctionHouse/AuctionHouseMgr.cpp	Tue Jul 06 03:27:41 2010 +0200
++++ b/src/server/game/AuctionHouse/AuctionHouseMgr.cpp	Tue Jul 06 04:49:31 2010 +0200
+@@ -1,19 +1,19 @@
+ /*
++ * Copyright (C) 2008-2010 TrinityCore <http://www.trinitycore.org/>
+  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+  *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
+  *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
++ * more details.
+  *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ * You should have received a copy of the GNU General Public License along
++ * with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #include "Common.h"
+@@ -481,7 +481,11 @@
+     bool AuctionHouseObject::RemoveAuction(AuctionEntry *auction, uint32 item_template)
+     {
+         auctionbot.DecrementItemCounts(auction, item_template);
+-        return AuctionsMap.erase(auction->Id) ? true : false;
++        bool wasInMap = AuctionsMap.erase(auction->Id) ? true : false;
++
++	// we need to delete the entry, it is not referenced any more
++	delete auction;
++	return wasInMap;
+     }
+ 
+ void AuctionHouseObject::Update()
+diff -r 28501e6d3c17 -r 23e1978a6dbb src/server/game/AuctionHouse/AuctionHouseMgr.h
+--- a/src/server/game/AuctionHouse/AuctionHouseMgr.h	Tue Jul 06 03:27:41 2010 +0200
++++ b/src/server/game/AuctionHouse/AuctionHouseMgr.h	Tue Jul 06 04:49:31 2010 +0200
+@@ -1,21 +1,19 @@
+ /*
++ * Copyright (C) 2008-2010 TrinityCore <http://www.trinitycore.org/>
+  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+  *
+- * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the
++ * Free Software Foundation; either version 2 of the License, or (at your
++ * option) any later version.
+  *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
++ * more details.
+  *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ * You should have received a copy of the GNU General Public License along
++ * with this program. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #ifndef _AUCTION_HOUSE_MGR_H

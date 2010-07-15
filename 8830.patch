@@ -1,0 +1,22 @@
+# HG changeset patch
+# User click
+# Date 1278267442 -7200
+# Branch trunk
+# Node ID 3d94318355eb680f44e234060ea8532f05482fa2
+# Parent  5a370c6f76084f96dff470cd3a1ebe48d51ac9e0
+Fix: make sure healing potions doesn't benefit from spellhealing-power - patch by maxdestroyer
+
+diff -r 5a370c6f7608 -r 3d94318355eb src/server/game/Entities/Unit/Unit.cpp
+--- a/src/server/game/Entities/Unit/Unit.cpp	Sun Jul 04 19:28:40 2010 +0200
++++ b/src/server/game/Entities/Unit/Unit.cpp	Sun Jul 04 20:17:22 2010 +0200
+@@ -10692,6 +10692,10 @@
+         if (Unit* owner = GetOwner())
+             return owner->SpellHealingBonus(pVictim, spellProto, healamount, damagetype, stack);
+ 
++    // no bonus for heal potions/bandages
++    if (spellProto->SpellFamilyName == SPELLFAMILY_POTION /*|| spellProto->Mechanic == MECHANIC_BANDAGE*/ )
++        return healamount;
++
+     // Healing Done
+     // Taken/Done total percent damage auras
+     float  DoneTotalMod = 1.0f;

@@ -1347,7 +1347,11 @@ enum Opcodes
 	SMSG_UNKNOWN_1308                               = 0x51C, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST, CGCommentator::QueueNode
 	SMSG_UNKNOWN_1309                               = 0x51D, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST
 	SMSG_UNKNOWN_1310                               = 0x51E, // some compressed packet?
-	NUM_MSG_TYPES                                   = 0x51F
+    CMSG_COMMENTATOR_SKIRMISH_QUEUE_COMMAND         = 0x51B, // lua: CommentatorSetSkirmishMatchmakingMode/CommentatorRequestSkirmishQueueData/CommentatorRequestSkirmishMode/CommentatorStartSkirmishMatch
+    SMSG_UNKNOWN_1308                               = 0x51C, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST, CGCommentator::QueueNode
+    SMSG_UNKNOWN_1309                               = 0x51D, // event EVENT_COMMENTATOR_SKIRMISH_QUEUE_REQUEST
+    SMSG_UNKNOWN_1310                               = 0x51E, // some compressed packet?
+    NUM_MSG_TYPES                                   = 0x51F
 };
 
 /// Player state

@@ -1,0 +1,43 @@
+# HG changeset patch
+# User click
+# Date 1278271880 -7200
+# Branch trunk
+# Node ID b9ce4368bb12290cca9264b1665c50ff0c149f4c
+# Parent  4a465394b47fe21db7eb9c952d7fe576aed233aa
+Remove doublecalculation of crit res (fix by dr.tenma)
+Fixes issue 2031
+
+diff -r 4a465394b47f -r b9ce4368bb12 src/server/game/Spells/Auras/SpellAuraEffects.cpp
+--- a/src/server/game/Spells/Auras/SpellAuraEffects.cpp	Sun Jul 04 20:57:44 2010 +0200
++++ b/src/server/game/Spells/Auras/SpellAuraEffects.cpp	Sun Jul 04 21:31:20 2010 +0200
+@@ -1311,10 +1311,7 @@
+ 
+             bool crit = IsPeriodicTickCrit(target, caster);
+             if (crit)
+-            {
+                 damage = caster->SpellCriticalDamageBonus(m_spellProto, damage, target);
+-                damage -= target->GetSpellCritDamageReduction(damage);
+-            }
+ 
+             // Reduce damage from resilience for players and pets only.
+             // As of patch 3.3 pets inherit 100% of master resilience.
+@@ -1323,7 +1320,7 @@
+                 {
+                     if (crit)
+                         damage -= modOwner->GetSpellCritDamageReduction(damage);
+-                    damage -= modOwner->GetSpellDamageReduction(damage);
++                        damage -= modOwner->GetSpellDamageReduction(damage);
+                 }
+ 
+             caster->CalcAbsorbResist(target, GetSpellSchoolMask(GetSpellProto()), DOT, damage, &absorb, &resist, m_spellProto);
+@@ -1382,10 +1379,7 @@
+ 
+             bool crit = IsPeriodicTickCrit(target, caster);
+             if (crit)
+-            {
+                 damage = caster->SpellCriticalDamageBonus(m_spellProto, damage, target);
+-                damage -= target->GetSpellCritDamageReduction(damage);
+-            }
+ 
+             //Calculate armor mitigation if it is a physical spell
+             if (GetSpellSchoolMask(GetSpellProto()) & SPELL_SCHOOL_MASK_NORMAL)

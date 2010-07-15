@@ -1,0 +1,21 @@
+# HG changeset patch
+# User Shauren
+# Date 1278488538 -7200
+# Branch trunk
+# Node ID 9b469d0faddd59dc7ede51da158415be7bf30cab
+# Parent  7ea75f120de89373da3d68e1ad1979b39065c831
+Revert revision 4b8a7a570412 until properly fixed, caused auras to get stuck at client sometimes
+
+diff -r 7ea75f120de8 -r 9b469d0faddd src/server/game/Spells/Auras/SpellAuras.cpp
+--- a/src/server/game/Spells/Auras/SpellAuras.cpp	Tue Jul 06 13:46:39 2010 +0200
++++ b/src/server/game/Spells/Auras/SpellAuras.cpp	Wed Jul 07 09:42:18 2010 +0200
+@@ -171,9 +171,6 @@
+ {
+     m_needClientUpdate = false;
+ 
+-    if (remove && GetRemoveMode() == AURA_REMOVE_BY_STACK)
+-        return;
+-
+     WorldPacket data(SMSG_AURA_UPDATE);
+     data.append(GetTarget()->GetPackGUID());
+     data << uint8(m_slot);

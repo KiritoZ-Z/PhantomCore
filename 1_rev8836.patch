@@ -1,0 +1,26 @@
+# HG changeset patch
+# User teacher
+# Date 1278416799 -7200
+# Branch trunk
+# Node ID 7ea75f120de89373da3d68e1ad1979b39065c831
+# Parent  4b8a7a570412a58445d7cff011251778281d8ce5
+Fix to make the Argent Defender trigger the visuals (by amki).
+
+diff -r 4b8a7a570412 -r 7ea75f120de8 sql/base/world_database.sql
+--- a/sql/base/world_database.sql	Tue Jul 06 13:22:24 2010 +0200
++++ b/sql/base/world_database.sql	Tue Jul 06 13:46:39 2010 +0200
+@@ -6104,6 +6104,7 @@
+ ( 19263, 67801, 2, 'Deterrence'),
+ ( 45524, 55095, 0, 'Chains of Ice - Frost Fever'),
+ ( 20066,-61840, 0, 'Repentance'),
++( 66235, 66233, 0, 'Ardent Defender Visuals'),
+ -- Quest
+ ( 40214, 40216, 2, 'Dragonmaw Illusion'),
+ ( 40214, 42016, 2, 'Dragonmaw Illusion'),
+diff -r 4b8a7a570412 -r 7ea75f120de8 sql/updates/8836_world_spell_linked_spell.sql
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/sql/updates/8836_world_spell_linked_spell.sql	Tue Jul 06 13:46:39 2010 +0200
+@@ -0,0 +1,3 @@
++-- Make the Ardent Defender heal (66235) trigger the visuals (66233)
++DELETE FROM `spell_linked_spell` WHERE `spell_trigger`=66235;
++INSERT INTO `spell_linked_spell` (`spell_trigger`,`spell_effect`,`type`,`comment`) VALUES (66235,66233,0, 'Ardent Defender Visuals');

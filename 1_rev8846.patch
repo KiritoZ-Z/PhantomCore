@@ -1,0 +1,32 @@
+# HG changeset patch
+# User Brian <runningnak3d@gmail.com>
+# Date 1277925104 21600
+# Branch trunk
+# Node ID d8bc896b17cf63c4275955609e4b6bb7678b10ee
+# Parent  a236b377aa81101e68a82be1cc11d1b9764e5cf1
+* Update for 3.3.5a
+
+diff -r a236b377aa81 -r d8bc896b17cf src/server/authserver/Authentication/AuthCodes.h
+--- a/src/server/authserver/Authentication/AuthCodes.h	Wed Jun 30 13:05:23 2010 -0600
++++ b/src/server/authserver/Authentication/AuthCodes.h	Wed Jun 30 13:11:44 2010 -0600
+@@ -80,7 +80,7 @@
+ //3.3.2 build 11403
+ //3.3.3a build 11723
+ 
+-#define POST_BC_ACCEPTED_CLIENT_BUILD                 {12213, 11723, 11403, 11159, 10571, 10505, 10146, 9947, 8606, 0}
++#define POST_BC_ACCEPTED_CLIENT_BUILD                 {12340, 11723, 11403, 11159, 10571, 10505, 10146, 9947, 8606, 0}
+ #define PRE_BC_ACCEPTED_CLIENT_BUILD                  {5875, 6005, 0}
+ 
+ #define POST_BC_EXP_FLAG                              0x2
+diff -r a236b377aa81 -r d8bc896b17cf src/server/game/Entities/Object/Updates/UpdateFields.h
+--- a/src/server/game/Entities/Object/Updates/UpdateFields.h	Wed Jun 30 13:05:23 2010 -0600
++++ b/src/server/game/Entities/Object/Updates/UpdateFields.h	Wed Jun 30 13:11:44 2010 -0600
+@@ -21,7 +21,7 @@
+ #ifndef _UPDATEFIELDS_AUTO_H
+ #define _UPDATEFIELDS_AUTO_H
+ 
+-// Auto generated for version 3, 3, 3, 12213
++// Auto generated for version 3, 3, 3, 12340
+ 
+ enum EObjectFields
+ {

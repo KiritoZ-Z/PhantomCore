@@ -1,0 +1,21 @@
+# HG changeset patch
+# User Shauren
+# Date 1278415344 -7200
+# Branch trunk
+# Node ID 4b8a7a570412a58445d7cff011251778281d8ce5
+# Parent  23e1978a6dbbde5c393a578058026679b701813f
+Fixed sending aura remove packet at stack modification
+
+diff -r 23e1978a6dbb -r 4b8a7a570412 src/server/game/Spells/Auras/SpellAuras.cpp
+--- a/src/server/game/Spells/Auras/SpellAuras.cpp	Tue Jul 06 04:49:31 2010 +0200
++++ b/src/server/game/Spells/Auras/SpellAuras.cpp	Tue Jul 06 13:22:24 2010 +0200
+@@ -171,6 +171,9 @@
+ {
+     m_needClientUpdate = false;
+ 
++    if (remove && GetRemoveMode() == AURA_REMOVE_BY_STACK)
++        return;
++
+     WorldPacket data(SMSG_AURA_UPDATE);
+     data.append(GetTarget()->GetPackGUID());
+     data << uint8(m_slot);
