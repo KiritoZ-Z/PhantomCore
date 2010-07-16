@@ -1,19 +1,19 @@
-/* Copyright (C) 2008 - 2010 Trinity <http://www.trinitycore.org/>
- * Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>>
-* Copyright (C) 2006 - 20010 TrinityCore <http://www.trinitycore.org/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+/*
+ * Copyright (C) 2008-2010 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* ScriptData
@@ -944,28 +944,6 @@ bool GOSelect_go_amberpine_outhouse(Player *pPlayer, GameObject *pGO, uint32 /*u
 }
 
 /*######
-## Quest 9544: The Prophecy of Akida
-######*/
-
-enum eProphecy
-{
-    QUEST_PROPHECY_OF_AKIDA                       = 9544,
-    NPC_STILLPINE_CAPTIVE                         = 17375
-};
-
-bool GOHello_go_stillpine_cage(Player *pPlayer, GameObject *pGO)
-{
-    if (pPlayer->GetQuestStatus(QUEST_PROPHECY_OF_AKIDA) == QUEST_STATUS_INCOMPLETE)
-        if (Creature *pPrisoner = pGO->FindNearestCreature(NPC_STILLPINE_CAPTIVE,1.0f))
-        {
-            pGO->UseDoorOrButton();
-            pPrisoner->DisappearAndDie();
-            pPlayer->KilledMonsterCredit(pPrisoner->GetEntry(),0);
-        }
-    return true;
-}
-
-/*######
 ## Quest 1126: Hive in the Tower
 ######*/
 
@@ -1158,11 +1136,6 @@ void AddSC_go_scripts()
     newscript = new Script;
     newscript->Name = "go_black_cage";
     newscript->pGOHello =           &GOHello_go_black_cage;
-    newscript->RegisterSelf();
-
-    newscript = new Script;
-    newscript->Name = "go_stillpine_cage";
-    newscript->pGOHello =           &GOHello_go_stillpine_cage;
     newscript->RegisterSelf();
 
     newscript = new Script;
