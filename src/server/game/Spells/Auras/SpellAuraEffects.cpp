@@ -2594,7 +2594,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                     // Master Shapeshifter - Cat
                     if (AuraEffect const * aurEff = target->GetDummyAuraEffect(SPELLFAMILY_GENERIC, 2851, 0))
                     {
-                        int32 bp = aurEff->GetAmount();
+                        int32 bp = aurEff->GetAmount()+1;
                         target->CastCustomSpell(target, 48420, &bp, NULL, NULL, true);
                     }
                 break;
@@ -2603,7 +2603,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                     // Master Shapeshifter - Bear
                     if (AuraEffect const * aurEff = target->GetDummyAuraEffect(SPELLFAMILY_GENERIC, 2851, 0))
                     {
-                        int32 bp = aurEff->GetAmount();
+                        int32 bp = aurEff->GetAmount()+1;
                         target->CastCustomSpell(target, 48418, &bp, NULL, NULL, true);
                     }
                     // Survival of the Fittest
@@ -2617,7 +2617,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                     // Master Shapeshifter - Moonkin
                     if (AuraEffect const * aurEff = target->GetDummyAuraEffect(SPELLFAMILY_GENERIC, 2851, 0))
                     {
-                        int32 bp = aurEff->GetAmount();
+                        int32 bp = aurEff->GetAmount()+1;
                         target->CastCustomSpell(target, 48421, &bp, NULL, NULL, true);
                     }
                 break;
@@ -2625,7 +2625,7 @@ void AuraEffect::HandleShapeshiftBoosts(Unit * target, bool apply) const
                 case FORM_TREE:
                     if (AuraEffect const * aurEff = target->GetDummyAuraEffect(SPELLFAMILY_GENERIC, 2851, 0))
                     {
-                        int32 bp = aurEff->GetAmount();
+                        int32 bp = aurEff->GetAmount()+1;
                         target->CastCustomSpell(target, 48422, &bp, NULL, NULL, true);
                     }
                 break;

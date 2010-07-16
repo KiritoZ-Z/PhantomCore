@@ -113,7 +113,6 @@ bool Map::ExistVMap(uint32 mapid,int gx,int gy)
     {
         if (vmgr->isMapLoadingEnabled())
         {
-                                                            // x and y are swapped !! => fixed now
             bool exists = vmgr->existsMap((sWorld.GetDataPath()+ "vmaps").c_str(),  mapid, gx,gy);
             if (!exists)
             {
@@ -2369,7 +2368,7 @@ bool InstanceMap::CanEnter(Player *player)
     if (player->GetMapRef().getTarget() == this)
     {
         sLog.outError("InstanceMap::CanEnter - player %s(%u) already in map %d,%d,%d!", player->GetName(), player->GetGUIDLow(), GetId(), GetInstanceId(), GetSpawnMode());
-        //assert(false);
+        assert(false);
         return false;
     }
 
