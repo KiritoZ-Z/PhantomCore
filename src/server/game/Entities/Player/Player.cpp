@@ -577,6 +577,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 	
 	m_AreaID = 0;
 
+    m_AreaID = 0;
+
     m_mover = this;
     m_movedPlayer = this;
     m_seer = this;

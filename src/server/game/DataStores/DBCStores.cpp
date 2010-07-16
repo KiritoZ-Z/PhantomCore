@@ -595,7 +595,7 @@ void LoadDBCStores(const std::string& dataPath)
     if (!sAreaStore.LookupEntry(3617)              ||       // last area (areaflag) added in 3.3.5a
         !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last added spell in 3.3.5a
-		!sItemStore.LookupEntry(56806)             ||       // last gem property added in 3.3.5a
+        !sItemStore.LookupEntry(56806)             ||       // last gem property added in 3.3.5a
         !sItemExtendedCostStore.LookupEntry(2997)  ||       // last item extended cost added in 3.3.5a
         !sMapStore.LookupEntry(724)                ||       // last map added in 3.3.5a
         !sSpellStore.LookupEntry(80864)            )        // last client known item added in 3.3.5a
