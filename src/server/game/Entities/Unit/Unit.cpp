@@ -7184,7 +7184,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, AuraEffect* trigger
 					if (cinfo && cinfo->spells[0])
 					{
 						SpellEntry const * spell = sSpellStore.LookupEntry(cinfo->spells[0]);
-						basepoints0 = triggerAmount * SpellMgr::CalculateSpellEffectAmount(63926,0) / 100;
+						basepoints0 = triggerAmount * SpellMgr::CalculateSpellEffectAmount(spell,0) / 100;
 						target = GetSpellModOwner();
 						triggered_spell_id = 63283;
 					}
