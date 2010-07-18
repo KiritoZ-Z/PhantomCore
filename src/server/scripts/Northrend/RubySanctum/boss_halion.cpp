@@ -45,9 +45,10 @@ struct boss_halionAI : public ScriptedAI
 {
 	boss_halionAI(Creature *pCreature) : ScriptedAI(pCreature)
 	{
-		/*m_*/pInstance = me->GetInstanceData();
+		pInstance = me->GetInstanceData();
 	}
-	InstanceData* /*m_*/pInstance;
+
+	InstanceData* pInstance;
 
 	uint32 m_uiFieryCombustionTimer;
 	uint32 m_uiMeteorStrikeTimer;
@@ -65,124 +66,124 @@ struct boss_halionAI : public ScriptedAI
 		m_uiFlameBreathTimer = 15000;
 		m_uiBerserkTimer = 6000000;
 		m_uiTailLashTimer = 10000;
-		if(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
-			isMode25 = false;
+
+		if (pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+				isMode25 = false;
 		else
-			isMode25 = true;
-			/*//bIntro = false;
-		if (m_pInstance)
-			m_pInstance->SetData(DATA_HALION_EVENT, NOT_STARTED);
-			GameObject *pGOTemp =  GetClosestGameObjectWithEntry(me, 7999000, 100.0f);
+				isMode25 = true;
+
+		bIntro = false;
+        
+		if (pInstance)
+			pInstance->SetData(DATA_HALION_EVENT, NOT_STARTED);
+
+		GameObject *pGOTemp = GetClosestGameObjectWithEntry(me, 7999000, 100.0f);
 		if(pGOTemp)
-			pGOTemp->RemoveFromWorld();*/
-			bIntro = false;
+			pGOTemp->RemoveFromWorld();
 	}
+
 	void EnterCombat(Unit*)
 	{
-		pInstance->SetData(DATA_HALION_EVENT, IN_PROGRESS);
-		// -- Gameobject Wall (guid: 7999000) spawn on aggro, despawn on death of halion -- //
-		// -- First possibility -- "Finding" the GO and changing the "SpawnTimeSec" to a positive value to making the GO visible -- //
-		/*GameObject *pWall = _unit->GetMapMgr()->GetInterface()->GetObjectNearestCoords<GameObject, TYPEID_GAMEOBJECT> (7999000, 3154.56, 535.418, 72.889);
-			if(pWall == 0)
-				return;
-			pWall->SetUInt32Value(GAMEOBJECT_SPAWNTIMESEC, 300);
-		ScriptedInstance* m_pInstance;*/
-		// -- Second possibility -- Spawn the GO on Aggro and making it despawn on dead somehow -- //
-		/*pPlayer->SummonGameObject(7999000, 3154.56, 535.418, 72.8889, 4.47206, 0, 0, 0.786772, -0.617243, 300); */
+		me->SummonGameObject(7999000, 3154.56, 535.418, 72.8889, 4.47206, 0, 0, 0.786772, -0.617243, 0);
 
-	/*void EnterCombat(Unit*)
-        {
-                me->SummonGameObject(7999000, 3154.56, 535.418, 72.8889, 4.47206, 0, 0, 0.786772, -0.617243, 0);                
-                if (m_pInstance)
-                m_pInstance->SetData(DATA_HALION_EVENT, IN_PROGRESS); */  
-		DoScriptText(SAY_AGGRO, me);
+		if (pInstance)
+		{
+			pInstance->SetData(DATA_HALION_EVENT, IN_PROGRESS);
+			DoScriptText(SAY_AGGRO, me);
+		}
 	}
+
 	void UpdateAI(const uint32 diff)
 	{
-		if(!bIntro)
-		if((/*m_*/pInstance->GetData(DATA_BALTHARUS_EVENT) == DONE && /*m_*/pInstance->GetData(DATA_ZARITHRIAN_EVENT) == DONE && /*m_*/pInstance->GetData(DATA_RAGEFIRE_EVENT) == DONE) || (pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC))
+		if (!bIntro)
 		{
-			DoScriptText(SAY_SPAWN, me);
-			bIntro = true;
+			if((pInstance->GetData(DATA_BALTHARUS_EVENT) == DONE && pInstance->GetData(DATA_ZARITHRIAN_EVENT) == DONE && pInstance->GetData(DATA_RAGEFIRE_EVENT) == DONE) || (pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC))
+			{
+				DoScriptText(SAY_SPAWN, me);
+				bIntro = true;
+			}
+
+			if(!UpdateVictim())
+					return;
+
+			// Fiery Combustion     
+			if (m_uiFieryCombustionTimer <= diff)
+			{
+				DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_FIERYCOMBUSTION : SPELL_FIERYCOMBUSTION); //Same spell in 25 & 10
+				m_uiFieryCombustionTimer = urand(15000,15000);
+			} 
+			else 
+				m_uiFieryCombustionTimer -= diff;
+
+			// Meteor Strike
+			if (m_uiMeteorStrikeTimer <= diff)
+			{
+				DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_METEORSTRIKE/*_25 - not yet implemented*/ : SPELL_METEORSTRIKE);
+				DoScriptText(SAY_SPECIAL1, me);
+				m_uiMeteorStrikeTimer = urand(30000,30000);
+			}
+			else
+				m_uiMeteorStrikeTimer -= diff;
+
+			// Flame Breath
+			if (m_uiFlameBreathTimer <= diff)
+			{
+				DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_FLAMEBREATH_25 : SPELL_FLAMEBREATH);
+				DoScriptText(SAY_SLAY2, me);
+				m_uiFlameBreathTimer = urand(10000,15000);
+			}
+			else
+				m_uiFlameBreathTimer -= diff;
+
+			// Tail Lash
+			if (m_uiTailLashTimer <= diff)
+			{
+				DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_TAILLASH/*_25 - not yet implemented, dont know if it even exists*/ : SPELL_TAILLASH);
+				m_uiTailLashTimer = urand(10000,15000);
+			}
+			else
+				m_uiTailLashTimer -= diff;
+
+			// Enraged
+			if (m_uiBerserkTimer <= diff)
+			{
+				DoCast(pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_BERSERK/*_25 - not yet implemented*/ : SPELL_BERSERK);
+				DoScriptText(SAY_BERSERK, me);
+				m_uiBerserkTimer = urand(6000000,6000000);
+			}
+			else
+				m_uiBerserkTimer -= diff;
 		}
-		if(!UpdateVictim())
-			return;
-		// Fiery Combustion     
-		if (m_uiFieryCombustionTimer <= diff)
-        {
-			DoCast(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_FIERYCOMBUSTION/*_25*/ : SPELL_FIERYCOMBUSTION); //Same spell in 25 & 10
-			m_uiFieryCombustionTimer = urand(15000,15000);
-		} 
-        else 
-			m_uiFieryCombustionTimer -= diff;
-		// Meteor Strike
-        if (m_uiMeteorStrikeTimer <= diff)
-		{
-			DoCast(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_METEORSTRIKE/*_25*/ : SPELL_METEORSTRIKE);
-			DoScriptText(SAY_SPECIAL1, me);
-			m_uiMeteorStrikeTimer = urand(30000,30000);
-		}
-        else
-			m_uiMeteorStrikeTimer -= diff;
-		// Flame Breath
-        if (m_uiFlameBreathTimer <= diff)
-		{
-			DoCast(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_FLAMEBREATH_25 : SPELL_FLAMEBREATH);
-			DoScriptText(SAY_SLAY2, me);
-			m_uiFlameBreathTimer = urand(10000,15000);
-		}
-        else
-			m_uiFlameBreathTimer -= diff;
-		// Tail Lash
-        if (m_uiTailLashTimer <= diff)
-		{
-			DoCast(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_TAILLASH : SPELL_TAILLASH);
-			m_uiTailLashTimer = urand(10000,15000);
-		}
-        else
-			m_uiTailLashTimer -= diff;
-		// Enraged
-        if (m_uiBerserkTimer <= diff)
-		{
-			DoCast(/*m_*/pInstance->instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_NORMAL ? SPELL_BERSERK/*_25 - not yet implemented*/ :SPELL_BERSERK);
-			DoScriptText(SAY_BERSERK, me);
-			m_uiBerserkTimer = urand(6000000,6000000);
-		}
-        else
-			m_uiBerserkTimer -= diff;
 			DoMeleeAttackIfReady();
 	}
-	/*void JustReachedHome()
-        {
-        
-        
-                if(m_pInstance)
-                m_pInstance->SetData(DATA_DEATHWHISPER_EVENT, FAIL); 
 
-                GameObject *pGOTemp =  GetClosestGameObjectWithEntry(me, 7999000, 100.0f);
-                if(pGOTemp)
-                pGOTemp->RemoveFromWorld();
+	void JustReachedHome()
+	{
+		if(pInstance)  
+			pInstance->SetData(DATA_HALION_EVENT, FAIL);
 
-        }*/
+		GameObject *pGOTemp = GetClosestGameObjectWithEntry(me, 7999000, 100.0f);  
+		if(pGOTemp)
+			pGOTemp->RemoveFromWorld();
+	}
+
 	void JustDied(Unit*)
 	{
-		pInstance->SetData(DATA_HALION_EVENT, DONE);
-                /*GameObject *pGOTemp =  GetClosestGameObjectWithEntry(me, 7999000, 100.0f);
-                        if(pGOTemp)
-                pGOTemp->RemoveFromWorld();
+		GameObject *pGOTemp = GetClosestGameObjectWithEntry(me, 7999000, 100.0f);
 
+		if(pGOTemp)
+			pGOTemp->RemoveFromWorld();
 
-                if (m_pInstance)
-                m_pInstance->SetData(DATA_HALION_EVENT, DONE);*/
-		DoScriptText(SAY_DEATH, me);
+		if (pInstance)
+		{
+			pInstance->SetData(DATA_HALION_EVENT, DONE);
+			DoScriptText(SAY_DEATH, me);
+		}
 	}
-	void KilledUnit(Unit*)
+
+    void KilledUnit(Unit*)
 	{
 		DoScriptText(RAND(SAY_SLAY1, SAY_SLAY2), me);
-	}
-	void EnterEvadeMode()
-	{
-		pInstance->SetData(DATA_HALION, NOT_STARTED);
 	}
 };
 
@@ -197,11 +198,14 @@ struct boss_twilight_halionAI : public ScriptedAI
 	{
 		pInstance = me->GetInstanceData();
 	}
-	InstanceData* /*m_*/pInstance;
+
+	InstanceData* pInstance;
+
 	void UpdateAI(const uint32 diff)
 	{
 		if(!UpdateVictim())
-			return;
+				return;
+
 		DoMeleeAttackIfReady();
 	}
 };
@@ -214,10 +218,12 @@ CreatureAI* GetAI_boss_twilight_halion(Creature *pCreature)
 void AddSC_boss_halion()
 {
 	Script* newscript;
+
 	newscript = new Script;
 	newscript->Name = "boss_halion";
 	newscript->GetAI = &GetAI_boss_halion;
 	newscript->RegisterSelf();
+
 	newscript = new Script;
 	newscript->Name = "boss_twilight_halion";
 	newscript->GetAI = &GetAI_boss_twilight_halion;
